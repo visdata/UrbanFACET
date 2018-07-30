@@ -2,7 +2,7 @@
  * entropy.js
  * @authors Joe Jiang (hijiangtao@gmail.com)
  * @date    2017-01-08 20:16:29
- * æ•°æ®åº“æŸ¥è¯¢æŽ¥å£ä»¥åŠå›žä¼ æ•°æ®å¤„ç†æ¨¡å—
+ * Êý¾Ý¿â²éÑ¯½Ó¿ÚÒÔ¼°»Ø´«Êý¾Ý´¦ÀíÄ£¿é
  */
 
 'use strict'
@@ -21,176 +21,82 @@ function getTypeVals(val) {
      * ctype: people, record
      */
     let etype = 'p',
-        ctype = 'p';
-
-    switch (val) {
-        case 'pd':
-            etype = 'a';
+        ctype = 'p',
+        rtype = 'V',
+    	rsize = -1,
+    	rindex = -1;
+    
+    // the default query
+    
+    switch (val.substr(0,2)) {
+    	case 'pp':
+    		ctype = 'p';
+            etype = 'p';
+            rtype = 'V';
+            break;
+    	case 'pd':
+    		ctype = 'p';
+    		etype = 'a';
+    		rtype = 'C';
             break;
         case 'rp':
             ctype = 'r';
+            etype = 'p';
+            rtype = 'D';
             break;
         case 'rd':
             ctype = 'r';
             etype = 'a';
+            rtype = 'F';
             break;
         default:
             break;
     }
-
+    
+    // the new range query
+    if (val[2] ==='r'){
+    	rsize = Number.parseInt(val[3]);
+    	rindex = Number.parseInt(val[5]);
+    }
+    
     return {
         'etype': etype,
-        'ctype': ctype
+        'ctype': ctype,
+        'rtype': rtype,
+        'rsize': rsize,
+        'rindex': rindex
     }
 }
 
-
 function getOverview(conn, prop) {
-    // city: åŸŽå¸‚ç®€ç§°, tj, zjk, ts, bj
-    // ftpval: æ—¶é—´æ®µæˆ–è€…æ—¥æœŸç±»åž‹ç¼–å·, 0-8
-    // entropyattr: æŸ¥æ‰¾çš„ entropy value å­—æ®µ
-    // densityattr: æŸ¥æ‰¾çš„ density value å­—æ®µ
-    // etable: æŸ¥æ‰¾çš„æ•°æ®è¡¨åç§°
-    // mtype: æŸ¥è¯¢ç»“æžœçš„æ˜¾ç¤ºç±»åž‹,ç»Ÿè®¡æˆ–è€…å¹³å‡å€¼
-    // sqldoc: å„ä¸ªè¡¨ä¸­å­—æ®µçš„æœ€å¤§å€¼
-    // eMax: èŽ·å¾—çš„ entropy æœ€å¤§å€¼
-    // dMax: èŽ·å¾—çš„ density æœ€å¤§å€¼
-	
+    // city: ³ÇÊÐ¼ò³Æ, tj, zjk, ts, bj
+    // ftpval: Ê±¼ä¶Î»òÕßÈÕÆÚÀàÐÍ±àºÅ, 0-8
+    // entropyattr: ²éÕÒµÄ entropy value ×Ö¶Î
+    // densityattr: ²éÕÒµÄ density value ×Ö¶Î
+    // etable: ²éÕÒµÄÊý¾Ý±íÃû³Æ
+    // mtype: ²éÑ¯½á¹ûµÄÏÔÊ¾ÀàÐÍ,Í³¼Æ»òÕßÆ½¾ùÖµ
+    // sqldoc: ¸÷¸ö±íÖÐ×Ö¶ÎµÄ×î´óÖµ
+    // eMax: »ñµÃµÄ entropy ×î´óÖµ
+    // dMax: »ñµÃµÄ density ×î´óÖµ
+
     let city = prop['city'],
         ftpval = prop['ftpval'],
         typs = getTypeVals(prop['etype']),
         entropyattr = `${typs['etype']+typs['ctype']}sval`,
         densityattr = `w${typs['ctype']}number`,
-        etable,
-        mtype = 'ave',
-        sqldoc = iMax[mtype];
-    
-    console.log("typs: " + JSON.stringify(typs))
-    console.log("ftp:" + ftpval)
-    //console.log("sqldoc" + JSON.stringify(sqldoc))
+        etable = ftpval !== '' ? `${city}F${ftpval}mat` : `${city}Ematrix`,
+        mtype = 'ave'£»        
 
-    if(ftpval !== ''){
-        if (city === 'bj'){
-            etable = `bjF${ftpval}mat`;
-        }else {
-            etable = `${city}F${ftpval}mat`;
-        }
-    }else {
-        if (city === 'bj'){
-            etable = `wbjEmatrix`;
-        }else {
-            etable = `${city}Ematrix`;
-        }
+    if (typs['rsize'] > 0){
+    	etable = `${city}R${typs[rtype]}${typs[rindex]}mat`;
+    	mtype = 'sum';
     }
+    sqldoc = iMax[mtype];
+    eMax = Number.parseFloat(sqldoc[etable][entropyattr]);
+    dMax = Number.parseFloat(sqldoc[etable][densityattr]);
+        
+    console.log('Query table name: ', etable, 'eMax', eMax, 'dMax', dMax);
 
-    let eMax = Number.parseFloat(sqldoc[etable][entropyattr]),
-        dMax = Number.parseFloat(sqldoc[etable][densityattr]);
-
-    console.log('city: ', city, 'Query table name: ', etable, 'eMax', eMax, 'dMax', dMax);
-   
-    let p = new Promise(function(resolve, reject) {
-		let sql = $sql.getValScale[mtype] + $sql.getOverviewValE[mtype] + $sql.getDistribute(mtype, eMax) + $sql.getDistribute('sum', dMax),
-            param = [
-                entropyattr, densityattr, etable,
-                //entropyattr, densityattr, etable, entropyattr, densityattr,
-                entropyattr, etable, entropyattr, densityattr, entropyattr,
-                entropyattr, etable, entropyattr, densityattr, entropyattr,
-                densityattr, etable, entropyattr, densityattr, densityattr
-            ];
-
-        if (mtype === 'ave') {
-            param = [
-                entropyattr, densityattr, densityattr, etable,
-                //entropyattr, densityattr, densityattr, etable, entropyattr, densityattr,
-                entropyattr, densityattr, etable, entropyattr, densityattr, entropyattr, densityattr,
-                entropyattr, densityattr, etable, entropyattr, densityattr, entropyattr, densityattr,
-                densityattr, etable, entropyattr, densityattr, densityattr
-            ];
-        }
-    		if (prop['etype'] === 'de')
-    		{
-    			sql = $sql.getValScale[mtype] + $sql.getOverviewValD[mtype] + $sql.getDistribute(mtype, eMax) + $sql.getDistribute('sum', dMax),
-                param = [
-                    entropyattr, densityattr, etable,
-                    //entropyattr, densityattr, etable, entropyattr, densityattr,
-                    densityattr, etable, densityattr, densityattr,
-                    entropyattr, etable, entropyattr, densityattr, entropyattr,
-                    densityattr, etable, entropyattr, densityattr, densityattr
-                ];
-
-            if (mtype === 'ave') {
-                param = [
-                    entropyattr, densityattr, densityattr, etable,
-                    //entropyattr, densityattr, densityattr, etable, entropyattr, densityattr,
-                    densityattr, etable, densityattr, densityattr,
-                    entropyattr, densityattr, etable, entropyattr, densityattr, entropyattr, densityattr,
-                    densityattr, etable, entropyattr, densityattr, densityattr
-                ];
-            }
-    			
-    		}
-
-        conn.query(sql, param, function(err, result) {
-        		//console.log("result" + JSON.stringify(result[0]))
-        		//console.log("result" + JSON.stringify(result[1]))
-            conn.release();
-
-            if (err) {
-                reject(err);
-            } else {
-                // result[0]: Max value of entropy 
-                // result[1]: Entropy list
-                // result[2]: Entropy distribution stats
-                // result[3]: Density distribution stats
-                console.log('eval type: ', typeof result[0][0]['eval']);
-
-                let DATA = [],
-                    SPLIT = 0.003,
-                    centerincrement = 0.0015, //.toFixed(4),
-                    locs = data.getRegionBound(city),
-                    list = result[1],
-                    reslen = list.length
-                
-                //console.log("dlist:" + JSON.stringify(dlist))
-                console.log('Result length', reslen)
-                for (let i = list.length - 1; i >= 0; i--) {
-                    let id = Number.parseInt(list[i]['id']),
-                        LNGNUM = parseInt((locs['east'] - locs['west']) / SPLIT + 1),
-                        latind = parseInt(id / LNGNUM),
-                        lngind = id - latind * LNGNUM,
-                        lat = (locs['south'] + latind * SPLIT),
-                        lng = (locs['west'] + lngind * SPLIT),
-                        lnginc = (lng + SPLIT),
-                        latinc = (lat + SPLIT),
-                        lngcen = (lng + centerincrement),
-                        latcen = (lat + centerincrement),
-                        coordsarr = [
-                            [lng, lat],
-                            [lnginc, lat],
-                            [lnginc, latinc],
-                            [lng, latinc],
-                            [lng, lat]
-                        ]
-
-                    //console.log("dilst[j] :" + dlist[1]['dval'])
-
-                    DATA.push({
-                        "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [coordsarr]
-                        },
-                        "type": "Feature",
-                        "id": id,
-                        "prop": {
-                            'v': parseFloat(list[i]['val']),
-                            'e': parseFloat(list[i]['val']),
-                            'd': parseFloat(list[i]['val']),
-                            'c': [lngcen, latcen] // center point
-                        }
-                    })
-                }
-                console.info("end")
- /*         
     let p = new Promise(function(resolve, reject) {
         let sql = $sql.getValScale[mtype] + $sql.getOverviewVal[mtype] + $sql.getDistribute(mtype, eMax) + $sql.getDistribute('sum', dMax),
             param = [
@@ -209,8 +115,15 @@ function getOverview(conn, prop) {
             ];
         }
         
+        if (typs['rsize'] > 0){
+        	sql = $sql.getValScale[mtype] + $sql.getOverviewVal[mtype];
+            param = [
+                densityattr, densityattr, etable,
+                densityattr, densityattr, etable, densityattr, densityattr
+            ];
+        }
+
         conn.query(sql, param, function(err, result) {
-        		//console.log("result" + JSON.stringify(result[2]))
             conn.release();
 
             if (err) {
@@ -228,8 +141,7 @@ function getOverview(conn, prop) {
                     locs = data.getRegionBound(city),
                     elist = result[1],
                     reslen = elist.length
-                
-                //console.log("dlist:" + JSON.stringify(dlist))
+
                 console.log('Result length', reslen)
                 for (let i = elist.length - 1; i >= 0; i--) {
                     let id = Number.parseInt(elist[i]['id']),
@@ -249,8 +161,6 @@ function getOverview(conn, prop) {
                             [lng, latinc],
                             [lng, lat]
                         ]
-                    
-                    //console.log("dilst[j] :" + dlist[1]['dval'])
 
                     DATA.push({
                         "geometry": {
@@ -261,223 +171,64 @@ function getOverview(conn, prop) {
                         "id": id,
                         "prop": {
                             'e': parseFloat(elist[i]['eval']),
-                            'd': parseFloat(elist[i]['dval']),
-                            'c': [lngcen, latcen], // center point
+                            'd': parseInt(elist[i]['dval']),
+                            'c': [lngcen, latcen] // center point
                         }
                     })
                 }
-  */
-                // Remove the last element
-                let lste = result[2].pop(),
-                    lstd = result[3].pop();
 
-                result[2][result[2].length - 1]['v'] += lste['v'];
-                result[3][result[3].length - 1]['v'] += lstd['v'];
-
-                //console.log("result2 :" + JSON.stringify(result[2]))
+                if (typs['rsize'] > 0){
+                	resolve({
+	                    'scode': 1,
+	                    'data': {
+	                        "type": "FeatureCollection",
+	                        "features": DATA,
+	                        "prop": {
+	                            'scales': {
+	                                'e': parseFloat(result[0][0]['eval']),
+	                                'd': parseInt(result[0][0]['dval'])
+	                            }
+	                        }
+	                    }
+	                })
+                }
+                else{
                 
-                resolve({
-                    'scode': 1,
-                    'data': {
-                        "type": "FeatureCollection",
-                        "features": DATA,
-                        "prop": {
-                            'scales': {
-                                'e': parseFloat(result[0][0]['eval']),
-                                'd': parseInt(result[0][0]['dval'])
-                            }
-                        },
-                        'chart': {
-                            'e': result[2],
-                            'd': result[3] // k, v
-                        }
-                    }
-                })
-            }
-        })
-    })
-    return p;
-}
-
-function getCompareview(conn, prop) {
-    // city: åŸŽå¸‚ç®€ç§°, tj, zjk, ts, bj
-    // ftpval: æ—¶é—´æ®µæˆ–è€…æ—¥æœŸç±»åž‹ç¼–å·, 0-8
-    // entropyattr: æŸ¥æ‰¾çš„ entropy value å­—æ®µ
-    // densityattr: æŸ¥æ‰¾çš„ density value å­—æ®µ
-    // etable: æŸ¥æ‰¾çš„æ•°æ®è¡¨åç§°
-    // mtype: æŸ¥è¯¢ç»“æžœçš„æ˜¾ç¤ºç±»åž‹,ç»Ÿè®¡æˆ–è€…å¹³å‡å€¼
-    // sqldoc: å„ä¸ªè¡¨ä¸­å­—æ®µçš„æœ€å¤§å€¼
-    // eMax: èŽ·å¾—çš„ entropy æœ€å¤§å€¼
-    // dMax: èŽ·å¾—çš„ density æœ€å¤§å€¼
+	                // Remove the last element
+	                let lste = result[2].pop(),
+	                    lstd = result[3].pop();
 	
-    let city = prop['city'],
-        ftpval = prop['ftpval'],
-        typs = getTypeVals(prop['etype']),
-        entropyattr = `${typs['etype']+typs['ctype']}sval`,
-        densityattr = `w${typs['ctype']}number`,
-        etable0 = ftpval !== '' ? `${city}F0mat` : `${city}Ematrix`,
-        etable1 = ftpval !== '' ? `${city}F1mat` : `${city}Ematrix`,
-        etable2 = ftpval !== '' ? `${city}F2mat` : `${city}Ematrix`,
-        etable3 = ftpval !== '' ? `${city}F3mat` : `${city}Ematrix`,
-        etable4 = ftpval !== '' ? `${city}F4mat` : `${city}Ematrix`,
-        etable5 = ftpval !== '' ? `${city}F5mat` : `${city}Ematrix`,
-        mtype = 'ave',
-        sqldoc = iMax[mtype];
-    
-    let p = new Promise(function(resolve, reject) {
-		let sql = $sql.getCompareValCityE[mtype],
-		 param = [
-			 entropyattr, entropyattr, densityattr, entropyattr, entropyattr, densityattr, 
-			 entropyattr, entropyattr, densityattr, entropyattr, entropyattr, densityattr];
-		
-        if (ftpval === ''){
-        		if (mtype === 'ave') {
-                 param = [
-                 		entropyattr, densityattr, entropyattr, densityattr,
-                 		entropyattr, densityattr, entropyattr, densityattr,
-                 		entropyattr, densityattr, entropyattr, densityattr,
-                 		entropyattr, densityattr, entropyattr, densityattr
-                 ];
-             }
-        		if (prop['etype'] === 'de')
-         		{
-         			sql = $sql.getCompareValCityD[mtype],
-                     param = [
-                     		densityattr, densityattr, densityattr, densityattr, densityattr, densityattr, densityattr, densityattr
-                     ];
-
-                 if (mtype === 'ave') {
-                     param = [
-                     		densityattr, densityattr, densityattr, densityattr, densityattr, densityattr, densityattr, densityattr
-                     ];
-                 	}
-         		}
-        }
-        else{
-        		if (prop['etype'] === 'de'){
-        			sql = $sql.getCompareValTimeD[mtype],
-                    param = [
-                    		densityattr, etable0, densityattr, 
-                    		densityattr, etable1, densityattr, 
-                    		densityattr, etable2, densityattr, 
-                    		densityattr, etable3, densityattr, 
-                    		densityattr, etable4, densityattr, 
-                    		densityattr, etable5, densityattr
-                    ];
-
-                if (mtype === 'ave') {
-                    param = [
-                    		densityattr, etable0, densityattr, 
-                    		densityattr, etable1, densityattr, 
-                    		densityattr, etable2, densityattr, 
-                    		densityattr, etable3, densityattr, 
-                    		densityattr, etable4, densityattr, 
-                			densityattr, etable5, densityattr
-                    ];
+	                result[2][result[2].length - 1]['v'] += lste['v'];
+	                result[3][result[3].length - 1]['v'] += lstd['v'];
+	
+	                resolve({
+	                    'scode': 1,
+	                    'data': {
+	                        "type": "FeatureCollection",
+	                        "features": DATA,
+	                        "prop": {
+	                            'scales': {
+	                                'e': parseFloat(result[0][0]['eval']),
+	                                'd': parseInt(result[0][0]['dval'])
+	                            }
+	                        },
+	                        'chart': {
+	                            'e': result[2],
+	                            'd': result[3] // k, v
+	                        }
+	                    }
+	                })
                 }
-        		}
-        		else {
-        			sql = $sql.getCompareValTimeE[mtype],
-        			 param = [
-                  		entropyattr, etable0, entropyattr, densityattr,
-                  		entropyattr, etable1, entropyattr, densityattr,
-                  		entropyattr, etable2, entropyattr, densityattr,
-                  		entropyattr, etable3, entropyattr, densityattr,
-                  		entropyattr, etable4, entropyattr, densityattr,
-                  		entropyattr, etable5, entropyattr, densityattr
-                  ];
-        			if (mtype === 'ave') {
-                        param = [
-                        		entropyattr, densityattr, etable0, entropyattr, densityattr,
-                        		entropyattr, densityattr, etable1, entropyattr, densityattr,
-                      		entropyattr, densityattr, etable2, entropyattr, densityattr,
-                      		entropyattr, densityattr, etable3, entropyattr, densityattr,
-                      		entropyattr, densityattr, etable4, entropyattr, densityattr,
-                      		entropyattr, densityattr, etable5, entropyattr, densityattr
-                        ];
-                    }
-        		}
-        }
-        conn.query(sql, param, function(err, result) {
-        		//console.log("result" + JSON.stringify(result[0]))
-            conn.release();
-            
-            //console.log("result" + JSON.stringify(sql))
-            //console.log("result" + JSON.stringify(param))
-            //console.log("result" + JSON.stringify(result))
-            
-            if (err) {
-                reject(err);
-            } else {
-                let DATA = [],
-                    list = result,
-                    reslen = list.length
-                
-                //console.log("dlist:" + JSON.stringify(dlist))
-                console.log('Result length', reslen)
-                for (let i = list.length - 1; i >= 0; i--) {
-                    let id = Number.parseInt(list[i]['id'])
-                    
-                    //console.log("dilst[j] :" + dlist[1]['dval'])
-                    
-                    DATA.push({
-                        "geometry": {
-                            "type": "Polygon"
-                        },
-                        "type": "Feature",
-                        "id": id,
-                        "prop": {
-                            'v': parseFloat(list[i]['val']),
-                            'e': parseFloat(list[i]['val']),
-                            'd': parseFloat(list[i]['val'])
-                        }
-                    })
-                }
-                console.info("enda")
-                
-                resolve({
-                    'scode': 1,
-                    'data': {
-                        "type": "FeatureCollection",
-                        "features": DATA,
-                    }
-                })
             }
         })
     })
+
     return p;
 }
-
-
 
 function getBoundary(city) {
     let data = require(`./data/${city}`);
-    //console.log(data);
-    return data;
-}
-
-function getClusterBoundary(city) {
-	let data = require(`./data/${city}` + `_cluster.json`);
-	//let data = require(`./data/${city}`);
-    return data;
-}
-
-function getClusterBoundaryUpdate(prop) {
-	let city = prop['city'],
-		s = prop['s'],
-		c = prop['c'];
-	
-	let data = require(`./data/${city}` + `_cluster_` + `${s}` + `_` + `${c}`+ `.json`);
-	//let data = require(`./data/${city}`);
-    return data;
-}
-
-function getDistrictClusterDatasets(prop) {
-	let city = prop['city'],
-		k = prop['k'];
-	
-	let data = require(`./data/${city}` + `_district_cluster_` + `${k}` + `.json`);
-	
+    // console.log(data);
     return data;
 }
 
@@ -638,12 +389,8 @@ function getExtraInfo(db, params) {
 
 module.exports = {
     getOverview: getOverview,
-    getCompareview: getCompareview,
     getExtraInfo: getExtraInfo,
     getBoundary: getBoundary,
-    getClusterBoundary: getClusterBoundary,
-    getClusterBoundaryUpdate: getClusterBoundaryUpdate,
-    getDistrictClusterDatasets: getDistrictClusterDatasets,
     getAoiNum: getAoiNum,
     getAoiDetails: getAoiDetails,
     getMecStat: getMecStat,
