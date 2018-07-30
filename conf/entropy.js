@@ -2,7 +2,7 @@
  * entropy.js
  * @authors Joe Jiang (hijiangtao@gmail.com)
  * @date    2017-01-08 20:16:29
- * æ•°æ®åº“æŸ¥è¯¢æ¥å£ä»¥åŠå›ä¼ æ•°æ®å¤„ç†æ¨¡å—
+ * Êı¾İ¿â²éÑ¯½Ó¿ÚÒÔ¼°»Ø´«Êı¾İ´¦ÀíÄ£¿é
  */
 
 'use strict'
@@ -16,45 +16,69 @@ const sMec = require('./data/metrics');
 const poidis = require('./data/poidis');
 
 function getTypeVals(val) {
-    /**
+	/**
      * etype: POI, ADMIN, TIMEBLOCKS
      * ctype: people, record
      */
     let etype = 'p',
-        ctype = 'p';
-
-    switch (val) {
-        case 'pd':
-            etype = 'a';
+        ctype = 'p',
+        rtype = 'V',
+    	rsize = -1,
+    	rindex = -1;
+    
+    // the default query
+    
+    switch (val.substr(0,2)) {
+    	case 'pp':
+    		ctype = 'p';
+            etype = 'p';
+            rtype = 'V';
+            break;
+    	case 'pd':
+    		ctype = 'p';
+    		etype = 'a';
+    		rtype = 'C';
             break;
         case 'rp':
             ctype = 'r';
+            etype = 'p';
+            rtype = 'D';
             break;
         case 'rd':
             ctype = 'r';
             etype = 'a';
+            rtype = 'F';
             break;
         default:
             break;
     }
-
+    
+    // the new range query
+    if (val[2] ==='r'){
+    	rsize = Number.parseInt(val[3]);
+    	rindex = Number.parseInt(val[5]);
+    }
+    
     return {
         'etype': etype,
-        'ctype': ctype
+        'ctype': ctype,
+        'rtype': rtype,
+        'rsize': rsize,
+        'rindex': rindex
     }
 }
 
 
 function getOverview(conn, prop) {
-    // city: åŸå¸‚ç®€ç§°, tj, zjk, ts, bj
-    // ftpval: æ—¶é—´æ®µæˆ–è€…æ—¥æœŸç±»å‹ç¼–å·, 0-8
-    // entropyattr: æŸ¥æ‰¾çš„ entropy value å­—æ®µ
-    // densityattr: æŸ¥æ‰¾çš„ density value å­—æ®µ
-    // etable: æŸ¥æ‰¾çš„æ•°æ®è¡¨åç§°
-    // mtype: æŸ¥è¯¢ç»“æœçš„æ˜¾ç¤ºç±»å‹,ç»Ÿè®¡æˆ–è€…å¹³å‡å€¼
-    // sqldoc: å„ä¸ªè¡¨ä¸­å­—æ®µçš„æœ€å¤§å€¼
-    // eMax: è·å¾—çš„ entropy æœ€å¤§å€¼
-    // dMax: è·å¾—çš„ density æœ€å¤§å€¼
+    // city: ³ÇÊĞ¼ò³Æ, tj, zjk, ts, bj
+    // ftpval: Ê±¼ä¶Î»òÕßÈÕÆÚÀàĞÍ±àºÅ, 0-8
+    // entropyattr: ²éÕÒµÄ entropy value ×Ö¶Î
+    // densityattr: ²éÕÒµÄ density value ×Ö¶Î
+    // etable: ²éÕÒµÄÊı¾İ±íÃû³Æ
+    // mtype: ²éÑ¯½á¹ûµÄÏÔÊ¾ÀàĞÍ,Í³¼Æ»òÕßÆ½¾ùÖµ
+    // sqldoc: ¸÷¸ö±íÖĞ×Ö¶ÎµÄ×î´óÖµ
+    // eMax: »ñµÃµÄ entropy ×î´óÖµ
+    // dMax: »ñµÃµÄ density ×î´óÖµ
 	
     let city = prop['city'],
         ftpval = prop['ftpval'],
@@ -62,9 +86,7 @@ function getOverview(conn, prop) {
         entropyattr = `${typs['etype']+typs['ctype']}sval`,
         densityattr = `w${typs['ctype']}number`,
         etable,
-        mtype = 'ave',
-        sqldoc = iMax[mtype];
-    
+        mtype = 'ave'    
     console.log("typs: " + JSON.stringify(typs))
     console.log("ftp:" + ftpval)
     //console.log("sqldoc" + JSON.stringify(sqldoc))
@@ -83,6 +105,12 @@ function getOverview(conn, prop) {
         }
     }
 
+    if (typs['rsize'] > 0){
+      	etable = `${city}R${typs[rtype]}${typs[rindex]}mat`;
+       	mtype = 'sum';
+    }
+    
+    sqldoc = iMax[mtype];
     let eMax = Number.parseFloat(sqldoc[etable][entropyattr]),
         dMax = Number.parseFloat(sqldoc[etable][densityattr]);
 
@@ -130,6 +158,14 @@ function getOverview(conn, prop) {
     			
     		}
 
+    	if (typs['rsize'] > 0){
+          	sql = $sql.getValScale[mtype] + $sql.getOverviewVal[mtype];
+            param = [
+                densityattr, densityattr, etable,
+                densityattr, densityattr, etable, densityattr, densityattr
+            ];
+        }
+    		
         conn.query(sql, param, function(err, result) {
         		//console.log("result" + JSON.stringify(result[0]))
         		//console.log("result" + JSON.stringify(result[1]))
@@ -267,32 +303,48 @@ function getOverview(conn, prop) {
                     })
                 }
   */
-                // Remove the last element
-                let lste = result[2].pop(),
-                    lstd = result[3].pop();
-
-                result[2][result[2].length - 1]['v'] += lste['v'];
-                result[3][result[3].length - 1]['v'] += lstd['v'];
-
-                //console.log("result2 :" + JSON.stringify(result[2]))
+                if (typs['rsize'] > 0){
+                	resolve({
+	                    'scode': 1,
+	                    'data': {
+	                        "type": "FeatureCollection",
+	                        "features": DATA,
+	                        "prop": {
+	                            'scales': {
+	                                'e': parseFloat(result[0][0]['eval']),
+	                                'd': parseInt(result[0][0]['dval'])
+	                            }
+	                        }
+	                    }
+	                })
+                }
+                else{
                 
-                resolve({
-                    'scode': 1,
-                    'data': {
-                        "type": "FeatureCollection",
-                        "features": DATA,
-                        "prop": {
-                            'scales': {
-                                'e': parseFloat(result[0][0]['eval']),
-                                'd': parseInt(result[0][0]['dval'])
-                            }
-                        },
-                        'chart': {
-                            'e': result[2],
-                            'd': result[3] // k, v
-                        }
-                    }
-                })
+	                // Remove the last element
+	                let lste = result[2].pop(),
+	                    lstd = result[3].pop();
+	
+	                result[2][result[2].length - 1]['v'] += lste['v'];
+	                result[3][result[3].length - 1]['v'] += lstd['v'];
+	
+	                resolve({
+	                    'scode': 1,
+	                    'data': {
+	                        "type": "FeatureCollection",
+	                        "features": DATA,
+	                        "prop": {
+	                            'scales': {
+	                                'e': parseFloat(result[0][0]['eval']),
+	                                'd': parseInt(result[0][0]['dval'])
+	                            }
+	                        },
+	                        'chart': {
+	                            'e': result[2],
+	                            'd': result[3] // k, v
+	                        }
+	                    }
+	                })
+                }
             }
         })
     })
@@ -300,15 +352,15 @@ function getOverview(conn, prop) {
 }
 
 function getCompareview(conn, prop) {
-    // city: åŸå¸‚ç®€ç§°, tj, zjk, ts, bj
-    // ftpval: æ—¶é—´æ®µæˆ–è€…æ—¥æœŸç±»å‹ç¼–å·, 0-8
-    // entropyattr: æŸ¥æ‰¾çš„ entropy value å­—æ®µ
-    // densityattr: æŸ¥æ‰¾çš„ density value å­—æ®µ
-    // etable: æŸ¥æ‰¾çš„æ•°æ®è¡¨åç§°
-    // mtype: æŸ¥è¯¢ç»“æœçš„æ˜¾ç¤ºç±»å‹,ç»Ÿè®¡æˆ–è€…å¹³å‡å€¼
-    // sqldoc: å„ä¸ªè¡¨ä¸­å­—æ®µçš„æœ€å¤§å€¼
-    // eMax: è·å¾—çš„ entropy æœ€å¤§å€¼
-    // dMax: è·å¾—çš„ density æœ€å¤§å€¼
+    // city: ³ÇÊĞ¼ò³Æ, tj, zjk, ts, bj
+    // ftpval: Ê±¼ä¶Î»òÕßÈÕÆÚÀàĞÍ±àºÅ, 0-8
+    // entropyattr: ²éÕÒµÄ entropy value ×Ö¶Î
+    // densityattr: ²éÕÒµÄ density value ×Ö¶Î
+    // etable: ²éÕÒµÄÊı¾İ±íÃû³Æ
+    // mtype: ²éÑ¯½á¹ûµÄÏÔÊ¾ÀàĞÍ,Í³¼Æ»òÕßÆ½¾ùÖµ
+    // sqldoc: ¸÷¸ö±íÖĞ×Ö¶ÎµÄ×î´óÖµ
+    // eMax: »ñµÃµÄ entropy ×î´óÖµ
+    // dMax: »ñµÃµÄ density ×î´óÖµ
 	
     let city = prop['city'],
         ftpval = prop['ftpval'],
