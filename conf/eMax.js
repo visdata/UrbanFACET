@@ -530,6 +530,21 @@ let objs = {
 			"ppsval": 77864.1015625,
 			"tpsval": 319419,
 			"apsval": 44193.3984375
+		},
+		"bjRV0mat": {
+			"name": "bjRV0mat",
+			"wpnumber": 12613050,
+			"ppsval": 3474850.75
+		},
+		"bjRV1mat": {
+			"name": "bjRV1mat",
+			"wpnumber": 4955035,
+			"ppsval": 3474850.75
+		},
+		"bjRV2mat": {
+			"name": "bjRV2mat",
+			"wpnumber": 3248208,
+			"ppsval": 3474850.75
 		}
 	},
 	'ave': {
