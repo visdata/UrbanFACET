@@ -77,7 +77,7 @@ function getOverview(conn, prop) {
     // sqldoc: 各个表中字段的最大值
     // eMax: 获得的 entropy 最大值
     // dMax: 获得的 density 最大值
-	
+            
     let city = prop['city'],
         ftpval = prop['ftpval'],
         typs = getTypeVals(prop['etype']),
@@ -106,7 +106,7 @@ function getOverview(conn, prop) {
     }
     
     if (typs['rsize'] > 0){
-      	etable = `${city}R${typs[rtype]}${typs[rindex]}mat`;
+      	etable = `${city}R${typs['rtype']}${typs['rindex']}mat`;
        	mtype = 'sum';
        	sqldoc = iMax[mtype];
     }
@@ -116,8 +116,9 @@ function getOverview(conn, prop) {
 
     console.log('city: ', city, 'Query table name: ', etable, 'eMax', eMax, 'dMax', dMax);
    
+    
     let p = new Promise(function(resolve, reject) {
-		let sql = $sql.getValScale[mtype] + $sql.getOverviewValE[mtype] + $sql.getDistribute(mtype, eMax) + $sql.getDistribute('sum', dMax),
+		    let sql = $sql.getValScale[mtype] + $sql.getOverviewValE[mtype] + $sql.getDistribute(mtype, eMax) + $sql.getDistribute('sum', dMax),
             param = [
                 entropyattr, densityattr, etable,
                 //entropyattr, densityattr, etable, entropyattr, densityattr,
@@ -137,7 +138,7 @@ function getOverview(conn, prop) {
         }
     		if (prop['etype'] === 'de')
     		{
-    			sql = $sql.getValScale[mtype] + $sql.getOverviewValD[mtype] + $sql.getDistribute(mtype, eMax) + $sql.getDistribute('sum', dMax),
+    			  sql = $sql.getValScale[mtype] + $sql.getOverviewValD[mtype] + $sql.getDistribute(mtype, eMax) + $sql.getDistribute('sum', dMax),
                 param = [
                     entropyattr, densityattr, etable,
                     //entropyattr, densityattr, etable, entropyattr, densityattr,
@@ -164,10 +165,11 @@ function getOverview(conn, prop) {
                 densityattr, densityattr, etable,
                 densityattr, etable, densityattr, densityattr
             ];
-            console.log(sql);
-            console.log(param);
         }
-
+        
+        // console.log(sql);
+        // console.log(param);
+        
         conn.query(sql, param, function(err, result) {
         		//console.log("result" + JSON.stringify(result[0]))
         		//console.log("result" + JSON.stringify(result[1]))
@@ -228,83 +230,7 @@ function getOverview(conn, prop) {
                     })
                 }
                 console.info("end")
- /*         
-    let p = new Promise(function(resolve, reject) {
-        let sql = $sql.getValScale[mtype] + $sql.getOverviewVal[mtype] + $sql.getDistribute(mtype, eMax) + $sql.getDistribute('sum', dMax),
-            param = [
-                entropyattr, densityattr, etable,
-                entropyattr, densityattr, etable, entropyattr, densityattr,
-                entropyattr, etable, entropyattr, densityattr, entropyattr,
-                densityattr, etable, entropyattr, densityattr, densityattr
-            ];
 
-        if (mtype === 'ave') {
-            param = [
-                entropyattr, densityattr, densityattr, etable,
-                entropyattr, densityattr, densityattr, etable, entropyattr, densityattr,
-                entropyattr, densityattr, etable, entropyattr, densityattr, entropyattr, densityattr,
-                densityattr, etable, entropyattr, densityattr, densityattr,
-            ];
-        }
-        
-        conn.query(sql, param, function(err, result) {
-        		//console.log("result" + JSON.stringify(result[2]))
-            conn.release();
-
-            if (err) {
-                reject(err);
-            } else {
-                // result[0]: Max value of entropy 
-                // result[1]: Entropy list
-                // result[2]: Entropy distribution stats
-                // result[3]: Density distribution stats
-                console.log('eval type: ', typeof result[0][0]['eval']);
-
-                let DATA = [],
-                    SPLIT = 0.003,
-                    centerincrement = 0.0015, //.toFixed(4),
-                    locs = data.getRegionBound(city),
-                    elist = result[1],
-                    reslen = elist.length
-                
-                //console.log("dlist:" + JSON.stringify(dlist))
-                console.log('Result length', reslen)
-                for (let i = elist.length - 1; i >= 0; i--) {
-                    let id = Number.parseInt(elist[i]['id']),
-                        LNGNUM = parseInt((locs['east'] - locs['west']) / SPLIT + 1),
-                        latind = parseInt(id / LNGNUM),
-                        lngind = id - latind * LNGNUM,
-                        lat = (locs['south'] + latind * SPLIT),
-                        lng = (locs['west'] + lngind * SPLIT),
-                        lnginc = (lng + SPLIT),
-                        latinc = (lat + SPLIT),
-                        lngcen = (lng + centerincrement),
-                        latcen = (lat + centerincrement),
-                        coordsarr = [
-                            [lng, lat],
-                            [lnginc, lat],
-                            [lnginc, latinc],
-                            [lng, latinc],
-                            [lng, lat]
-                        ]
-                    
-                    //console.log("dilst[j] :" + dlist[1]['dval'])
-
-                    DATA.push({
-                        "geometry": {
-                            "type": "Polygon",
-                            "coordinates": [coordsarr]
-                        },
-                        "type": "Feature",
-                        "id": id,
-                        "prop": {
-                            'e': parseFloat(elist[i]['eval']),
-                            'd': parseFloat(elist[i]['dval']),
-                            'c': [lngcen, latcen], // center point
-                        }
-                    })
-                }
-  */
                 if (typs['rsize'] > 0){
                 	  resolve({
 	                      'scode': 1,
@@ -352,6 +278,7 @@ function getOverview(conn, prop) {
         })
     })
     return p;
+    
 }
 
 function getCompareview(conn, prop) {
