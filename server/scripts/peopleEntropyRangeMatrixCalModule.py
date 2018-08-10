@@ -267,7 +267,7 @@ def main(argv):
 			'DIRECTORY': directory,
 			'GRIDSNUM': GRIDSNUM,
 			'CITY': city,
-			'METRIC': metric
+			'METRIC': metric,
 			'CITYDISIND': CITYDISIND,
 			'CITYDISNUM': CITYDISNUM,
 			'FILENUM': number,
