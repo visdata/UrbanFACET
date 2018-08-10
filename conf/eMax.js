@@ -545,6 +545,51 @@ let objs = {
 			"name": "bjRV2mat",
 			"wpnumber": 3248208,
 			"ppsval": 3474850.75
+		},
+		"bjRC0mat": {
+			"name": "bjRC0mat",
+			"wpnumber": 3515945,
+			"ppsval": 3474850.75
+		},
+		"bjRC1mat": {
+			"name": "bjRC1mat",
+			"wpnumber": 1353130,
+			"ppsval": 3474850.75
+		},
+		"bjRC2mat": {
+			"name": "bjRC2mat",
+			"wpnumber": 489563,
+			"ppsval": 3474850.75
+		},
+		"bjRD0mat": {
+			"name": "bjRD0mat",
+			"wpnumber": 3515945,
+			"ppsval": 3474850.75
+		},
+		"bjRD1mat": {
+			"name": "bjRD1mat",
+			"wpnumber": 1353130,
+			"ppsval": 3474850.75
+		},
+		"bjRD2mat": {
+			"name": "bjRD2mat",
+			"wpnumber": 489563,
+			"ppsval": 3474850.75
+		},
+		"bjRF0mat": {
+			"name": "bjRF0mat",
+			"wpnumber": 3515945,
+			"ppsval": 3474850.75
+		},
+		"bjRF1mat": {
+			"name": "bjRF1mat",
+			"wpnumber": 1353130,
+			"ppsval": 3474850.75
+		},
+		"bjRF2mat": {
+			"name": "bjRF2mat",
+			"wpnumber": 489563,
+			"ppsval": 3474850.75
 		}
 	},
 	'ave': {
