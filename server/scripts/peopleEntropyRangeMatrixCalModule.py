@@ -43,6 +43,7 @@ class EntropyMatrixModule(object):
 		self.DIRECTORY = PROP['DIRECTORY']
 		self.GRIDSNUM = PROP['GRIDSNUM']
 		self.CITY = PROP['CITY']
+		self.METRIC = PROP['METRIC']
 		self.CITYDISNUM = PROP['CITYDISNUM']
 		self.CITYDISIND = PROP['CITYDISIND']
 		self.UPPER = PROP['UPPER']
@@ -63,7 +64,7 @@ class EntropyMatrixModule(object):
 		userfile = os.path.join(self.DIRECTORY, 'entropy/distribution', self.CITY, 'respeo-%03d' % self.INDEX)
 		entropyfiles = []
 		for index, upper in enumerate(self.UPPER):
-			entropyfiles.append(os.path.join(self.DIRECTORY, 'entropy_range/matrix', self.CITY, 'respeo-%02d-%03d' % (index,self.INDEX)))
+			entropyfiles.append(os.path.join(self.DIRECTORY, 'entropy_range/%s/matrix' % self.METRIC, self.CITY, 'respeo-%02d-%03d' % (index,self.INDEX)))
 		
 		userEntropyClassDict = {}
 		entropyClassSize = len(self.UPPER);
@@ -204,7 +205,7 @@ def help():
 def main(argv):
 	# 输入参数对照列表
 	try:
-		opts, args = getopt.getopt(argv, "hc:d:n:u:l:i", ["help", "city=", 'directory=', 'number=', 'upper=', 'lower=', 'column_index='])
+		opts, args = getopt.getopt(argv, "hc:m:d:n:u:l:i", ["help", "city=", 'metric=', 'directory=', 'number=', 'upper=', 'lower=', 'column_index='])
 	except getopt.GetoptError as err:
 		print str(err)
 		help()
@@ -212,9 +213,18 @@ def main(argv):
 
 	# 处理输入参数
 	city, directory, number = 'beijing', '/enigma/tao.jiang/datasets/JingJinJi', 999
-	lower = [0,0.7,1.5]
-	upper = [0.7,1.5,3]
-	column_index = 1
+	
+	# vibrancy conf
+# 	lower = [0,0.7,1.5]
+# 	upper = [0.7,1.5,3]
+# 	column_index = 1
+# 	metric = 'vibrancy'
+
+	# commutation conf
+	lower = [0,0.68,1.1]
+	upper = [0.68,1.1,3]
+	column_index = 3
+	metric = 'commutation'
 		
 	for opt, arg in opts:
 		if opt == '-h':
@@ -222,13 +232,15 @@ def main(argv):
 			sys.exit()
 		elif opt in ("-c", "--city"):
 			city = arg
+		elif opt in ("-m", "--metric"):
+			metric = arg
 		elif opt in ("-d", "--directory"):
 			directory = arg
 		elif opt in ('-n', '--number'):
 			number = int(arg)
 		elif opt in ("-u", "--upper"):
 			upper = arg.split(',')
-		elif opt in ("-l", "--directory"):
+		elif opt in ("-l", "--lower"):
 			lower = arg.split(',')
 		elif opt in ('-i', '--column_index'):
 			column_index = int(arg)
@@ -255,6 +267,7 @@ def main(argv):
 			'DIRECTORY': directory,
 			'GRIDSNUM': GRIDSNUM,
 			'CITY': city,
+			'METRIC': metric
 			'CITYDISIND': CITYDISIND,
 			'CITYDISNUM': CITYDISNUM,
 			'FILENUM': number,
@@ -280,7 +293,7 @@ def main(argv):
 	print "Start merge at %s" % MERGE
 	
 	for index, u in enumerate(upper):
-		merge_dir = os.path.join(directory, 'entropy_range/matrix', city)
+		merge_dir = os.path.join(directory, 'entropy_range/%s/matrix'% metric, city)
 		mergeEntropyFiles(city, GRIDSNUM, merge_dir, index)
 	print "End merge in %s" % str(time.time() - MERGE)
 
