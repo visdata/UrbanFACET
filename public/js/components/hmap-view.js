@@ -34,8 +34,8 @@ import {
 
 const SPLIT = 0.003
 const mapattr = 'UrbanFACET &copy; 2016-2017'
-const mapuid = 'hijiangtao'
-const accessToken = 'pk.eyJ1IjoiaGlqaWFuZ3RhbyIsImEiOiJjaWx1bGpldnowMWVwdGlrcm5rcDNiazU2In0.6bViwknzYRPVyqOj7JUuKw'
+const mapuid = 'zhichun'
+const accessToken = 'pk.eyJ1IjoiemhpY2h1biIsImEiOiJjampzMXE1MG8yMTEwM3JvbnI1bWJ5Z3h4In0.Wg2zDaBAz67uNp8f89lnUw'
 
 class mapview {
 
@@ -66,30 +66,34 @@ class mapview {
          * @type {Object}
          */
         this.baseLayers = {
-            'Road': L.tileLayer(`https://api.mapbox.com/styles/v1/{uid}/cisu4qyac00362wqbe6oejlfh/tiles/256/{z}/{x}/{y}?access_token=${accessToken}`, {
-                attribution: mapattr,
+            'Road': L.tileLayer(`https://api.mapbox.com/styles/v1/{uid}/cjkdb07jhacm92rqrorll84uq/tiles/256/{z}/{x}/{y}?access_token=${accessToken}`, {
+				attribution: mapattr,
                 maxZoom: 18,
                 uid: mapuid
             }),
             'Outdoors': L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+                id: 'mapbox.outdoors',
+                attribution: mapattr,
+                uid: mapuid
+            }),
+            'Streets': L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
                 id: 'mapbox.streets',
-                attribution: mapattr,
+				attribution: mapattr,
                 uid: mapuid
             }),
-            'Streets': L.tileLayer(`https://api.mapbox.com/styles/v1/{uid}/cj0q1lwz7005y2rnytkweyyaj/tiles/256/{z}/{x}/{y}?access_token=${accessToken}`, {
-                attribution: mapattr,
+            'Bright': L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+                id: 'mapbox.light',
+				attribution: mapattr,
                 uid: mapuid
             }),
-            'Bright': L.tileLayer(`https://api.mapbox.com/styles/v1/{uid}/cj0q10t7r005v2rnydps4lal8/tiles/256/{z}/{x}/{y}?access_token=${accessToken}`, {
-                attribution: mapattr,
+            'Dark': L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+                id: 'mapbox.dark',
+				attribution: mapattr,
                 uid: mapuid
             }),
-            'Dark': L.tileLayer(`https://api.mapbox.com/styles/v1/{uid}/cj0q17od300iq2rt8yqnc4om8/tiles/256/{z}/{x}/{y}?access_token=${accessToken}`, {
-                attribution: mapattr,
-                uid: mapuid
-            }),
-            'Satellite': L.tileLayer(`https://api.mapbox.com/styles/v1/{uid}/cj0q1yc4h003t2rta3qp2z72a/tiles/256/{z}/{x}/{y}?access_token=${accessToken}`, {
-                attribution: mapattr,
+            'Satellite': L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+                id: 'mapbox.satellite',
+				attribution: mapattr,
                 uid: mapuid
             }),
         }
@@ -947,6 +951,75 @@ class mapview {
         }
     }
 
+	BubbleboundaryDrawing(data, prop, update = false) {
+        let self = this,
+            city = prop['city'],
+            onlyBound = prop['boundary'],
+            statsdata = stats[city],
+            numid = self.ides.mapid.slice(-1),
+            svgid = `boundSVG${self.ides.mapid}`,
+            aoiid = `aoiCanvas${self.ides.mapid}`;
+
+        this.switchLegDisplay('cltsld');
+
+        if (!update) {
+            console.log("first")
+            this.setClusterBoundData(data);
+        } else {
+            console.log("second")
+            data = this.getClusterBoundData();
+        }
+
+        //console.log("data:" + JSON.stringify(data))
+        d3.select(`#${svgid}`).remove();
+        d3.select(`#${aoiid}`).remove();
+
+        let color = ["rgba(0,68,27,1)","rgba(8,48,107,1)", "rgba(103,0,13,1)"],
+            svg = d3.select(self.map.getPanes().overlayPane).append("svg").attr('id', svgid).style("z-index", 998),
+            g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+        let transform = d3.geoTransform({
+                point: projectPoint
+            }),
+            path = d3.geoPath().projection(transform);
+
+        let feature = g.selectAll("path")
+            .data(data.features)
+            .enter().append("path")
+			.attr('fill', 'rgb(255,255,255,0)')
+            .attr('stroke',function (d) {
+                let num = d.properties.color;
+                return color[num];
+            })
+            .attr("stroke-width", 0.9);
+
+        self.map.on("viewreset", reset);
+        reset();
+
+        // Reposition the SVG to cover the features.
+        function reset() {
+            let bounds = path.bounds(data),
+                topLeft = bounds[0],
+                bottomRight = bounds[1];
+
+            svg.attr("width", bottomRight[0] - topLeft[0])
+                .attr("height", bottomRight[1] - topLeft[1])
+                .style("left", topLeft[0] + "px")
+                .style("top", topLeft[1] + "px");
+
+            g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+
+            feature.attr("d", path);
+        }
+
+        // Use Leaflet to implement a D3 geometric transformation.
+        function projectPoint(x, y) {
+            let point = self.map.latLngToLayerPoint(new L.LatLng(y, x));
+            //console.log("x: " + x)
+            this.stream.point(point.x, point.y);
+        }
+    }
+	
     boundaryDrawing(data, prop, update = false) {
         let self = this,
             city = prop['city'],
@@ -1243,24 +1316,6 @@ class mapview {
                 min: minVal,
                 data: []
             };
-        // let oneqVal = 0,
-        //     twoqVal = 0,
-        //     thrqVal = 0;
-        // if (minVal === maxVal) {
-        //     oneqVal = 1.0;
-        // } else {
-        //     oneqVal = 0.3 * judRate,
-        //     twoqVal = judRate;
-        // }
-        
-        // // 根据绘制类型判断筛选条件最小值
-        // let emin = 0,
-        //     dmin = 0;
-        // if (drawtype === 'e') {
-        //     emin = prop['e']['min'];
-        // } else {
-        //     dmin = prop['d']['min'];
-        // }
 
         this.clearLayers();
 
@@ -1330,115 +1385,163 @@ class mapview {
         this.map.addLayer(this.heatmapLayer);
         this.heatmapLayer.setData(hdata)
     }
+	
+	mapcontourCDrawing_bubble(data, prop,update = false) {
+        // update为false表示当前执行重绘操作, update为true则从实例中调用历史数据进行绘制
+        //console.log("data:" +  JSON.stringify(data.features[0]))
+        this.switchLegDisplay('ctrleg');
 
+        if (!update) {
+            this.setGridData(data);
+        } else {
+            data = this.getGridData();
+        }
+        this.setGridDataType(prop['prop']['drawtype']);
 
-    /*
-            let gradients = ['rgba(255,255,255,0)', 'rgba(255,0,0,1)', 'rgb(0,0,255)', 'rgb(0,255,0)', 'rgb(255,255,0)', 'rgb(255,0,0)'];
+        console.log('Drawtype: ', prop['prop']['drawtype'], 'Update: ', update);
 
-            if (prop['prop']['rev']) {
-                gradients = ['rgba(255,255,255,0)', 'rgba(255,0,0,1)', 'rgb(255,0,0)', 'rgb(255,255,0)', 'rgb(0,255,0)', 'rgb(0,0,255)'];
-            }
+        const drawtype = prop['prop']['drawtype'],
+            resprop = data['prop'],
+            SPLITNUMBER = 4;
 
-            cfg.gradient[oneqVal.toString()] = gradients[2];
-            cfg.gradient[twoqVal.toString()] = gradients[3];
-            cfg.gradient[thrqVal.toString()] = gradients[4];
-            cfg.gradient[forqVal.toString()] = gradients[5];
-            
-    */
-    // draw legends
-    // this.drawContourLegend(`Content ${getPropName(drawtype)}`, cfg.gradient);
-
-
-
-    /*     
+        // updated color scale
         let begVal = 0,
-        minVal = prop[drawtype]['min'],
-        maxVal = prop[drawtype]['max'],
-        endVal = prop[drawtype]['scales'];
+            minVal = prop[drawtype]['min'],
+            maxVal = prop[drawtype]['max'],
+            endVal = prop[drawtype]['max'],
+            //maxRate = maxVal / endVal,
+            //minRate = minVal / endVal,
+            judRate = Number.parseFloat((maxVal - minVal) / (endVal - minVal));
+        //judRate = Number.parseFloat((prop['d']['number'] - prop['e']['number']) / (100 - prop['e']['number']));
+        
+        console.log("judRate      : " + JSON.stringify(judRate))
 
-    let len = data.features.length,
-        hdata = {
-            max: 100,
-            min: minVal,
-            data: []
+        let len = data.features.length,
+             data_0 = {
+                max: maxVal,
+                min: minVal,
+                data: []
+            },
+			data_1 = {
+                max: maxVal,
+                min: minVal,
+                data: []
+            },
+			data_2 =  {
+                max: maxVal,
+                min: minVal,
+                data: []
+            };
+			
+	
+        let countVal = 0;
+        console.log("len=" + len)
+
+        for (let i = len - 1; i >= 0; i--) {
+            let feature = data.features[i],
+                evalue = feature['prop']['e'], //网格具体的值
+                dvalue = feature['prop']['d'],
+                center = data.features[i]['prop']['c'];
+
+            // 根据 filter 值及选中类型进行过滤
+            // if (outOfRange(drawtype, evalue, dvalue, prop['e']['min'], prop['d']['min'])) {
+            //     continue;
+            // }
+            countVal += 1;
+
+            // 为 hdata 注入数据
+			if(feature['prop']['num'] == 0){
+				data_0.data.push({
+                'lat': center[1],
+                'lng': center[0],
+                'c': feature['prop'][drawtype]
+				})
+			}
+			else if(feature['prop']['num'] == 1){
+				data_1.data.push({
+                'lat': center[1],
+                'lng': center[0],
+                'c': feature['prop'][drawtype]
+				})
+			}
+			else if(feature['prop']['num'] == 2){
+				data_2.data.push({
+                'lat': center[1],
+                'lng': center[0],
+                'c': feature['prop'][drawtype]
+				})
+			}
         }
+		
+        console.log('Drawtype: ', drawtype, 'Contourmap Used point number', countVal);
+		
+		
+		for(var svg_num = 0; svg_num < 3; svg_num ++){
+			let clr_trans = 'rgba(254,224,210,0.5)';
+			let clr_red = 'rgba(103,0,13,0.6)';
+			let clr_yl = 'rgba(239,59,44,0.6)';
+			
+			if(svg_num == 0){
+				clr_trans = 'rgba(229,245,224,0.5)';
+				clr_red = 'rgba(0,68,27,1)';
+				clr_yl = 'rgba(65,171,93,1)';
+			}
+			else if(svg_num == 1){
+				clr_trans = 'rgba(222,235,247,0.5)';
+				clr_red = 'rgba(8,48,107,0.8)';
+				clr_yl = 'rgba(66,146,198,0.8)';
+			}
+			let cfg = {
+            // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+            // if scaleRadius is false it will be the constant radius used in pixels
+            "radius": prop['prop']['radius'],
+            //"maxOpacity": 0.5,//prop['prop']['opacity'],
+            //"minOpacity": 0.5,//prop['prop']['opacity'],
+            // scales the radius based on map zoom
+            "scaleRadius": true,
+            "gradient": {
+                '0': clr_trans,
+				'1': clr_red
+            },
+            //   (there will always be a red spot with useLocalExtremas true)
+            "useLocalExtrema": prop['prop']['useLocalExtrema'],
+			"useGradientOpacity": true,
+            "latField": 'lat',
+            "lngField": 'lng',
+            "valueField": 'c'
+			};
 
-    // 根据绘制类型判断筛选条件最小值
-    let emin = 0,
-        dmin = 0;
-    if (drawtype === 'e') {
-        emin = prop['e']['min'];
-    } else {
-        dmin = prop['d']['min'];
+			if (minVal==maxVal) {
+				cfg.gradient['1'] = clr_red;
+			} else if (prop['prop']['rev']){
+				cfg.gradient['0'] = clr_red;
+				cfg.gradient['.3'] = clr_red;
+				cfg.gradient['.95'] = clr_yl;
+				cfg.gradient['1.0'] = clr_trans;
+			} else {
+				cfg.gradient['.3'] = clr_yl;
+				cfg.gradient['.7'] = clr_red;
+			}
+
+			console.log("gradients   : " + JSON.stringify(cfg.gradient))
+			if(svg_num  == 0){
+				this.heatmapLayer = new HeatmapOverlay(cfg);
+				this.map.addLayer(this.heatmapLayer);
+				this.heatmapLayer.setData(data_0);
+			}
+			else if(svg_num  == 1){
+				this.heatmapLayer = new HeatmapOverlay(cfg);
+				this.map.addLayer(this.heatmapLayer);
+				this.heatmapLayer.setData(data_1);
+			}
+			else if(svg_num  == 2){
+				this.heatmapLayer = new HeatmapOverlay(cfg);
+				this.map.addLayer(this.heatmapLayer);
+				this.heatmapLayer.setData(data_2);
+			}
+		}
     }
 
-    this.clearLayers();
-
-    let countVal = 0;
-    for (let i = len - 1; i >= 0; i--) {
-        let feature = data.features[i],
-            evalue = feature['prop']['e'],
-            dvalue = feature['prop']['d'],
-            center = data.features[i]['prop']['c'];
-
-        // 根据 filter 值及选中类型进行过滤
-        if (outOfRange(drawtype, evalue, dvalue, prop['e']['min'], prop['d']['min'])) {
-            continue;
-        }
-        countVal += 1;
-
-        // 为 hdata 注入数据
-        hdata.data.push({ 'lat': center[1], 'lng': center[0], 'c': Math.ceil((len - i)/len*100) })
-        console.log("c:" + Math.ceil((len - i)/len*100))
-    }
-    console.log('Drawtype: ', drawtype, 'Contourmap Used point number', countVal);
-    //console.log("hdata" + JSON.stringify(hdata))
-
-    let cfg = {
-        // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-        // if scaleRadius is false it will be the constant radius used in pixels
-        "radius": prop['prop']['radius'],
-        "maxOpacity": prop['prop']['opacity'],
-        "minOpacity": prop['prop']['opacity'],
-        // scales the radius based on map zoom
-        "scaleRadius": true,
-        "gradient": {
-            '0' : 'rgba(255,255,255,0)'
-        },
-        //   (there will always be a red spot with useLocalExtremas true)
-        "useLocalExtrema": prop['prop']['useLocalExtrema'],
-        "latField": 'lat',
-        "lngField": 'lng',
-        "valueField": 'c'
-    };
-    
-    console.log("stream" + prop['prop']['useLocalExtrema'])
-    
-    let gradients = ['rgba(255,255,255,0)', 'rgba(255,0,0,1)', 'rgb(0,0,255)', 'rgb(0,255,0)', 'rgb(255,255,0)', 'rgb(255,0,0)'];
-
-    if (prop['prop']['rev']) {
-        gradients = ['rgba(255,255,255,0)', 'rgba(255,0,0,1)', 'rgb(255,0,0)', 'rgb(255,255,0)', 'rgb(0,255,0)', 'rgb(0,0,255)'];
-    }
-    
-    //set gradient depending on high point
-    for(let i = 0.25; i < 1; i+=0.25) {
-        cfg.gradient[i.toString()] = gradients[i*4+1];
-    }
-    let vv = Number.parseFloat(v[1] / 100.00);
-    cfg.gradient[vv.toString()] = gradients[5];
-    console.log("vvvv" + vv.toString())
-    if(vv < 1){
-        cfg.gradient['1.0'] = gradients[5];
-    }
-    
-    // draw legends
-    // this.drawContourLegend(`Content ${getPropName(drawtype)}`, cfg.gradient);
-
-    this.heatmapLayer = new HeatmapOverlay(cfg);
-    this.map.addLayer(this.heatmapLayer);
-    this.heatmapLayer.setData(hdata)
-}
-*/
 
     /**
      * 绘制地图中的参考图标(图中指示4个方块）

@@ -23,6 +23,7 @@ import {
     getClusterboundaryDatasets,
     getClusterboundaryDatasetsUpdate,
     getDistrictClusterDatasets,
+	getThreetypeDatasets,
     getAOIDatasets,
     getDensity,
     getSMecDatasets,
@@ -132,7 +133,7 @@ const userpanel = new Vue({
                         'etype': etype,
                         'rev': rev
                     };
-                //console.log("etype:" +  JSON.stringify(drawprop))
+                console.log("etype:" +  JSON.stringify(drawprop))
 
                 // 添加 loading 效果 & 移动地图
                 changeLoadState(`dimmer${i}`, true);
@@ -201,7 +202,26 @@ const userpanel = new Vue({
                     }).catch(function (err) {
                         console.error("Failed!", err);
                     });
-                } else {
+                }
+				else if(etype == 'ppb'){
+					maps[i].clearLayers();
+					
+					getOverviewDatasets(obj).then(function (res) {
+					changeLoadState(`dimmer${i}`, false);
+
+					//obj.scales = res['prop']['scales'];
+					resp = res;
+
+					// 获取 slider 情况下的配置值域以及用户其余选项
+					let drawProps = getDrawProps(res, svals, self.sels.ctrsets, drawprop);
+					// 绘 Metric Distribution 图函数
+					maps[i].mapcontourCDrawing_bubble(res, drawProps);
+                    
+                    }).catch(function (err) {
+                        console.error("Failed!", err);
+                    });
+				}
+				else {
                     self.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
                     self.sels.objs[i].slider.formatter = "{value}%";
                     getBoundaryDatasets(city).then(function (res) {
@@ -891,6 +911,24 @@ const userpanel = new Vue({
                     });
 
                 }
+				//Bubble Boundary
+				if(val == 'b'){
+					let min_len = 15, percent = 0.05;
+					getThreetypeDatasets(objs[index], min_len, percent).then(function (res) {
+
+					let city = objs[index].city,
+						etype = objs[index].etype;
+
+					let prop = {
+						'city': city,
+						'boundary': true
+					};
+					changeLoadState(`dimmer${index}`, false);
+					maps[index].BubbleboundaryDrawing(res, prop);
+					}).catch(function (err) {
+						console.error("Failed!", err);
+					});
+				}
             }
         },
         'sels.ctrsets.opacity': {

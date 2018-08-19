@@ -19,7 +19,7 @@ import $ from "jquery"
 
 let getDrawProps = function(res, sels, ctrsets, props) {
 	let minfeature = null, maxfeature = null,
-		scales = res.features[0]['prop']['v'];
+		scales = res.features[0]['prop']['e'];
 	if(sels[0] === sels[1]){
 		if(sels[0] == 0){
 			minfeature = res.features[res.features.length -1],
@@ -59,8 +59,8 @@ let getDrawProps = function(res, sels, ctrsets, props) {
 
 	//console.log('minnnnnnnnnnnnnn: ' + JSON.stringify(minfeature))
 
-	let	min = minfeature['prop']['v'],
-		max = maxfeature['prop']['v'],
+	let	min = minfeature['prop']['e'],
+		max = maxfeature['prop']['e'],
 		//escales = res['prop']['scales']['e'],
 		//dscales = res['prop']['scales']['d'],
 		drawtype = 'e';
@@ -273,6 +273,34 @@ let getDistrictClusterDatasets = function(city, k){
 	return p;
 }
 
+let getThreetypeDatasets = function(sels, max_len, percent) {
+	let city = sels.city,
+		etype = sels.etype,
+		ftpval1 = sels.ftpval,
+		ftpval2 = sels.ftpval2,
+		ftpval = ftpval1;
+	
+	// 以时间段最为主要依据, 只有时间段在allday的时候才考虑日期类型信息,两者都在all的时候后台传送给服务器数据为空
+	if (ftpval1 === '9') {
+		if (ftpval2 === '10') {
+			ftpval = '';
+		} else {
+			ftpval = ftpval2;
+		}
+	}
+
+	let p = new Promise(function(resolve, reject) {
+		$.get(`/comp/ThreetypeQuery?city=${city}&etype=${etype}&max_len=${max_len}&percent=${percent}`, function(res, err) {
+			if (res['scode']) {
+				resolve(res['data']);
+			} else {
+				reject(err);
+			}
+		});
+	});
+
+	return p;
+};
 
 let getAOIDatasets = function(city, type) {
 	let p = new Promise(function(resolve, reject) {
@@ -401,6 +429,7 @@ export {
 	getClusterboundaryDatasets,
 	getClusterboundaryDatasetsUpdate,
 	getDistrictClusterDatasets,
+	getThreetypeDatasets,
 	getAOIDatasets,
 	getSMecDatasets,
 	getAoiDisDatasets,

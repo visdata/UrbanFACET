@@ -19,7 +19,7 @@ let apis = {
 			return EP.getOverview(db, params);
 		}, function(err) {
 			console.error('error: ', err);
-		}).catch(function(err) {
+		}).catch(function(error) {
 			console.error('error: ', err);
 		}).then(function(result) {
 			 //console.info('Ready to send back result.');
@@ -35,7 +35,7 @@ let apis = {
 			return EP.getCompareview(db, params);
 		}, function(err) {
 			console.error('error: ', err);
-		}).catch(function(err) {
+		}).catch(function(error) {
 			console.error('error: ', err);
 		}).then(function(result) {
 			 //console.info('Ready to send back result.');
@@ -79,6 +79,19 @@ let apis = {
 			'scode': 1,
 			'data': data
 		});
+	},	
+	'ThreetypeQuery': function(req, res, next) {
+		let params = req.query;
+		lib.connectMySQL().then(function(db) {
+			console.info('Got data from MySQL.');
+			return EP.getThreetypeview(db, params);
+		}, function(err) {
+			console.error('error: ', err);
+		}).catch(function(error) {
+			console.error('error: ', err);
+		}).then(function(result) {
+			res.json(result);
+		})
 	},
 	'mecStatQuery': function(req, res, next) {
 		let params = req.query,
@@ -97,7 +110,7 @@ let apis = {
 				return EP.getAoiNum(db, params);
 			}, function(err) {
 				console.error('error: ', err);
-			}).catch(function(err) {
+			}).catch(function(error) {
 				console.error('error: ', err);
 			}).then(function(result) {
 				res.json(result);
@@ -107,7 +120,7 @@ let apis = {
 				return EP.getAoiDetails(db, params);
 			}, function(err) {
 				console.error('error: ', err);
-			}).catch(function(err) {
+			}).catch(function(error) {
 				console.error('error: ', err);
 			}).then(function(result) {
 				res.json({
@@ -135,7 +148,7 @@ let apis = {
 
 		}, function(err) {
 			console.error('error: ', err);
-		}).catch(function(err) {
+		}).catch(function(error) {
 			console.error('error: ', err);
 		});
 	},
@@ -174,7 +187,7 @@ let apis = {
 			});
 		}, function(err) {
 			console.error('error: ', err);
-		}).catch(function(err) {
+		}).catch(function(error) {
 			console.error('error: ', err);
 		});
 	},
@@ -214,7 +227,7 @@ let apis = {
 			});
 		}, function(err) {
 			console.error('error: ', err);
-		}).catch(function(err) {
+		}).catch(function(error) {
 			console.error('error: ', err);
 		});
 	}

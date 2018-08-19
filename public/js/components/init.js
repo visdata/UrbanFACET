@@ -97,7 +97,11 @@ let home = {
             {
                 'name': 'House Price',
                 'val': 'hp'
-            }
+            },
+			{
+				'name': 'Vibrancy Bubble_Set',
+				'val': 'ppb'
+			}
         ],
         'otypes': [{
                 'name': 'Empty',
@@ -122,7 +126,11 @@ let home = {
             {
                 'name': 'FACET-Cluster',
                 'val': 'c'
-            }
+            },
+			{
+				'name': 'Boundary',
+				'val': 'b'
+			}
         ],
         /**
          * timeblock filters object
@@ -542,13 +550,15 @@ let home = {
             'ag': 'Per Capita GDP',
             'po': 'Population',
             'hp': 'House Price',
+			'ppb': 'Vibrancy Bubble_Set'
         },
         'ops': {
             'e': 'Empty',
             'p': 'POI',
             'd': 'District',
             'f': 'FACET-District',
-            'c': 'FACET-Cluster'
+            'c': 'FACET-Cluster',
+			'b': 'Boundary'
         },
         'pois': ['All', 'Food&Supply', 'Entertainment&Leisure', 'Education', 'Transportation', 'Healthcare&Emergency', 'Financial&Bank', 'Accommodation', 'Office&Commercial', 'Natural Landscape', 'Factory&Manufacturer'],
         'scales': ['City', 'Division', 'Region', 'Street'],
