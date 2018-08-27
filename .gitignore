@@ -44,5 +44,7 @@ server/data/tmp/*
 
 *.DS_Store
 
+yarn.lock
+
 conf/data/bj_cluster*
 server/scripts/bj_initial_data.json
