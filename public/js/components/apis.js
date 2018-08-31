@@ -135,6 +135,41 @@ let getDrawProps = function(scales, sels, ctrsets, props) {
 };
 */
 
+let getDrawProps_bubble = function(res, sels, ctrsets, props) {
+	let	scales = res.features[0]['prop']['e'];
+	
+	let	min = 0, min_show = sels[0] * res.features[0]['prop']['e'],
+		max = res.features[0]['prop']['e'],
+		drawtype = 'e';
+	
+	if (props['etype'] === 'de') {
+		drawtype = 'd';
+	}
+
+	return {
+		'e': { // entropy
+			'min': min,
+			'max': max,
+			//'number': sels[0]
+			'scales': scales
+		},
+		'd': { // density
+			'min': min,
+			'max': max,
+			//'number': sels[1]
+			'scales': scales
+		},
+		'prop': { // prop
+			'rev': props['rev'],
+			'drawtype': drawtype,
+			'radius': ctrsets.radius * 0.0025,
+			'opacity': ctrsets.opacity,
+			'useLocalExtrema': ctrsets.useLocalExtrema,
+			'min_show': min_show
+		}
+	}
+};
+
 let getSubGrids = function(poly, center, num=4) {
 	if (num === 4) {
 		return [
@@ -273,7 +308,7 @@ let getDistrictClusterDatasets = function(city, k){
 	return p;
 }
 
-let getThreetypeDatasets = function(sels, max_len, percent) {
+let getThreetypeDatasets = function(sels, min_len, percent) {
 	let city = sels.city,
 		etype = sels.etype,
 		ftpval1 = sels.ftpval,
@@ -290,7 +325,7 @@ let getThreetypeDatasets = function(sels, max_len, percent) {
 	}
 
 	let p = new Promise(function(resolve, reject) {
-		$.get(`/comp/ThreetypeQuery?city=${city}&etype=${etype}&max_len=${max_len}&percent=${percent}`, function(res, err) {
+		$.get(`/comp/ThreetypeQuery?city=${city}&etype=${etype}&min_len=${min_len}&percent=${percent}`, function(res, err) {
 			if (res['scode']) {
 				resolve(res['data']);
 			} else {
@@ -434,6 +469,7 @@ export {
 	getSMecDatasets,
 	getAoiDisDatasets,
 	getDrawProps,
+	getDrawProps_bubble,
 	getSubGrids,
 	getLinearNum,
 	getRandomCenter,

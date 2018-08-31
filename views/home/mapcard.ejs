@@ -55,6 +55,14 @@
 					</template>
 				</div>
 				
+				<div :id = "'bubbleslider' + index" class="sixteen wide column" style="margin-bottom: 1.5rem; padding-top: 0;">
+					<p>Min-show-size:</p>
+					<template v-if="model.dtype !== 'd'" >
+						<div>
+							<vue-slider :id="'slider4'+index" v-bind="sels.objs[index].slider4" @drag-end="updateSlider4(index)" v-model="sels.objs[index].slider4.value"></vue-slider>
+						</div>
+					</template>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -99,8 +99,24 @@ let home = {
                 'val': 'hp'
             },
 			{
+				'name': 'Fluidity Bubble_Set',
+				'val': 'rdb'
+			},
+			{
 				'name': 'Vibrancy Bubble_Set',
 				'val': 'ppb'
+			},
+			{
+				'name': 'Vibrancy noOverlap',
+				'val': 'ppbn'
+			},
+			{
+				'name': 'Commutation Bubble_Set',
+				'val': 'pdb'
+			},
+			{
+				'name': 'Diversity Bubble_Set',
+				'val': 'rpb'
 			}
         ],
         'otypes': [{
@@ -451,27 +467,33 @@ let home = {
                     'background': "orange"
                 }
             },
-            /*
-            'slider2': {
-                // width: 140,
-            		tooltip: 'hover',
-                value: 100,
-                min: 50,
-                max: 500,
+             'slider4': {
+                tooltip: 'hover',
+				value: 15,
+                dotSize: 13,
+                min: 5,
+                max: 200,       
+                interval: 5,
+                dotSize: 13,
                 clickable: false,
-                dotSize: 10,
-                interval: 50,
+                formatter: function (value) {
+                    return value
+                },
+				bgStyle:{
+					'backgroundColor': "orange"
+				},
                 tooltipStyle: {
                     "backgroundColor": "#000",
-                    "borderColor": "#000"
+                    "borderColor": "#000",
+                    "opacity": 0.6
                 },
-                bgStyle: {
-                    'background': null
+                labelActiveStyle: {
+                    "color": "lightgray"
                 },
                 processStyle: {
-                    'background': "orange"
+                    'background': "lightgray"
                 }
-            },*/
+            },
             'data': {
                 'smec': {
                     "ap": 0.349552064745511,
@@ -550,7 +572,11 @@ let home = {
             'ag': 'Per Capita GDP',
             'po': 'Population',
             'hp': 'House Price',
-			'ppb': 'Vibrancy Bubble_Set'
+			'rdb': 'Fluidity Bubble_Set',
+			'ppb': 'Vibrancy Bubble_Set',
+			'ppbn': 'Vibrancy noOverlap',
+			'pdb': 'Commutation Bubble_Set',
+			'rpb': 'Diversity Bubble_Set'
         },
         'ops': {
             'e': 'Empty',

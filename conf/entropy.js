@@ -14,6 +14,9 @@ const $sql = require('../controllers/apis/mysqlMapping');
 const iMax = require('./eMax');
 const sMec = require('./data/metrics');
 const poidis = require('./data/poidis');
+//const bezier = require('../node_modules/turf-bezier');
+const sdcurve = require('./SDCurve');
+const simplify = require('./simplify');
 
 function getTypeVals(val) {
     /**
@@ -30,6 +33,7 @@ function getTypeVals(val) {
     	  case 'pp':
             ctype = 'p';
             etype = 'p';
+			rtype = 'V';
             break;
         case 'rp':
             ctype = 'r';
@@ -40,12 +44,11 @@ function getTypeVals(val) {
             ctype = 'r';
             etype = 'a';
             rtype = 'F';
-            rtype = 'V';
             break;
         case 'pd':
             ctype = 'p';
-    		    etype = 'a';
-    		    rtype = 'C';
+			etype = 'a';
+			rtype = 'C';
             break;
         default:
             break;
@@ -77,14 +80,14 @@ function getOverview(conn, prop) {
     // sqldoc: 各个表中字段的最大值
     // eMax: 获得的 entropy 最大值
     // dMax: 获得的 density 最大值
-    if(['ppb'].indexOf(prop['etype']) > -1){
+    if(['ppb', 'pdb', 'rpb', 'rdb'].indexOf(prop['etype']) > -1){
 		let city = prop['city'],
         ftpval = prop['ftpval'],
         typs = getTypeVals(prop['etype'] + '0_0'),
         entropyattr = `${typs['etype']+typs['ctype']}sval`,
-        densityattr = `w${typs['ctype']}number`,
+        densityattr = 'wpnumber',
         etable,
-        mtype = 'ave',
+        mtype = 'sum',
         sqldoc = iMax[mtype];
     
 		console.log("typs: " + JSON.stringify(typs))
@@ -106,20 +109,19 @@ function getOverview(conn, prop) {
 		}
 		
 		
-		//etable = 'bjRV' + prop['etype'][3] + 'mat';
-		mtype = 'sum';
-		sqldoc = iMax[mtype];
-
+		
 		//let eMax = Number.parseFloat(sqldoc[etable][entropyattr]),
-			//dMax = Number.parseFloat(sqldoc[etable][densityattr]);
+		//	dMax = Number.parseFloat(sqldoc[etable][densityattr]);
 
 		//console.log('city: ', city, 'Query table name: ', etable, 'eMax', eMax, 'dMax', dMax);
 		
 		let p = new Promise(function(resolve, reject) {
 			
-			let etable_0 = 'bjRV0mat',
-				etable_1= 'bjRV1mat',
-				etable_2 = 'bjRV2mat';
+			let etable_0 = `${city}R${typs['rtype']}0mat`,
+				etable_1= `${city}R${typs['rtype']}1mat`,
+				etable_2 = `${city}R${typs['rtype']}2mat`;
+				
+			console.log(etable_0, etable_1, etable_2)
 			console.log('tttttttttype:    ' + etable)
 			let sql = $sql.getValScale[mtype] + $sql.getOverviewValD[mtype] + $sql.getValScale[mtype] + $sql.getOverviewValD[mtype] + $sql.getValScale[mtype] + $sql.getOverviewValD[mtype],
 			param = [
@@ -160,7 +162,6 @@ function getOverview(conn, prop) {
 						//console.log("dlist:" + JSON.stringify(dlist))
 						console.log('Result length', reslen)
 						for (let i = list.length - 1; i >= 0; i--) {
-							if(list[i]['val'] > 0.1* 12613050){
 							let id = Number.parseInt(list[i]['id']),
 								LNGNUM = parseInt((locs['east'] - locs['west']) / SPLIT + 1),
 								latind = parseInt(id / LNGNUM),
@@ -197,7 +198,7 @@ function getOverview(conn, prop) {
 									'c': [lngcen, latcen],
 									'num': Number.parseInt(svg_num)// center point
 								}
-							})}
+							})
 						}
 						
 						if(result[0 + svg_num*2][0]['eval'] > result_e_max){
@@ -217,7 +218,181 @@ function getOverview(conn, prop) {
 						  "prop": {
 							  'scales': {
 								  'e': parseFloat(result_e_max),
-								  'd': parseInt(result_d_max)
+								  'd': parseFloat(result_d_max)
+							  }
+						  }
+					  }
+					})
+						
+				}
+			})
+			
+		})
+		return p;
+	}
+	else if(['ppbn'].indexOf(prop['etype']) > -1){
+		let city = prop['city'],
+        ftpval = prop['ftpval'],
+        typs = getTypeVals(prop['etype'].substr(0,3) + '0_0'),
+        entropyattr = `${typs['etype']+typs['ctype']}sval`,
+        densityattr = 'wpnumber',
+        etable,
+        mtype = 'sum',
+        sqldoc = iMax[mtype];
+    
+		console.log("typs: " + JSON.stringify(typs))
+		console.log("ftp:" + ftpval)
+		//console.log("sqldoc" + JSON.stringify(sqldoc))
+
+		if(ftpval !== ''){
+			if (city === 'bj'){
+				etable = `bjF${ftpval}mat`;
+			}else {
+				etable = `${city}F${ftpval}mat`;
+			}
+		}else {
+			if (city === 'bj'){
+				etable = `wbjEmatrix`;
+			}else {
+				etable = `${city}Ematrix`;
+			}
+		}
+		
+		
+		
+		//let eMax = Number.parseFloat(sqldoc[etable][entropyattr]),
+		//	dMax = Number.parseFloat(sqldoc[etable][densityattr]);
+
+		//console.log('city: ', city, 'Query table name: ', etable, 'eMax', eMax, 'dMax', dMax);
+		
+		let p = new Promise(function(resolve, reject) {
+			
+			let etable_0 = `${city}R${typs['rtype']}0mat`,
+				etable_1= `${city}R${typs['rtype']}1mat`,
+				etable_2 = `${city}R${typs['rtype']}2mat`;
+				
+			console.log(etable_0, etable_1, etable_2)
+			console.log('tttttttttype:    ' + etable)
+			let sql = $sql.getValScale[mtype] + $sql.getOverviewValD[mtype] + $sql.getValScale[mtype] + $sql.getOverviewValD[mtype] + $sql.getValScale[mtype] + $sql.getOverviewValD[mtype],
+			param = [
+				densityattr, densityattr, etable_0,
+				densityattr, etable_0, densityattr, densityattr,
+				densityattr, densityattr, etable_1,
+				densityattr, etable_1, densityattr, densityattr,
+				densityattr, densityattr, etable_2,
+				densityattr, etable_2, densityattr, densityattr
+			];
+		
+		// console.log(sql);
+		// console.log(param);
+		
+			conn.query(sql, param, function(err, result) {
+					//console.log("result" + JSON.stringify(result[0]))
+					//console.log("result" + JSON.stringify(result[1]))
+				conn.release();
+
+				if (err) {
+					reject(err);
+				} else {
+					console.log('eval0 type: ', result[0][0]['eval']);
+					console.log('eval1 type: ', result[2][0]['eval']);
+					console.log('eval2 type: ', result[4][0]['eval']);
+
+					let DATA = [],
+						result_e_max = 0.0,
+						result_d_max = 0.0,
+						SPLIT = 0.003,
+						centerincrement = 0.0015, //.toFixed(4),
+						locs = data.getRegionBound(city);
+						
+					let max_den = new Object();
+					
+					for(var svg_num = 0; svg_num < 3; svg_num ++){
+						let list = result[1 + svg_num*2],
+							reslen = list.length;
+							
+						for (let i = list.length - 1; i >= 0; i--) {
+							let id = Number.parseInt(list[i]['id']),
+								den = parseFloat(list[i]['val']);
+							
+							if(max_den.hasOwnProperty(id)){
+								if(den > max_den[id]){
+									max_den[id] = den;
+								}
+							}
+							else{
+								max_den[id] = den;
+							}
+						}
+					}
+					
+					for(var svg_num = 0; svg_num < 3; svg_num ++){
+						let list = result[1 + svg_num*2],
+							reslen = list.length;
+						let all_num = 0;
+						//console.log("dlist:" + JSON.stringify(dlist)
+						for (let i = list.length - 1; i >= 0; i--) {
+							let id = Number.parseInt(list[i]['id']),
+								LNGNUM = parseInt((locs['east'] - locs['west']) / SPLIT + 1),
+								latind = parseInt(id / LNGNUM),
+								lngind = id - latind * LNGNUM,
+								lat = (locs['south'] + latind * SPLIT),
+								lng = (locs['west'] + lngind * SPLIT),
+								lnginc = (lng + SPLIT),
+								latinc = (lat + SPLIT),
+								lngcen = (lng + centerincrement),
+								latcen = (lat + centerincrement),
+								coordsarr = [
+									[lng, lat],
+									[lnginc, lat],
+									[lnginc, latinc],
+									[lng, latinc],
+									[lng, lat]
+								]
+							if( parseFloat(list[i]['val']) >= max_den[id]){
+								all_num += 1
+							
+								//console.log("map    : " + coordsarr[0])
+
+								//console.log("dilst[j] :" + dlist[1]['dval'])
+
+								DATA.push({
+									"geometry": {
+										"type": "Polygon",
+										"coordinates": [coordsarr]
+									},
+									"type": "Feature",
+									"id": id,
+									"prop": {
+										'v': parseFloat(list[i]['val']),
+										'e': parseFloat(list[i]['val']),
+										'd': parseFloat(list[i]['val']),
+										'c': [lngcen, latcen],
+										'num': Number.parseInt(svg_num)// center point
+									}
+								})
+							}
+						}
+						console.log('Result length', all_num)
+						
+						if(result[0 + svg_num*2][0]['eval'] > result_e_max){
+							result_e_max = result[0 + svg_num*2][0]['eval'];
+						}
+						if(result[0 + svg_num*2][0]['dval'] > result_d_max){
+							result_d_max = result[0 + svg_num*2][0]['dval'];
+						}
+							
+						console.info("end")
+					}
+					resolve({
+					  'scode': 1,
+					  'data': {
+						  "type": "FeatureCollection",
+						  "features": DATA,
+						  "prop": {
+							  'scales': {
+								  'e': parseFloat(result_e_max),
+								  'd': parseFloat(result_d_max)
 							  }
 						  }
 					  }
@@ -669,17 +844,39 @@ function DFS(line, num , tree, boundary, c, result){
 				}
 				tree1.push(eval(each));
 				tree.splice(begin, length-begin);
-				console.log("tree1.len:   " + tree1.length)
+				//console.log("tree1.len:   " + tree1.length)
 				if(tree1.length > c){
 					let end_boundary = boundary,
 						pointset = [];
 					for(var i in tree1){
 						i = tree1[i];
-						pointset.push([i[0], i[1]])
+						pointset.push({x:parseFloat(i[0]), y:parseFloat(i[1])})
 					}
-					end_boundary['geometry']['coordinates'].push(pointset)
-					console.log("end:  " + end_boundary)
-					result.push(end_boundary)
+
+					var simplified_points = simplify(pointset, 0.001);
+					if (simplified_points.length>4){
+						pointset = simplified_points;
+					}
+					simplified_points = null;
+
+					var curve = new sdcurve.SDCurve({
+						points: pointset,
+						open: false,
+						degree: 4,
+						resolution: 6
+					});
+					var curve_line = [];
+					var step_size = 1.0/(pointset.length*10);
+					for(var u=0.0; u<1.0; u+= step_size){
+						var p = curve.pointAt(u).pointOnCurve;
+						//console.log("p:"+JSON.stringify(p));
+						curve_line.push([p.x, p.y]);
+					}
+					var last_point = pointset[pointset.length-1]; 
+					curve_line.push([last_point.x, last_point.y]);
+					//console.log("curve:"+JSON.stringify(curve_line));
+					end_boundary['geometry']['coordinates'].push(curve_line);
+					result.push(end_boundary);
 				}
 				for(var i in tree1){
 					visit[getstring(tree1[i])] = 0;
@@ -758,7 +955,7 @@ function drawflower(c, data, result, svg_num){
 		}
 	}
 	
-	console.log("line: " + JSON.stringify(line))
+	//console.log("line: " + JSON.stringify(line))
 	
 	for(var each in line){
 		let i = 0;
@@ -789,7 +986,7 @@ function DFS_rectangle(link, num, tree, visit, data){
 function drawmap(c, data ,result, svg_num){
 	let bound = {},
 		link = {};
-	console.log("data len"  + data.length)
+	//console.log("data len"  + data.length)
 	for(var a = 0; a < data.length; a++){
 		let varr = data[a];
 		for(var i = 0; i < 4; i++){
@@ -838,7 +1035,7 @@ function drawmap(c, data ,result, svg_num){
 			}
 		}
 	}
-	console.log(link)
+	//console.log(link)
 	if(link.length != 0){
 		let visit = [];
 		for(var i = 0; i < data.length; i++){
@@ -862,19 +1059,31 @@ function getThreetypeview(conn, prop) {
         ftpval = prop['ftpval'],
         typs = getTypeVals(prop['etype'] + '0_0'),
         entropyattr = `${typs['etype']+typs['ctype']}sval`,
-        densityattr = `w${typs['ctype']}number`,
+        densityattr = 'wpnumber',
         etable,
 		mtype = 'sum',
-		max_len = prop['max_len'],
-		percent = prop['percent'],
-		max_density = percent * 12613050;
+		sqldoc = iMax[mtype],
+		min_len = prop['min_len'],
+		percent = prop['percent'];
 		
-		let p = new Promise(function(resolve, reject) {
-		
-			let etable_0 = 'bjRV0mat',
-				etable_1= 'bjRV1mat',
-				etable_2 = 'bjRV2mat';
+		let etable_0 = `${city}R${typs['rtype']}0mat`,
+			etable_1= `${city}R${typs['rtype']}1mat`,
+			etable_2 = `${city}R${typs['rtype']}2mat`;
 				
+		console.log(etable_0, etable_1)
+		let max_density = 0, density_set = [sqldoc[etable_0][densityattr], sqldoc[etable_1][densityattr], sqldoc[etable_2][densityattr]];
+		console.log(density_set)
+		for(var i=0; i <3; i++){
+			if(density_set[i] > max_density){
+				max_density = density_set[i];
+			}
+		}
+		console.log("max_density: " + max_density)
+		max_density = percent * max_density;
+		console.log("percent: " + percent)
+				
+		let p = new Promise(function(resolve, reject) {
+	
 			let sql = $sql.getOverviewValD[mtype] + $sql.getOverviewValD[mtype] + $sql.getOverviewValD[mtype],
 			param = [
 				densityattr, etable_0, densityattr, densityattr,
@@ -923,16 +1132,16 @@ function getThreetypeview(conn, prop) {
 								hdata.push(coordsarr);
 							}
 						}
-						drawmap(max_len, hdata, RESULT, svg_num);
+						drawmap(min_len, hdata, RESULT, svg_num);
 						console.info("end")
 					}
 					
-					console.log("result: "+ JSON.stringify(RESULT))
+					//console.log("result: "+ JSON.stringify(RESULT))
 					resolve({
                     'scode': 1,
                     'data': {
                         "type": "FeatureCollection",
-                        "features": RESULT,
+                        "features": RESULT
                     }
 					})
 				}
