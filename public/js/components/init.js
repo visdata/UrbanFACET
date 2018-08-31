@@ -103,20 +103,32 @@ let home = {
 				'val': 'rdb'
 			},
 			{
+				'name': 'Fluidity Overlap',
+				'val': 'rdbo'
+			},
+			{
 				'name': 'Vibrancy Bubble_Set',
 				'val': 'ppb'
 			},
 			{
-				'name': 'Vibrancy noOverlap',
-				'val': 'ppbn'
+				'name': 'Vibrancy Overlap',
+				'val': 'ppbo'
 			},
 			{
 				'name': 'Commutation Bubble_Set',
 				'val': 'pdb'
 			},
 			{
+				'name': 'Commutation Overlap',
+				'val': 'pdbo'
+			},
+			{
 				'name': 'Diversity Bubble_Set',
 				'val': 'rpb'
+			},
+			{
+				'name': 'Diversity Bubble_Set',
+				'val': 'rpbo'
 			}
         ],
         'otypes': [{
@@ -573,10 +585,13 @@ let home = {
             'po': 'Population',
             'hp': 'House Price',
 			'rdb': 'Fluidity Bubble_Set',
+			'rdbo': 'Fluidity Overlap',
 			'ppb': 'Vibrancy Bubble_Set',
-			'ppbn': 'Vibrancy noOverlap',
+			'ppbo': 'Vibrancy Overlap',
 			'pdb': 'Commutation Bubble_Set',
-			'rpb': 'Diversity Bubble_Set'
+			'pdbo': 'Commutation Overlap',
+			'rpb': 'Diversity Bubble_Set',
+			'rpbo': 'Diversity Overlap'
         },
         'ops': {
             'e': 'Empty',

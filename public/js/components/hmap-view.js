@@ -1428,7 +1428,7 @@ class mapview {
             data: [[], [], []]
         }
 
-        let countVal = 0;
+         let countVal = 0, bubble_countVal_0 = 0, bubble_countVal_1 = 0, bubble_countVal_2 = 0;
 
         for (let i = len - 1; i >= 0; i--){ 
 			let feature = data.features[i],
@@ -1444,7 +1444,10 @@ class mapview {
 				countVal += 1;
 
 				// 为 hdata 注入数据
-				let idx = feature['prop']['num']
+				let idx = feature['prop']['num'];
+				if(idx == 0){bubble_countVal_0 += 1;}
+				else if(idx == 1){bubble_countVal_1 += 1;}
+				else if(idx == 2){bubble_countVal_2 += 1;}
 				bubbleSetData['data'][idx].push({
 					'lat': center[1],
 					'lng': center[0],
@@ -1452,7 +1455,9 @@ class mapview {
 				})
 			}
         }
-
+		console.log("bubble_countVal_0: ", bubble_countVal_0)
+		console.log("bubble_countVal_1: ", bubble_countVal_1)
+		console.log("bubble_countVal_2: ", bubble_countVal_2)
         console.log('Drawtype: ', drawtype, 'Contourmap Used point number', countVal);
 
         let cfg = {
@@ -1529,10 +1534,7 @@ class mapview {
         this.map.addLayer(this.bubbleSetOverlay);
     }
 
-
-	
-	/*
-	mapcontourCDrawing_bubble(data, prop,update = false) {
+	mapcontourCDrawing_bubble_overlap(data, prop,update = false) {
         // update为false表示当前执行重绘操作, update为true则从实例中调用历史数据进行绘制
         //console.log("data:" +  JSON.stringify(data.features[0]))
 
@@ -1580,8 +1582,9 @@ class mapview {
             };
 			
 	
-        let countVal = 0;
-        console.log("len=" + prop['prop']['min_show'])
+        let countVal = 0, bubble_countVal_0 = 0, bubble_countVal_1 = 0, bubble_countVal_2 = 0;
+		
+		let rec_lists = new Array;
 
         for (let i = len - 1; i >= 0; i--) {
             let feature = data.features[i],
@@ -1597,6 +1600,7 @@ class mapview {
 			if(feature['prop'][drawtype] >  prop['prop']['min_show']){
 				// 为 hdata 注入数据
 				if(feature['prop']['num'] == 0){
+					bubble_countVal_0 += 1;
 					data_0.data.push({
 					'lat': center[1],
 					'lng': center[0],
@@ -1604,6 +1608,7 @@ class mapview {
 					})
 				}
 				else if(feature['prop']['num'] == 1){
+					bubble_countVal_1 += 1;
 					data_1.data.push({
 					'lat': center[1],
 					'lng': center[0],
@@ -1611,15 +1616,20 @@ class mapview {
 					})
 				}
 				else if(feature['prop']['num'] == 2){
+					bubble_countVal_2 += 1;
 					data_2.data.push({
 					'lat': center[1],
 					'lng': center[0],
 					'c': feature['prop'][drawtype]
 					})
 				}
+				rec_lists.push([center[1], center[0], feature['prop']['num']])
 			}
         }
-		
+		console.log("rec_lists.len" , rec_lists.length)
+		console.log("overlap_countVal_0: ", bubble_countVal_0)
+		console.log("overlap_countVal_1: ", bubble_countVal_1)
+		console.log("overlap_countVal_2: ", bubble_countVal_2)
         console.log('Drawtype: ', drawtype, 'Contourmap Used point number', countVal);
 		
 		
@@ -1687,8 +1697,27 @@ class mapview {
 				this.heatmapLayer_2.setData(data_2);
 			}
 		}
+		
+		var leaflet_rects = d3.select(this.map.getPanes().overlayPane);
+		
+		var leaflet_rect = leaflet_rects.append("svg").attr("width", 1180).attr("height", 734).style("position", "absolute").style("z-index", 999);
+		
+		leaflet_rect.selectAll(".leaflet-rect")
+		.data(rec_lists)
+		.enter()
+		.append("rect")
+		.attr("class", "leaflet-rect")
+		.attr("x", function(d, i){
+			return d[0];
+		})
+		.attr("y", function(d, i){
+			return d[1];
+		})
+		.attr("width", 20)
+		.attr("height", 20)
+		.style("fill", "orange"); 
     }
-	*/
+	
 
     /**
      * 绘制地图中的参考图标(图中指示4个方块）
@@ -1797,6 +1826,14 @@ class mapview {
         if (this.heatmapLayer) {
             this.map.removeLayer(this.heatmapLayer);
             this.heatmapLayer = null;
+        }
+		if (this.heatmapLayer_1) {
+            this.map.removeLayer(this.heatmapLayer_1);
+            this.heatmapLayer_1 = null;
+        }
+		if (this.heatmapLayer_2) {
+            this.map.removeLayer(this.heatmapLayer_2);
+            this.heatmapLayer_2 = null; 
         }
 		if (this.bubbleSetOverlay) {
             this.map.removeLayer(this.bubbleSetOverlay);

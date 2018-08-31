@@ -215,7 +215,7 @@ const userpanel = new Vue({
                         console.error("Failed!", err);
                     });
                 }
-				else if(['ppb', 'pdb', 'rpb', 'rdb', 'ppbn'].indexOf(etype) > -1){
+				else if(['ppb', 'pdb', 'rpb', 'rdb', 'ppbo', 'pdbo', 'rpbo', 'rdbo'].indexOf(etype) > -1){
 					self.sels.objs[i].slider.min = 0;
 					self.sels.objs[i].slider.max = 0.5;
 					self.sels.objs[i].slider.interval = 0.001;
@@ -235,8 +235,12 @@ const userpanel = new Vue({
 					// 获取 slider 情况下的配置值域以及用户其余选项
 					let drawProps = getDrawProps_bubble(res, svals, self.sels.ctrsets, drawprop);
 					// 绘 Metric Distribution 图函数
-					maps[i].mapcontourCDrawing_bubble(res, drawProps);
-                    
+					if(['ppbo', 'pdbo', 'rpbo', 'rdbo'].indexOf(etype) > -1){
+						maps[i].mapcontourCDrawing_bubble_overlap(res, drawProps)
+					}
+					else{
+						maps[i].mapcontourCDrawing_bubble(res, drawProps);
+						}                   
                     }).catch(function (err) {
                         console.error("Failed!", err);
                     });
@@ -412,12 +416,20 @@ const userpanel = new Vue({
                 let drawProps = getDrawProps(resp, v, self.sels.ctrsets, drawprop);
                 maps[i].mapcontourCDrawing({}, drawProps, true);
             } 
-			else if(['ppb', 'pdb', 'rpb', 'rdb', 'ppbn'].indexOf(etype) > -1){
+			else if(['ppb', 'pdb', 'rpb', 'rdb', 'ppbo', 'pdbo', 'rpbo', 'rdbo'].indexOf(etype) > -1){
 				maps[i].clearLayers();
 				let drawProps = getDrawProps_bubble(resp, v, self.sels.ctrsets, drawprop);
-                maps[i].mapcontourCDrawing_bubble({}, drawProps, true);
+				if(['ppbo', 'pdbo', 'rpbo', 'rdbo'].indexOf(etype) > -1){
+					console.log("update map")
+					maps[i].mapcontourCDrawing_bubble_overlap({}, drawProps, true)
+				}
+				else{
+					maps[i].mapcontourCDrawing_bubble({}, drawProps, true);
+				} 
 				
-				if(this.sels.otype === 'b'){					
+				if(this.sels.otype === 'b'){
+					console.log("update boundary")
+				
 					let percent = this.sels.objs[i].slider.value[0],
 						min_len = this.sels.objs[i].slider4.value;
 						
@@ -431,9 +443,9 @@ const userpanel = new Vue({
 						};
 						changeLoadState(`dimmer${i}`, false);
 						if(res.features.length != 0){maps[i].BubbleboundaryDrawing(res, prop);}
-						}).catch(function (err) {
-								console.error("Failed!", err);
-						});
+					}).catch(function (err) {
+							console.error("Failed!", err);
+					});
 				}
 			}
 			else {
