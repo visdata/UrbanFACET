@@ -483,16 +483,15 @@
       }
 
       outA = src[3] + dst[3] * (1 - src[3]);
-      outR = (src[0] * src[3] + dst[0] * dst[3] * (1 - src[3])) / outA;
-      outG = (src[1] * src[3] + dst[1] * dst[3] * (1 - src[3])) / outA;
-      outB = (src[2] * src[3] + dst[2] * dst[3] * (1 - src[3])) / outA;
+      outRGB = new Array(3);
+      for (var i = 0; i < 3; i++) {
+        outRGB[i] = (src[i] * src[3] + dst[i] * dst[3] * (1 - src[3])) / outA;
+        outRGB[i] = parseInt(outRGB[i] * 255);
+      }
 
-      outR = parseInt(outR * 255);
-      outG = parseInt(outG * 255);
-      outB = parseInt(outB * 255);
       outA = parseInt(outA * 255);
 
-      return [outR, outG, outB, outA];
+      return [outRGB[0], outRGB[1], outRGB[2], outA];
     };
 
 
@@ -801,7 +800,9 @@
                 if (!this._pointsValue[z][rectY + j]) {
                   this._pointsValue[z][rectY + j] = []
                 }
-                this._pointsValue[z][rectY + j][rectX + i] = value;
+                if (!this._pointsValue[z][rectY + j][rectX + i] || (this._pointsValue[z][rectY + j][rectX + i] < value)) {
+                  this._pointsValue[z][rectY + j][rectX + i] = value;
+                }
               }
             }
           }
