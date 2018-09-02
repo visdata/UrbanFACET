@@ -52,7 +52,7 @@ class mapview {
             'ctrleg': ctrleg,
             'disclsld': disclsld,
             'cltsld': cltsld,
-			'bubblesld': bubblesld,
+            'bubblesld': bubblesld,
             'baselyr': baselyr
         };
         this.save_data = {
@@ -69,7 +69,7 @@ class mapview {
          */
         this.baseLayers = {
             'Road': L.tileLayer(`https://api.mapbox.com/styles/v1/{uid}/cjkdb07jhacm92rqrorll84uq/tiles/256/{z}/{x}/{y}?access_token=${accessToken}`, {
-				attribution: mapattr,
+                attribution: mapattr,
                 maxZoom: 18,
                 uid: mapuid
             }),
@@ -80,27 +80,27 @@ class mapview {
             }),
             'Streets': L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
                 id: 'mapbox.streets',
-				attribution: mapattr,
+                attribution: mapattr,
                 uid: mapuid
             }),
             'Bright': L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
                 id: 'mapbox.light',
-				attribution: mapattr,
+                attribution: mapattr,
                 uid: mapuid
             }),
             'Dark': L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
                 id: 'mapbox.dark',
-				attribution: mapattr,
+                attribution: mapattr,
                 uid: mapuid
             }),
             'Satellite': L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
                 id: 'mapbox.satellite',
-				attribution: mapattr,
+                attribution: mapattr,
                 uid: mapuid
             }),
         }
         this.heatmapLayer = null;
-		this.bubbleSetOverlay = null;
+        this.bubbleSetOverlay = null;
         this.gridmapLayer = null;
         this.areaSelector = null;
         this.aAreaSelector = null;
@@ -337,36 +337,36 @@ class mapview {
         console.log("data: " + data.length)
         for (let i = 0; i < data.length; i++) {
             let rdata = [
-                    [{
-                        'area': 'Fluidity',
-                        'value': data[i]['properties']['ar'],
-                        'd': data[i]['properties']['d'],
-                        //'name': "k: "+ data[i]['properties']['color'] + "  d: " + data[i]['properties']['db_num'],
-                        'name': 'FACET: ',
-                        'data': data[i]['properties']
-                    }, {
-                        'area': 'vibrAncy',
-                        'value': data[i]['properties']['pp'],
-                        'd': data[i]['properties']['d'],
-                        //'name': "k: "+ data[i]['properties']['color'] + "  d: " + data[i]['properties']['db_num'],
-                        'name': 'FACET: ',
-                        'data': data[i]['properties']
-                    }, {
-                        'area': 'Commutation',
-                        'value': data[i]['properties']['ap'],
-                        'd': data[i]['properties']['d'],
-                        //'name': "k: "+ data[i]['properties']['color'] + "  d: " + data[i]['properties']['db_num'],
-                        'name': 'FACET: ',
-                        'data': data[i]['properties']
-                    }, {
-                        'area': 'divErsity',
-                        'value': data[i]['properties']['pr'],
-                        'd': data[i]['properties']['d'],
-                        //'name': "k: "+ data[i]['properties']['color'] + "  d: " + data[i]['properties']['db_num'],
-                        'name': 'FACET: ',
-                        'data': data[i]['properties']
-                    }]
-                ],
+                [{
+                    'area': 'Fluidity',
+                    'value': data[i]['properties']['ar'],
+                    'd': data[i]['properties']['d'],
+                    //'name': "k: "+ data[i]['properties']['color'] + "  d: " + data[i]['properties']['db_num'],
+                    'name': 'FACET: ',
+                    'data': data[i]['properties']
+                }, {
+                    'area': 'vibrAncy',
+                    'value': data[i]['properties']['pp'],
+                    'd': data[i]['properties']['d'],
+                    //'name': "k: "+ data[i]['properties']['color'] + "  d: " + data[i]['properties']['db_num'],
+                    'name': 'FACET: ',
+                    'data': data[i]['properties']
+                }, {
+                    'area': 'Commutation',
+                    'value': data[i]['properties']['ap'],
+                    'd': data[i]['properties']['d'],
+                    //'name': "k: "+ data[i]['properties']['color'] + "  d: " + data[i]['properties']['db_num'],
+                    'name': 'FACET: ',
+                    'data': data[i]['properties']
+                }, {
+                    'area': 'divErsity',
+                    'value': data[i]['properties']['pr'],
+                    'd': data[i]['properties']['d'],
+                    //'name': "k: "+ data[i]['properties']['color'] + "  d: " + data[i]['properties']['db_num'],
+                    'name': 'FACET: ',
+                    'data': data[i]['properties']
+                }]
+            ],
                 prop = {
                     'id': `${city}-radar${i}`,
                     'city': city
@@ -800,15 +800,15 @@ class mapview {
 
         let //color = d3.scaleLinear().domain([0, 14])
             //.range([ "rgba(255,255,255,0.9)", "rgba(255, 165, 0, 0.9)"]),
-            color = ["rgba(255,0,0,0.5)","rgba(255,69,0,0.5)", "rgba(160,32,240,0.5)", "rgba(255,215,0,0.5)","rgba(255,255,0,0.5)",
-                "rgba(154,205,50,0.5)","rgba(173,255,47,0.5)", "rgba(0,255,0,0.5)", "rgba(139,69,19,0.5)", "rgba(127,255,212,0.5)","rgba(0,206,209,0.5)",  "rgba(0,191,255,0.5)", "rgba(30,144,255,0.5)", "rgba(255,165,0,0.5)", "rgba(255,20,147,0.5)"
+            color = ["rgba(255,0,0,0.5)", "rgba(255,69,0,0.5)", "rgba(160,32,240,0.5)", "rgba(255,215,0,0.5)", "rgba(255,255,0,0.5)",
+                "rgba(154,205,50,0.5)", "rgba(173,255,47,0.5)", "rgba(0,255,0,0.5)", "rgba(139,69,19,0.5)", "rgba(127,255,212,0.5)", "rgba(0,206,209,0.5)", "rgba(0,191,255,0.5)", "rgba(30,144,255,0.5)", "rgba(255,165,0,0.5)", "rgba(255,20,147,0.5)"
             ],
             svg = d3.select(self.map.getPanes().overlayPane).append("svg").attr('id', svgid).style("z-index", 998),
             g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
         let transform = d3.geoTransform({
-                point: projectPoint
-            }),
+            point: projectPoint
+        }),
             path = d3.geoPath().projection(transform);
 
         let feature = g.selectAll("path")
@@ -851,7 +851,7 @@ class mapview {
             this.stream.point(point.x, point.y);
         }
     }
-    
+
     DistrictClusterDrawing(data, prop, update = false) {
         let self = this,
             city = prop['city'],
@@ -869,15 +869,15 @@ class mapview {
 
         let //color = d3.scaleLinear().domain([0, 14])
             //.range([ "rgba(255,255,255,0.9)", "rgba(255, 165, 0, 0.9)"]),
-            color = [ "rgba(127,255,212,0.4)", "rgba(0,206,209,0.4)",  "rgba(255,165,0,0.4)", "rgba(139,69,19,0.4)", "rgba(160,32,240,0.4)", "rgba(255,10,147,0.4)",  "rgba(127,255,212,0.5)",
-            	"rgba(255,0,0,0.5)", "rgba(30,144,255,0.5)", "rgba(255,165,0,0.5)"
+            color = ["rgba(127,255,212,0.4)", "rgba(0,206,209,0.4)", "rgba(255,165,0,0.4)", "rgba(139,69,19,0.4)", "rgba(160,32,240,0.4)", "rgba(255,10,147,0.4)", "rgba(127,255,212,0.5)",
+                "rgba(255,0,0,0.5)", "rgba(30,144,255,0.5)", "rgba(255,165,0,0.5)"
             ],
             svg = d3.select(self.map.getPanes().overlayPane).append("svg").attr('id', svgid).style("z-index", 998),
             g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
         let transform = d3.geoTransform({
-                point: projectPoint
-            }),
+            point: projectPoint
+        }),
             path = d3.geoPath().projection(transform);
 
         let feature = g.selectAll("path")
@@ -893,29 +893,29 @@ class mapview {
             //.style("stroke-dasharray", "4 5")
             //.attr('fill', 'red')
             .attr("stroke-width", 0.9);
-        
+
         let text = g.selectAll('text')
-        .data(data.features)
-        .enter().append('text')
-        .style("font-family", "sans-serif")
-        .style("font-size", "1rem")
-        .attr("text-anchor", "middle")
-        .text(function (d) {
-            let name = d['properties']['english'];
-            if (name) {
-                return name
-            }
-            return d['properties']['name'];
-        })
-        .attr('x', function (d) {
-            let p = d['properties']['cp'];
-            return self.map.latLngToLayerPoint(new L.LatLng(p[1], p[0])).x;
-        })
-        .attr('y', function (d) {
-            let p = d['properties']['cp'];
-            console.log("cp:  " + JSON.stringify(self.map.latLngToLayerPoint(new L.LatLng(p[1], p[0])).y + 40))
-            return self.map.latLngToLayerPoint(new L.LatLng(p[1], p[0])).y - 20;
-        });
+            .data(data.features)
+            .enter().append('text')
+            .style("font-family", "sans-serif")
+            .style("font-size", "1rem")
+            .attr("text-anchor", "middle")
+            .text(function (d) {
+                let name = d['properties']['english'];
+                if (name) {
+                    return name
+                }
+                return d['properties']['name'];
+            })
+            .attr('x', function (d) {
+                let p = d['properties']['cp'];
+                return self.map.latLngToLayerPoint(new L.LatLng(p[1], p[0])).x;
+            })
+            .attr('y', function (d) {
+                let p = d['properties']['cp'];
+                console.log("cp:  " + JSON.stringify(self.map.latLngToLayerPoint(new L.LatLng(p[1], p[0])).y + 40))
+                return self.map.latLngToLayerPoint(new L.LatLng(p[1], p[0])).y - 20;
+            });
 
         self.map.on("viewreset", reset);
         reset();
@@ -934,16 +934,16 @@ class mapview {
             g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
             feature.attr("d", path);
-            
+
             text.data(data.features)
-            .attr('x', function (d) {
-                let p = d['properties']['cp'];
-                return self.map.latLngToLayerPoint(new L.LatLng(p[1], p[0])).x;
-            })
-            .attr('y', function (d) {
-                let p = d['properties']['cp'];
-                return self.map.latLngToLayerPoint(new L.LatLng(p[1], p[0])).y - 30;
-            });
+                .attr('x', function (d) {
+                    let p = d['properties']['cp'];
+                    return self.map.latLngToLayerPoint(new L.LatLng(p[1], p[0])).x;
+                })
+                .attr('y', function (d) {
+                    let p = d['properties']['cp'];
+                    return self.map.latLngToLayerPoint(new L.LatLng(p[1], p[0])).y - 30;
+                });
         }
 
         // Use Leaflet to implement a D3 geometric transformation.
@@ -954,7 +954,7 @@ class mapview {
         }
     }
 
-	BubbleboundaryDrawing(data, prop, update = false) {
+    BubbleboundaryDrawing(data, prop, update = false) {
         let self = this,
             city = prop['city'],
             onlyBound = prop['boundary'],
@@ -977,20 +977,20 @@ class mapview {
         d3.select(`#${svgid}`).remove();
         d3.select(`#${aoiid}`).remove();
 
-        let color = ["rgba(0,68,27,1)","rgba(8,48,107,1)", "rgba(103,0,13,1)"],
+        let color = ["rgba(0,68,27,1)", "rgba(8,48,107,1)", "rgba(103,0,13,1)"],
             svg = d3.select(self.map.getPanes().overlayPane).append("svg").attr('id', svgid).style("z-index", 998),
             g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
         let transform = d3.geoTransform({
-                point: projectPoint
-            }),
+            point: projectPoint
+        }),
             path = d3.geoPath().projection(transform);
 
         let feature = g.selectAll("path")
             .data(data.features)
             .enter().append("path")
-			.attr('fill', 'rgb(255,255,255,0)')
-            .attr('stroke',function (d) {
+            .attr('fill', 'rgb(255,255,255,0)')
+            .attr('stroke', function (d) {
                 let num = d.properties.color;
                 return color[num];
             })
@@ -1001,11 +1001,11 @@ class mapview {
 
         // Reposition the SVG to cover the features.
         function reset() {
-           let bounds = path.bounds(data),
-               topLeft = bounds[0],
-               bottomRight = bounds[1];
-			   
-			svg.attr("width", bottomRight[0] - topLeft[0])
+            let bounds = path.bounds(data),
+                topLeft = bounds[0],
+                bottomRight = bounds[1];
+
+            svg.attr("width", bottomRight[0] - topLeft[0])
                 .attr("height", bottomRight[1] - topLeft[1])
                 .style("left", topLeft[0] + "px")
                 .style("top", topLeft[1] + "px");
@@ -1022,7 +1022,7 @@ class mapview {
             this.stream.point(point.x, point.y);
         }
     }
-	
+
     boundaryDrawing(data, prop, update = false) {
         let self = this,
             city = prop['city'],
@@ -1049,20 +1049,20 @@ class mapview {
         }
 
         let range = d3.extent(Object.values(statsdata).map((val) => {
-                return val[type];
-            })),
+            return val[type];
+        })),
             vmin = range[1] * prop['slider'][0] / 100.0,
             vmax = range[1] * prop['slider'][1] / 100.0,
             color = d3.scaleLinear().domain([vmin, vmax, range[1]])
-            .range(["rgba(255,255,255,0.5)", "rgba(255, 0, 0, 0.9)", "rgba(255, 0, 0, 0.9)"]),
+                .range(["rgba(255,255,255,0.5)", "rgba(255, 0, 0, 0.9)", "rgba(255, 0, 0, 0.9)"]),
             svg = d3.select(self.map.getPanes().overlayPane).append("svg").attr('id', svgid).style("z-index", 998),
             g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
         console.log('vmin', vmin, 'vmax', vmax);
 
         let transform = d3.geoTransform({
-                point: projectPoint
-            }),
+            point: projectPoint
+        }),
             path = d3.geoPath().projection(transform);
 
         let feature = g.selectAll("path")
@@ -1085,11 +1085,11 @@ class mapview {
 
         if (!onlyBound) {
             feature.on("mouseover", function (d) {
-                    let name = d.properties.name;
+                let name = d.properties.name;
 
-                    d3.select(`#carddistrict${numid}`).html(name);
-                    d3.select(`#cardenps${numid}`).html(statsdata[name][type]);
-                })
+                d3.select(`#carddistrict${numid}`).html(name);
+                d3.select(`#cardenps${numid}`).html(statsdata[name][type]);
+            })
                 .on("mouseout", function (d) {
                     d3.select(`#carddistrict${numid}`).html('Null');
                     d3.select(`#cardenps${numid}`).html('Null');
@@ -1310,7 +1310,7 @@ class mapview {
             //minRate = minVal / endVal,
             judRate = Number.parseFloat((maxVal - minVal) / (endVal - minVal));
         //judRate = Number.parseFloat((prop['d']['number'] - prop['e']['number']) / (100 - prop['e']['number']));
-        
+
         console.log("judRate      : " + JSON.stringify(judRate))
 
         let len = data.features.length,
@@ -1371,9 +1371,9 @@ class mapview {
             "valueField": 'c'
         };
 
-        if (minVal==maxVal) {
+        if (minVal == maxVal) {
             cfg.gradient['1'] = clr_red;
-        } else if (prop['prop']['rev']){
+        } else if (prop['prop']['rev']) {
             cfg.gradient['0'] = clr_red;
             cfg.gradient['.3'] = clr_red;
             cfg.gradient['.95'] = clr_yl;
@@ -1388,8 +1388,8 @@ class mapview {
         this.map.addLayer(this.heatmapLayer);
         this.heatmapLayer.setData(hdata)
     }
-	
-	mapcontourCDrawing_bubble(data, prop, update = false) {
+
+    mapcontourCDrawing_bubble(data, prop, update = false) {
         // update为false表示当前执行重绘操作, update为true则从实例中调用历史数据进行绘制
         // console.log("data:" +  JSON.stringify(data.features[0]))
         this.switchLegDisplay('ctrleg');
@@ -1428,36 +1428,36 @@ class mapview {
             data: [[], [], []]
         }
 
-         let countVal = 0, bubble_countVal_0 = 0, bubble_countVal_1 = 0, bubble_countVal_2 = 0;
+        let countVal = 0, bubble_countVal_0 = 0, bubble_countVal_1 = 0, bubble_countVal_2 = 0;
 
-        for (let i = len - 1; i >= 0; i--){ 
-			let feature = data.features[i],
-				evalue = feature['prop']['e'], //网格具体的值
-				dvalue = feature['prop']['d'],
-				center = data.features[i]['prop']['c'];
-			
-			if(feature['prop'][drawtype] >  prop['prop']['min_show']){
-				// 根据 filter 值及选中类型进行过滤
-				// if (outOfRange(drawtype, evalue, dvalue, prop['e']['min'], prop['d']['min'])) {
-				//     continue;
-				// }
-				countVal += 1;
+        for (let i = len - 1; i >= 0; i--) {
+            let feature = data.features[i],
+                evalue = feature['prop']['e'], //网格具体的值
+                dvalue = feature['prop']['d'],
+                center = data.features[i]['prop']['c'];
 
-				// 为 hdata 注入数据
-				let idx = feature['prop']['num'];
-				if(idx == 0){bubble_countVal_0 += 1;}
-				else if(idx == 1){bubble_countVal_1 += 1;}
-				else if(idx == 2){bubble_countVal_2 += 1;}
-				bubbleSetData['data'][idx].push({
-					'lat': center[1],
-					'lng': center[0],
-					'c': feature['prop'][drawtype]
-				})
-			}
+            if (feature['prop'][drawtype] > prop['prop']['min_show']) {
+                // 根据 filter 值及选中类型进行过滤
+                // if (outOfRange(drawtype, evalue, dvalue, prop['e']['min'], prop['d']['min'])) {
+                //     continue;
+                // }
+                countVal += 1;
+
+                // 为 hdata 注入数据
+                let idx = feature['prop']['num'];
+                if (idx == 0) { bubble_countVal_0 += 1; }
+                else if (idx == 1) { bubble_countVal_1 += 1; }
+                else if (idx == 2) { bubble_countVal_2 += 1; }
+                bubbleSetData['data'][idx].push({
+                    'lat': center[1],
+                    'lng': center[0],
+                    'c': feature['prop'][drawtype]
+                })
+            }
         }
-		console.log("bubble_countVal_0: ", bubble_countVal_0)
-		console.log("bubble_countVal_1: ", bubble_countVal_1)
-		console.log("bubble_countVal_2: ", bubble_countVal_2)
+        console.log("bubble_countVal_0: ", bubble_countVal_0)
+        console.log("bubble_countVal_1: ", bubble_countVal_1)
+        console.log("bubble_countVal_2: ", bubble_countVal_2)
         console.log('Drawtype: ', drawtype, 'Contourmap Used point number', countVal);
 
         let cfg = {
@@ -1534,12 +1534,148 @@ class mapview {
         this.map.addLayer(this.bubbleSetOverlay);
     }
 
-	mapcontourCDrawing_bubble_overlap(data, prop,update = false) {
+    mapcontourCDrawing_bubble_overlap(data, prop, update = false) {
+        var _this = this;
+        this._bubbleOverlapDrawing(data, prop, update);
+        this._createHelper(data, prop);
+
+        this.map.on('zoomend', function(e) {
+            _this._createHelper(data, prop);
+        });
+
+        // this.map.on('moveend', function(e) {
+        //     _this._createHelper(data, prop);
+        // });
+    }
+
+    // Create helper for overlap interaction
+    _createHelper(data, prop) {
+        // sort function
+        var _sortWithIndices = function (toSort) {
+            for (var i = 0; i < toSort.length; i++) {
+                toSort[i] = [toSort[i], i];
+            }
+            toSort.sort(function (left, right) {
+                return left[0] < right[0] ? -1 : 1;
+            });
+            toSort.sortIndices = [];
+            for (var j = 0; j < toSort.length; j++) {
+                toSort.sortIndices.push(toSort[j][1]);
+                toSort[j] = toSort[j][0];
+            }
+            return toSort;
+        };
+
+        var leftmost = function(arr, value, min, max) {
+            if (min == max) return min;
+            let mid = Math.floor((min + max) / 2);
+
+            if (arr[mid] < value) return leftmost(arr, value, mid + 1, max);
+            else return leftmost(arr, value, min, mid);
+        }
+
+        var rightmost = function(arr, value, min, max) {
+            if (min == max) return min;
+            let mid = Math.ceil((min + max + 1) / 2);
+
+            if (arr[mid] > value) return rightmost(arr, value, min, mid - 1);
+            else return rightmost(arr, value, mid, max);
+        }
+
+        // Reset
+        d3.selectAll('.helper').remove();
+
+        var _this = this;
+
+        const drawtype = prop['prop']['drawtype']
+        let radius = prop['prop']['radius'];
+        const radiusMultiplier = Math.pow(2, this.map.getZoom());
+        radius = radius * radiusMultiplier;
+
+        const bounds = this.map.getBounds();
+        
+        const len = data.features.length;
+        let helperInfo = new Array();
+
+        for (let i = len - 1; i >= 0; i--) {
+            let feature = data.features[i],
+                center = data.features[i]['prop']['c'];
+
+            let latlng = new L.LatLng(center[1], center[0]);
+            if (feature['prop'][drawtype] > prop['prop']['min_show'] && bounds.contains(latlng)) {
+                let point = this.map.latLngToContainerPoint(latlng);
+                helperInfo.push([point.x, point.y, feature['prop']['num'], feature['prop'][drawtype]])
+            }
+        }
+
+        const sortedX = _sortWithIndices(helperInfo.map(function(v) {return v[0]}));
+        const sortedY = _sortWithIndices(helperInfo.map(function(v) {return v[1]}));
+
+        const overlayPane = d3.select(this.map.getPanes().overlayPane);
+        const helper = overlayPane.append("svg").attr("width", 1180).attr("height", 734).style("position", "absolute").style("z-index", 999);
+
+        // Create transparent helper
+        helper.selectAll(".helper")
+            .data(helperInfo)
+            .enter()
+            .append("circle")
+            .attr("class", "helper")
+            .attr("cx", function (d, i) {
+                return d[0];
+            })
+            .attr("cy", function (d, i) {
+                return d[1];
+            })
+            .attr("r", radius)
+            .style("opacity", 0)
+            .style("cursor", "pointer")
+            .on('click', function(d) {
+                let x = d[0],
+                    y = d[1];
+                let xLeft = leftmost(sortedX, x - radius, 0, sortedX.length - 1);
+                let xRight = rightmost(sortedX, x + radius, 0, sortedX.length - 1);
+                let yLeft = leftmost(sortedY, y - radius, 0, sortedY.length - 1);
+                let yRight = rightmost(sortedY, y + radius, 0, sortedY.length - 1);
+
+                let possibleIndices = sortedX.sortIndices.slice(xLeft, xRight + 1);
+                possibleIndices.concat(sortedY.sortIndices.slice(yLeft, yRight + 1));
+
+                let maxValue = -1;
+                let maxLayerIdx = undefined;
+                for (let i = 0; i < possibleIndices.length; i++) {
+                    let idx = possibleIndices[i];
+                    let x2 = helperInfo[idx][0];
+                    let y2 = helperInfo[idx][1];
+                    let layerIdx = helperInfo[idx][2];
+                    let value = helperInfo[idx][3];
+
+                    if ((x-x2) * (x-x2) + (y-y2)*(y-y2) <= radius*radius && value > maxValue) {
+                        maxValue = value;
+                        maxLayerIdx = layerIdx;
+                    }
+                }
+
+                if (maxLayerIdx == 0) {
+                    _this.map.removeLayer(_this.heatmapLayer);
+                    _this.map.addLayer(_this.heatmapLayer);
+                }
+                if (maxLayerIdx == 1) {
+                    _this.map.removeLayer(_this.heatmapLayer_1);
+                    _this.map.addLayer(_this.heatmapLayer_1);
+                }
+                if (maxLayerIdx == 2) {
+                    _this.map.removeLayer(_this.heatmapLayer_2);
+                    _this.map.addLayer(_this.heatmapLayer_2);
+                }
+            });
+    }
+
+    _bubbleOverlapDrawing(data, prop, update = false) {
         // update为false表示当前执行重绘操作, update为true则从实例中调用历史数据进行绘制
         //console.log("data:" +  JSON.stringify(data.features[0]))
 
         if (!update) {
-			this.switchLegDisplay('ctrleg');
+            this.switchLegDisplay('ctrleg');
             this.setGridData(data);
         } else {
             data = this.getGridData();
@@ -1561,30 +1697,29 @@ class mapview {
             //minRate = minVal / endVal,
             judRate = Number.parseFloat((maxVal - minVal) / (endVal - minVal));
         //judRate = Number.parseFloat((prop['d']['number'] - prop['e']['number']) / (100 - prop['e']['number']));
-        
+
         console.log("judRate      : " + JSON.stringify(judRate))
 
         let len = data.features.length,
-             data_0 = {
+            data_0 = {
                 max: maxVal,
                 min: minVal,
                 data: []
             },
-			data_1 = {
+            data_1 = {
                 max: maxVal,
                 min: minVal,
                 data: []
             },
-			data_2 =  {
+            data_2 = {
                 max: maxVal,
                 min: minVal,
                 data: []
             };
-			
-	
+
+
         let countVal = 0, bubble_countVal_0 = 0, bubble_countVal_1 = 0, bubble_countVal_2 = 0;
-		
-		let rec_lists = new Array;
+        
 
         for (let i = len - 1; i >= 0; i--) {
             let feature = data.features[i],
@@ -1597,127 +1732,106 @@ class mapview {
             //     continue;
             // }
             countVal += 1;
-			if(feature['prop'][drawtype] >  prop['prop']['min_show']){
-				// 为 hdata 注入数据
-				if(feature['prop']['num'] == 0){
-					bubble_countVal_0 += 1;
-					data_0.data.push({
-					'lat': center[1],
-					'lng': center[0],
-					'c': feature['prop'][drawtype]
-					})
-				}
-				else if(feature['prop']['num'] == 1){
-					bubble_countVal_1 += 1;
-					data_1.data.push({
-					'lat': center[1],
-					'lng': center[0],
-					'c': feature['prop'][drawtype]
-					})
-				}
-				else if(feature['prop']['num'] == 2){
-					bubble_countVal_2 += 1;
-					data_2.data.push({
-					'lat': center[1],
-					'lng': center[0],
-					'c': feature['prop'][drawtype]
-					})
-				}
-				rec_lists.push([center[1], center[0], feature['prop']['num']])
-			}
+            if (feature['prop'][drawtype] > prop['prop']['min_show']) {
+                // 为 hdata 注入数据
+                if (feature['prop']['num'] == 0) {
+                    bubble_countVal_0 += 1;
+                    data_0.data.push({
+                        'lat': center[1],
+                        'lng': center[0],
+                        'c': feature['prop'][drawtype]
+                    })
+                }
+                else if (feature['prop']['num'] == 1) {
+                    bubble_countVal_1 += 1;
+                    data_1.data.push({
+                        'lat': center[1],
+                        'lng': center[0],
+                        'c': feature['prop'][drawtype]
+                    })
+                }
+                else if (feature['prop']['num'] == 2) {
+                    bubble_countVal_2 += 1;
+                    data_2.data.push({
+                        'lat': center[1],
+                        'lng': center[0],
+                        'c': feature['prop'][drawtype]
+                    })
+                }
+            }
         }
-		console.log("rec_lists.len" , rec_lists.length)
-		console.log("overlap_countVal_0: ", bubble_countVal_0)
-		console.log("overlap_countVal_1: ", bubble_countVal_1)
-		console.log("overlap_countVal_2: ", bubble_countVal_2)
+        console.log("overlap_countVal_0: ", bubble_countVal_0)
+        console.log("overlap_countVal_1: ", bubble_countVal_1)
+        console.log("overlap_countVal_2: ", bubble_countVal_2)
         console.log('Drawtype: ', drawtype, 'Contourmap Used point number', countVal);
-		
-		
-		for(var svg_num = 0; svg_num < 3; svg_num ++){
-			let clr_trans = 'rgba(254,224,210,0.5)';
-			let clr_red = 'rgba(103,0,13,0.5)';
-			let clr_yl = 'rgba(239,59,44,0.5)';
-			
-			if(svg_num == 0){
-				clr_trans = 'rgba(229,245,224,0.5)';
-				clr_red = 'rgba(0,68,27,0.8)';
-				clr_yl = 'rgba(65,171,93,0.8)';
-			}
-			else if(svg_num == 1){
-				clr_trans = 'rgba(222,235,247,0.5)';
-				clr_red = 'rgba(8,48,107,0.5)';
-				clr_yl = 'rgba(66,146,198,0.5)';
-			}
-			let cfg = {
-            // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-            // if scaleRadius is false it will be the constant radius used in pixels
-            "radius": prop['prop']['radius'],
-            //"maxOpacity": 0.5,//prop['prop']['opacity'],
-            //"minOpacity": 0.5,//prop['prop']['opacity'],
-            // scales the radius based on map zoom
-            "scaleRadius": true,
-            "gradient": {
-                '0': clr_trans,
-				'1': clr_red
-            },
-            //   (there will always be a red spot with useLocalExtremas true)
-            "useLocalExtrema": prop['prop']['useLocalExtrema'],
-			"useGradientOpacity": true,
-            "latField": 'lat',
-            "lngField": 'lng',
-            "valueField": 'c'
-			};
 
-			if (minVal==maxVal) {
-				cfg.gradient['1'] = clr_red;
-			} else if (prop['prop']['rev']){
-				cfg.gradient['0'] = clr_red;
-				cfg.gradient['.3'] = clr_red;
-				cfg.gradient['.95'] = clr_yl;
-				cfg.gradient['1.0'] = clr_trans;
-			} else {
-				cfg.gradient['.3'] = clr_yl;
-				cfg.gradient['.7'] = clr_red;
-			}
 
-			console.log("gradients   : " + JSON.stringify(cfg.gradient))
-			if(svg_num  == 0){
-				this.heatmapLayer = new HeatmapOverlay(cfg);
-				this.map.addLayer(this.heatmapLayer);
-				this.heatmapLayer.setData(data_0);
-			}
-			else if(svg_num  == 1){
-				this.heatmapLayer_1 = new HeatmapOverlay(cfg);
-				this.map.addLayer(this.heatmapLayer_1);
-				this.heatmapLayer_1.setData(data_1);
-			}
-			else if(svg_num  == 2){
-				this.heatmapLayer_2 = new HeatmapOverlay(cfg);
-				this.map.addLayer(this.heatmapLayer_2);
-				this.heatmapLayer_2.setData(data_2);
-			}
-		}
-		
-		var leaflet_rects = d3.select(this.map.getPanes().overlayPane);
-		
-		var leaflet_rect = leaflet_rects.append("svg").attr("width", 1180).attr("height", 734).style("position", "absolute").style("z-index", 999);
-		
-		leaflet_rect.selectAll(".leaflet-rect")
-		.data(rec_lists)
-		.enter()
-		.append("rect")
-		.attr("class", "leaflet-rect")
-		.attr("x", function(d, i){
-			return d[0];
-		})
-		.attr("y", function(d, i){
-			return d[1];
-		})
-		.attr("width", 20)
-		.attr("height", 20)
-		.style("fill", "orange"); 
+        for (var svg_num = 0; svg_num < 3; svg_num++) {
+            let clr_trans = 'rgba(254,224,210,0.5)';
+            let clr_red = 'rgba(103,0,13,0.5)';
+            let clr_yl = 'rgba(239,59,44,0.5)';
+
+            if (svg_num == 0) {
+                clr_trans = 'rgba(229,245,224,0.5)';
+                clr_red = 'rgba(0,68,27,0.8)';
+                clr_yl = 'rgba(65,171,93,0.8)';
+            }
+            else if (svg_num == 1) {
+                clr_trans = 'rgba(222,235,247,0.5)';
+                clr_red = 'rgba(8,48,107,0.5)';
+                clr_yl = 'rgba(66,146,198,0.5)';
+            }
+            let cfg = {
+                // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+                // if scaleRadius is false it will be the constant radius used in pixels
+                "radius": prop['prop']['radius'],
+                //"maxOpacity": 0.5,//prop['prop']['opacity'],
+                //"minOpacity": 0.5,//prop['prop']['opacity'],
+                // scales the radius based on map zoom
+                "scaleRadius": true,
+                "gradient": {
+                    '0': clr_trans,
+                    '1': clr_red
+                },
+                //   (there will always be a red spot with useLocalExtremas true)
+                "useLocalExtrema": prop['prop']['useLocalExtrema'],
+                "useGradientOpacity": true,
+                "latField": 'lat',
+                "lngField": 'lng',
+                "valueField": 'c'
+            };
+
+            if (minVal == maxVal) {
+                cfg.gradient['1'] = clr_red;
+            } else if (prop['prop']['rev']) {
+                cfg.gradient['0'] = clr_red;
+                cfg.gradient['.3'] = clr_red;
+                cfg.gradient['.95'] = clr_yl;
+                cfg.gradient['1.0'] = clr_trans;
+            } else {
+                cfg.gradient['.3'] = clr_yl;
+                cfg.gradient['.7'] = clr_red;
+            }
+
+            console.log("gradients   : " + JSON.stringify(cfg.gradient))
+            if (svg_num == 0) {
+                this.heatmapLayer = new HeatmapOverlay(cfg);
+                this.map.addLayer(this.heatmapLayer);
+                this.heatmapLayer.setData(data_0);
+            }
+            else if (svg_num == 1) {
+                this.heatmapLayer_1 = new HeatmapOverlay(cfg);
+                this.map.addLayer(this.heatmapLayer_1);
+                this.heatmapLayer_1.setData(data_1);
+            }
+            else if (svg_num == 2) {
+                this.heatmapLayer_2 = new HeatmapOverlay(cfg);
+                this.map.addLayer(this.heatmapLayer_2);
+                this.heatmapLayer_2.setData(data_2);
+            }
+        }
     }
-	
+
 
     /**
      * 绘制地图中的参考图标(图中指示4个方块）
@@ -1744,7 +1858,7 @@ class mapview {
                     return `${(d).toFixed(2)}`;
                     //return `${Number.parseInt(d*100)}%`
                 } else {
-                    return `${(d/1000.0).toFixed(1)}K`;
+                    return `${(d / 1000.0).toFixed(1)}K`;
                 }
             })
             .cells(4)
@@ -1821,21 +1935,21 @@ class mapview {
      * @return {[type]} [description]
      */
     clearLayers() {
-		console.log(this.bubbleSetOverlay)
-		
+        console.log(this.bubbleSetOverlay)
+
         if (this.heatmapLayer) {
             this.map.removeLayer(this.heatmapLayer);
             this.heatmapLayer = null;
         }
-		if (this.heatmapLayer_1) {
+        if (this.heatmapLayer_1) {
             this.map.removeLayer(this.heatmapLayer_1);
             this.heatmapLayer_1 = null;
         }
-		if (this.heatmapLayer_2) {
+        if (this.heatmapLayer_2) {
             this.map.removeLayer(this.heatmapLayer_2);
-            this.heatmapLayer_2 = null; 
+            this.heatmapLayer_2 = null;
         }
-		if (this.bubbleSetOverlay) {
+        if (this.bubbleSetOverlay) {
             this.map.removeLayer(this.bubbleSetOverlay);
             this.bubbleSetOverlay = null;
         }

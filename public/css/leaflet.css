@@ -157,6 +157,9 @@
 	visibility: hidden;
 	}
 
+.leaflet-zoom-hide {
+  position: absolute !important;
+}
 
 /* cursors */
 
