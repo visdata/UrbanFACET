@@ -127,7 +127,7 @@ let home = {
 				'val': 'rpb'
 			},
 			{
-				'name': 'Diversity Bubble_Set',
+				'name': 'Diversity Overlap',
 				'val': 'rpbo'
 			}
         ],
