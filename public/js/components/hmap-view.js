@@ -1539,13 +1539,13 @@ class mapview {
         this._bubbleOverlapDrawing(data, prop, update);
         this._createHelper(data, prop);
 
-        this.map.on('zoomend', function(e) {
+        this.map.on('zoomend', function (e) {
             _this._createHelper(data, prop);
         });
 
-        // this.map.on('moveend', function(e) {
-        //     _this._createHelper(data, prop);
-        // });
+        this.map.on('moveend', function(e) {
+            _this._createHelper(data, prop);
+        });
     }
 
     // Create helper for overlap interaction
@@ -1566,7 +1566,7 @@ class mapview {
             return toSort;
         };
 
-        var leftmost = function(arr, value, min, max) {
+        var leftmost = function (arr, value, min, max) {
             if (min == max) return min;
             let mid = Math.floor((min + max) / 2);
 
@@ -1574,7 +1574,7 @@ class mapview {
             else return leftmost(arr, value, min, mid);
         }
 
-        var rightmost = function(arr, value, min, max) {
+        var rightmost = function (arr, value, min, max) {
             if (min == max) return min;
             let mid = Math.ceil((min + max + 1) / 2);
 
@@ -1583,7 +1583,7 @@ class mapview {
         }
 
         // Reset
-        d3.selectAll('.helper').remove();
+        d3.select('#helper-container').remove();
 
         var _this = this;
 
@@ -1593,7 +1593,7 @@ class mapview {
         radius = radius * radiusMultiplier;
 
         const bounds = this.map.getBounds();
-        
+
         const len = data.features.length;
         let helperInfo = new Array();
 
@@ -1603,23 +1603,26 @@ class mapview {
 
             let latlng = new L.LatLng(center[1], center[0]);
             if (feature['prop'][drawtype] > prop['prop']['min_show'] && bounds.contains(latlng)) {
-                let point = this.map.latLngToContainerPoint(latlng);
+                let point = this.map.latLngToLayerPoint(latlng);
                 helperInfo.push([point.x, point.y, feature['prop']['num'], feature['prop'][drawtype]])
             }
         }
 
-        const sortedX = _sortWithIndices(helperInfo.map(function(v) {return v[0]}));
-        const sortedY = _sortWithIndices(helperInfo.map(function(v) {return v[1]}));
+        const sortedX = _sortWithIndices(helperInfo.map(function (v) { return v[0] }));
+        const sortedY = _sortWithIndices(helperInfo.map(function (v) { return v[1] }));
 
         const overlayPane = d3.select(this.map.getPanes().overlayPane);
-        const helper = overlayPane.append("svg").attr("width", 1180).attr("height", 734).style("position", "absolute").style("z-index", 999);
+        const helper = overlayPane.append("svg")
+            .attr('id', 'helper-container')
+            .style("position", "absolute")
+            .style('overflow', 'visible')
+            .style("z-index", 999);
 
         // Create transparent helper
         helper.selectAll(".helper")
             .data(helperInfo)
             .enter()
             .append("circle")
-            .attr("class", "helper")
             .attr("cx", function (d, i) {
                 return d[0];
             })
@@ -1629,7 +1632,7 @@ class mapview {
             .attr("r", radius)
             .style("opacity", 0)
             .style("cursor", "pointer")
-            .on('click', function(d) {
+            .on('click', function (d) {
                 let x = d[0],
                     y = d[1];
                 let xLeft = leftmost(sortedX, x - radius, 0, sortedX.length - 1);
@@ -1649,7 +1652,7 @@ class mapview {
                     let layerIdx = helperInfo[idx][2];
                     let value = helperInfo[idx][3];
 
-                    if ((x-x2) * (x-x2) + (y-y2)*(y-y2) <= radius*radius && value > maxValue) {
+                    if ((x - x2) * (x - x2) + (y - y2) * (y - y2) <= radius * radius && value > maxValue) {
                         maxValue = value;
                         maxLayerIdx = layerIdx;
                     }
@@ -1719,7 +1722,7 @@ class mapview {
 
 
         let countVal = 0, bubble_countVal_0 = 0, bubble_countVal_1 = 0, bubble_countVal_2 = 0;
-        
+
 
         for (let i = len - 1; i >= 0; i--) {
             let feature = data.features[i],
