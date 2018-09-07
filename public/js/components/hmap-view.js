@@ -8,7 +8,8 @@
 'use strict'
 
 import L from './map'
-import HeatmapOverlay from 'heatmap.js/plugins/leaflet-heatmap/leaflet-heatmap.js'
+// import HeatmapOverlay from 'heatmap.js/plugins/leaflet-heatmap/leaflet-heatmap.js'
+import HeatmapOverlay from '../lib/leaflet-heatmap'
 import BubbleSetOverlay from '../lib/bubble-set'
 import * as d3 from 'd3'
 import {
@@ -1799,6 +1800,7 @@ class mapview {
                 //   (there will always be a red spot with useLocalExtremas true)
                 "useLocalExtrema": prop['prop']['useLocalExtrema'],
                 "useGradientOpacity": true,
+                "opaque": true,
                 "latField": 'lat',
                 "lngField": 'lng',
                 "valueField": 'c'

@@ -4,7 +4,7 @@
  * Copyright 2008-2016 Patrick Wied <heatmapjs@patrick-wied.at> - All rights reserved.
  * Dual licensed under MIT and Beerware license 
  *
- * :: 2018-08-27 19:02
+ * :: 2018-09-07 17:00
  */
 ; (function (name, context, factory) {
 
@@ -483,15 +483,16 @@
       }
 
       outA = src[3] + dst[3] * (1 - src[3]);
-      outRGB = new Array(3);
-      for (var i = 0; i < 3; i++) {
-        outRGB[i] = (src[i] * src[3] + dst[i] * dst[3] * (1 - src[3])) / outA;
-        outRGB[i] = parseInt(outRGB[i] * 255);
-      }
+      outR = (src[0] * src[3] + dst[0] * dst[3] * (1 - src[3])) / outA;
+      outG = (src[1] * src[3] + dst[1] * dst[3] * (1 - src[3])) / outA;
+      outB = (src[2] * src[3] + dst[2] * dst[3] * (1 - src[3])) / outA;
 
+      outR = parseInt(outR * 255);
+      outG = parseInt(outG * 255);
+      outB = parseInt(outB * 255);
       outA = parseInt(outA * 255);
 
-      return [outRGB[0], outRGB[1], outRGB[2], outA];
+      return [outR, outG, outB, outA];
     };
 
 
@@ -633,6 +634,7 @@
         this._maxOpacity = (config.maxOpacity || config.defaultMaxOpacity) * 255;
         this._minOpacity = (config.minOpacity || config.defaultMinOpacity) * 255;
         this._useGradientOpacity = !!config.useGradientOpacity;
+        this._opaque = !!config.opaque;
       },
       _drawAlpha: function (data) {
         var min = this._min = data.min;
@@ -699,6 +701,7 @@
         var maxOpacity = this._maxOpacity;
         var minOpacity = this._minOpacity;
         var useGradientOpacity = this._useGradientOpacity;
+        var opaque = this._opaque;
 
         if (x < 0) {
           x = 0;
@@ -747,6 +750,8 @@
           imgData[i - 2] = palette[offset + 1];
           imgData[i - 1] = palette[offset + 2];
           imgData[i] = useGradientOpacity ? palette[offset + 3] : finalAlpha;
+
+          if (opaque) imgData[i] = 255;
 
         }
 
