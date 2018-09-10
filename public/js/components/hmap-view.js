@@ -1496,12 +1496,12 @@ class mapview {
         for (var svg_num = 0; svg_num < 3; svg_num++) {
             let clr_trans, clr_red, clr_yl
 
-            if (svg_num == 0) {
+            if (svg_num == 1) {
                 clr_trans = 'rgba(229,245,224,0.5)';
                 clr_red = 'rgba(0,68,27,1)';
                 clr_yl = 'rgba(65,171,93,1)';
             }
-            if (svg_num == 1) {
+            if (svg_num == 0) {
                 clr_trans = 'rgba(222,235,247,0.5)';
                 clr_red = 'rgba(8,48,107,0.8)';
                 clr_yl = 'rgba(66,146,198,0.8)';
@@ -1775,12 +1775,12 @@ class mapview {
             let clr_red = 'rgba(103,0,13,0.5)';
             let clr_yl = 'rgba(239,59,44,0.5)';
 
-            if (svg_num == 0) {
+            if (svg_num == 1) {
                 clr_trans = 'rgba(229,245,224,0.5)';
                 clr_red = 'rgba(0,68,27,0.8)';
                 clr_yl = 'rgba(65,171,93,0.8)';
             }
-            else if (svg_num == 1) {
+            else if (svg_num == 0) {
                 clr_trans = 'rgba(222,235,247,0.5)';
                 clr_red = 'rgba(8,48,107,0.5)';
                 clr_yl = 'rgba(66,146,198,0.5)';
