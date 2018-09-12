@@ -134,6 +134,15 @@ const userpanel = new Vue({
                 svals = self.sels.objs[i].slider.value; //滑动条范围
 
                 console.log("vals:" + svals)
+				if(self.sels.objs[i].maptype === 'Layer'){
+					objs[i].etype += 'b';
+				}
+				else if(self.sels.objs[i].maptype === 'Blend'){
+					objs[i].etype += 'bo';
+				}
+				else if(self.sels.objs[i].maptype === 'Bubble'){
+					objs[i].etype += 'bb';
+				}
 
                 let obj = objs[i],
                     city = obj.city,
@@ -151,107 +160,141 @@ const userpanel = new Vue({
 				maps[i].boundaryRemove();
 
                 // 根据用户所选 metric 类型进行相应数据提取操作
-                if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
-                    // 获取 entropy 和 density 资源
-					maps[i].clearLayers();
-                    getOverviewDatasets(obj).then(function (res) {
-                        changeLoadState(`dimmer${i}`, false);
+				if(self.sels.objs[i].maptype !== 'DIV' && ['tg', 'ag', 'po', 'hp'].indexOf(etype) <= -1){
+					if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
+						// 获取 entropy 和 density 资源
+						maps[i].clearLayers();
+						getOverviewDatasets(obj).then(function (res) {
+							changeLoadState(`dimmer${i}`, false);
 
-                        //obj.scales = res['prop']['scales'];
-                        resp = res;
+							//obj.scales = res['prop']['scales'];
+							resp = res;
 
-                        // 获取 slider 情况下的配置值域以及用户其余选项
-                        let drawProps = getDrawProps(res, svals, self.sels.ctrsets, drawprop);
-                        //let drawProps = getDrawProps(obj.scales, svals, self.sels.ctrsets, drawprop);
-                        //console.log('drawProps', drawProps);
+							// 获取 slider 情况下的配置值域以及用户其余选项
+							let drawProps = getDrawProps(res, svals, self.sels.ctrsets, drawprop);
+							//let drawProps = getDrawProps(obj.scales, svals, self.sels.ctrsets, drawprop);
+							//console.log('drawProps', drawProps);
 
-                        // 绘 Metric Distribution 图函数
-                        maps[i].mapcontourCDrawing(res, drawProps);
-                        let prop = {
-                            'xname': self.cals.enps[obj.etype],
-                            'yprop': obj.etype
-                        }
-                        if (etype === 'de') {
-                            charts[i].lineChartDraw(`estatChart${i}`, res['chart']['d'], prop); //绘制line图
-                        } else {
-                            charts[i].lineChartDraw(`estatChart${i}`, res['chart']['e'], prop);
-                        }
+							// 绘 Metric Distribution 图函数
+							maps[i].mapcontourCDrawing(res, drawProps);
+							let prop = {
+								'xname': self.cals.enps[obj.etype],
+								'yprop': obj.etype
+							}
+							if (etype === 'de') {
+								charts[i].lineChartDraw(`estatChart${i}`, res['chart']['d'], prop); //绘制line图
+							} else {
+								charts[i].lineChartDraw(`estatChart${i}`, res['chart']['e'], prop);
+							}
 
-                        /*                 
-                        // 更新最大值域范围
-                        obj.scales = res['prop']['scales'];
-                        //console.log("obj.scales:" + JSON.stringify(obj.scales))
+							/*                 
+							// 更新最大值域范围
+							obj.scales = res['prop']['scales'];
+							//console.log("obj.scales:" + JSON.stringify(obj.scales))
 
-                        // 获取 slider 情况下的配置值域以及用户其余选项
-                        let drawProps = getDrawProps(obj.scales, svals, self.sels.ctrsets, drawprop);
-                        console.log('drawProps', drawProps);
+							// 获取 slider 情况下的配置值域以及用户其余选项
+							let drawProps = getDrawProps(obj.scales, svals, self.sels.ctrsets, drawprop);
+							console.log('drawProps', drawProps);
 
-                        // 绘 Metric Distribution 图函数
-                        maps[i].mapcontourCDrawing(res, drawProps);
-                        let prop = {
-                            'xname': self.cals.enps[obj.etype],
-                            'yprop': obj.etype
-                        }
-                        if (etype === 'de') {
-                            charts[i].lineChartDraw(`estatChart${i}`, res['chart']['d'], prop);
-                        } else {
-                            charts[i].lineChartDraw(`estatChart${i}`, res['chart']['e'], prop);
-                        }
-*/
-                        // 绘不同行政区数值分布函数
-                        getSMecDatasets(city).then(function (cres) {
-                            charts[i].barChartDraw(city, `poiChart${i}`, cres, prop);
-                        }).catch(function (err) {
-                            console.error("Failed!", err);
-                        });
+							// 绘 Metric Distribution 图函数
+							maps[i].mapcontourCDrawing(res, drawProps);
+							let prop = {
+								'xname': self.cals.enps[obj.etype],
+								'yprop': obj.etype
+							}
+							if (etype === 'de') {
+								charts[i].lineChartDraw(`estatChart${i}`, res['chart']['d'], prop);
+							} else {
+								charts[i].lineChartDraw(`estatChart${i}`, res['chart']['e'], prop);
+							}
+	*/
+							// 绘不同行政区数值分布函数
+							getSMecDatasets(city).then(function (cres) {
+								charts[i].barChartDraw(city, `poiChart${i}`, cres, prop);
+							}).catch(function (err) {
+								console.error("Failed!", err);
+							});
 
-                        // 绘不同POI类别概率分布函数
-                        getAoiDisDatasets(city, 'TOTAL').then(function (cres) {
-                            charts[i].poiBarChartDraw(`disChart${i}`, cres, prop);
-                        }).catch(function (err) {
-                            console.error("Failed!", err);
-                        });
-                    }).catch(function (err) {
-                        console.error("Failed!", err);
-                    });
-                }
-				else if(['ppb', 'pdb', 'rpb', 'rdb', 'ppbo', 'pdbo', 'rpbo', 'rdbo'].indexOf(etype) > -1){
-					self.sels.objs[i].slider.min = 0;
-					self.sels.objs[i].slider.max = 0.5;
-					self.sels.objs[i].slider.interval = 0.001;
-                    self.sels.objs[i].slider.value = [0.1,0.5];
-					self.sels.objs[i].slider.formatter = "{value}";
-					
-					svals = self.sels.objs[i].slider.value;
-					
-					maps[i].clearLayers();
-					 
-					getOverviewDatasets(obj).then(function (res) {
-					changeLoadState(`dimmer${i}`, false);
-
-					//obj.scales = res['prop']['scales'];
-					resp = res;
-
-					// 获取 slider 情况下的配置值域以及用户其余选项
-					let drawProps = getDrawProps_bubble(res, svals, self.sels.ctrsets, drawprop);
-					// 绘 Metric Distribution 图函数
-					if(['ppbo', 'pdbo', 'rpbo', 'rdbo'].indexOf(etype) > -1){
-						maps[i].mapcontourCDrawing_bubble_overlap(res, drawProps)
+							// 绘不同POI类别概率分布函数
+							getAoiDisDatasets(city, 'TOTAL').then(function (cres) {
+								charts[i].poiBarChartDraw(`disChart${i}`, cres, prop);
+							}).catch(function (err) {
+								console.error("Failed!", err);
+							});
+						}).catch(function (err) {
+							console.error("Failed!", err);
+						});
 					}
 					else{
-						maps[i].mapcontourCDrawing_bubble(res, drawProps);
+						self.sels.objs[i].slider.min = 0;
+						self.sels.objs[i].slider.max = 0.5;
+						self.sels.objs[i].slider.interval = 0.001;
+						self.sels.objs[i].slider.value = [0.1,0.5];
+						self.sels.objs[i].slider.formatter = "{value}";
+						
+						svals = self.sels.objs[i].slider.value;
+						
+						maps[i].clearLayers();
+						 
+						getOverviewDatasets(obj).then(function (res) {
+						changeLoadState(`dimmer${i}`, false);
+
+						//obj.scales = res['prop']['scales'];
+						resp = res;
+
+						// 获取 slider 情况下的配置值域以及用户其余选项
+						let drawProps = getDrawProps_bubble(res, svals, self.sels.ctrsets, drawprop);
+						// 绘 Metric Distribution 图函数
+						if(['ppbo', 'pdbo', 'rpbo', 'rdbo'].indexOf(etype) > -1){
+							maps[i].mapcontourCDrawing_bubble_overlap(res, drawProps)
+						}
+						else{
+							maps[i].mapcontourCDrawing_bubble(res, drawProps);
+							if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
+								let min_len = 15,
+									percent = objs[i].slider.value[0];
+								maps[i].switchLegDisplay('bubblesld');
+								getThreetypeDatasets(objs[index], min_len, percent).then(function (res) {
+
+								let city = objs[i].city,
+									etype = objs[i].etype;
+
+								let prop = {
+									'city': city,
+									'boundary': true
+								};
+								changeLoadState(`dimmer${index}`, false);
+								maps[i].BubbleboundaryDrawing(res, prop);
+								}).catch(function (err) {
+									console.error("Failed!", err);
+								});
+							}
 						}                   
-                    }).catch(function (err) {
-                        console.error("Failed!", err);
-                    });
+						}).catch(function (err) {
+							console.error("Failed!", err);
+						});
+					}
 				}
 				else {
+					if(['tg', 'ag', 'po', 'hp'].indexOf(etype) > -1){
+						self.sels.objs[i].maptype = 'DIV';
+					}
 					maps[i].clearLayers();
                     self.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
                     self.sels.objs[i].slider.formatter = "{value}%";
                     getBoundaryDatasets(city).then(function (res) {
                         changeLoadState(`dimmer${i}`, false);
-
+						
+						if(etype.substr(0,2) === 'de'){
+							etype = 'dd';
+						}
+						else if(etype.substr(0,2) === 'pd'){
+							etype = 'cd';
+						}
+						else if(etype.substr(0,2) === 'pp'){
+							etype = 'vd';
+						}
+						
                         let prop = {
                             'city': city,
                             'etype': etype,
@@ -375,6 +418,167 @@ const userpanel = new Vue({
                 this.getOverview(-1);
             }
         },
+		'map_type': function(index){
+			let i = Number.parseInt(index), self = this, objs = self.sels.objs,
+				svals = self.sels.objs[i].slider.value; //滑动条范围
+
+			objs[i].etype = objs[i].etype.substr(0,2);
+			console.log("vals:" + svals)
+
+			if(self.sels.objs[i].maptype === 'Layer'){
+				objs[i].etype += 'b';
+			}
+			else if(self.sels.objs[i].maptype === 'Blend'){
+				objs[i].etype += 'bo';
+			}
+			else if(self.sels.objs[i].maptype === 'Bubble'){
+				objs[i].etype += 'bb';
+			}
+
+			let obj = objs[i],
+				city = obj.city,
+				etype = obj.etype,
+				rev = obj.reverse,
+				drawprop = {
+					'etype': etype,
+					'rev': rev
+				};
+			console.log("etype:" +  JSON.stringify(drawprop))
+
+			// 添加 loading 效果 & 移动地图
+			changeLoadState(`dimmer${i}`, true);
+			maps[i].panTo(regionRecords[city]['center']);
+			maps[i].boundaryRemove();
+			
+			if(self.sels.objs[i].maptype !== 'DIV'){
+				// 根据用户所选 metric 类型进行相应数据提取操作
+				if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
+					// 获取 entropy 和 density 资源
+					maps[i].clearLayers();
+					getOverviewDatasets(obj).then(function (res) {
+						changeLoadState(`dimmer${i}`, false);
+
+						//obj.scales = res['prop']['scales'];
+						resp = res;
+
+						// 获取 slider 情况下的配置值域以及用户其余选项
+						let drawProps = getDrawProps(res, svals, self.sels.ctrsets, drawprop);
+						//let drawProps = getDrawProps(obj.scales, svals, self.sels.ctrsets, drawprop);
+						//console.log('drawProps', drawProps);
+
+						// 绘 Metric Distribution 图函数
+						maps[i].mapcontourCDrawing(res, drawProps);
+						let prop = {
+							'xname': self.cals.enps[obj.etype],
+							'yprop': obj.etype
+						}
+						if (etype === 'de') {
+							charts[i].lineChartDraw(`estatChart${i}`, res['chart']['d'], prop); //绘制line图
+						} else {
+							charts[i].lineChartDraw(`estatChart${i}`, res['chart']['e'], prop);
+						}
+						// 绘不同行政区数值分布函数
+						getSMecDatasets(city).then(function (cres) {
+							charts[i].barChartDraw(city, `poiChart${i}`, cres, prop);
+						}).catch(function (err) {
+							console.error("Failed!", err);
+						});
+
+						// 绘不同POI类别概率分布函数
+						getAoiDisDatasets(city, 'TOTAL').then(function (cres) {
+							charts[i].poiBarChartDraw(`disChart${i}`, cres, prop);
+						}).catch(function (err) {
+							console.error("Failed!", err);
+						});
+					}).catch(function (err) {
+						console.error("Failed!", err);
+					});
+				}
+				else{
+					self.sels.objs[i].slider.min = 0;
+					self.sels.objs[i].slider.max = 0.5;
+					self.sels.objs[i].slider.interval = 0.001;
+					self.sels.objs[i].slider.value = [0.1,0.5];
+					self.sels.objs[i].slider.formatter = "{value}";
+					
+					svals = self.sels.objs[i].slider.value;
+					
+					maps[i].clearLayers();
+					
+					if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
+						obj.etype = obj.etype.substr(0,3);
+					}
+					
+					getOverviewDatasets(obj).then(function (res) {
+					changeLoadState(`dimmer${i}`, false);
+
+					//obj.scales = res['prop']['scales'];
+					resp = res;
+
+					// 获取 slider 情况下的配置值域以及用户其余选项
+					let drawProps = getDrawProps_bubble(res, svals, self.sels.ctrsets, drawprop);
+					// 绘 Metric Distribution 图函数
+					if(['ppbo', 'pdbo', 'rpbo', 'rdbo'].indexOf(etype) > -1){
+						maps[i].mapcontourCDrawing_bubble_overlap(res, drawProps)
+					}
+					else{
+						maps[i].mapcontourCDrawing_bubble(res, drawProps);
+						if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
+							let min_len = 15,
+								percent = objs[i].slider.value[0];
+							maps[i].switchLegDisplay('bubblesld');
+							getThreetypeDatasets(objs[i], min_len, percent).then(function (res) {
+
+							let city = objs[i].city,
+								etype = objs[i].etype;
+
+							let prop = {
+								'city': city,
+								'boundary': true
+							};
+							changeLoadState(`dimmer${index}`, false);
+							maps[i].BubbleboundaryDrawing(res, prop);
+							}).catch(function (err) {
+								console.error("Failed!", err);
+							});
+						}
+					}                   
+					}).catch(function (err) {
+						console.error("Failed!", err);
+					});
+				}
+			}
+			else {
+				maps[i].clearLayers();
+				self.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
+				self.sels.objs[i].slider.formatter = "{value}%";
+				getBoundaryDatasets(city).then(function (res) {
+					changeLoadState(`dimmer${i}`, false);
+
+					if(etype.substr(0,2) === 'de'){
+						etype = 'dd';
+					}
+					else if(etype.substr(0,2) === 'pd'){
+						etype = 'cd';
+					}
+					else if(etype.substr(0,2) === 'pp'){
+						etype = 'vd';
+					}
+
+					let prop = {
+						'city': city,
+						'etype': etype,
+						'boundary': false,
+						'slider': svals
+					};
+
+					maps[i].boundaryDrawing(res, prop);
+				}).catch(function (err) {
+					console.error("Failed!", err);
+				});
+			}
+			
+		},
         /**
          * 计算与更新 slider 样式, 更新 map
          * @return {[index]}      [description]
@@ -383,7 +587,7 @@ const userpanel = new Vue({
             // 定位 slider
             let i = Number.parseInt(index),
                 v = this.sels.objs[i].slider.value;
-
+			
             console.log('v', v);
             // 改变背景色
             if (this.sels.objs[i].reverse) {
@@ -399,7 +603,19 @@ const userpanel = new Vue({
 
             let self = this,
                 objs = self.sels.objs;
+	
+			objs[i].etype = objs[i].etype.substr(0,2);
 
+			if(self.sels.objs[i].maptype === 'Layer'){
+				objs[i].etype += 'b';
+			}
+			else if(self.sels.objs[i].maptype === 'Blend'){
+				objs[i].etype += 'bo';
+			}
+			else if(self.sels.objs[i].maptype === 'Bubble'){
+				objs[i].etype += 'bb';
+			}
+	
             let obj = objs[i],
                 city = obj.city,
                 etype = obj.etype,
@@ -408,47 +624,56 @@ const userpanel = new Vue({
                     'etype': etype,
                     'rev': rev
                 };
-            if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
-                // 获取 slider 情况下的配置值域以及用户其余选项
-                // v.push(self.components.hrSlider.value);
-                //console.log("rsp: " + JSON.stringify(resp.features[resp.features.length * 0.8]['prop']['v']))
-				
-                let drawProps = getDrawProps(resp, v, self.sels.ctrsets, drawprop);
-                maps[i].mapcontourCDrawing({}, drawProps, true);
-            } 
-			else if(['ppb', 'pdb', 'rpb', 'rdb', 'ppbo', 'pdbo', 'rpbo', 'rdbo'].indexOf(etype) > -1){
-				maps[i].clearLayers();
-				let drawProps = getDrawProps_bubble(resp, v, self.sels.ctrsets, drawprop);
-				if(['ppbo', 'pdbo', 'rpbo', 'rdbo'].indexOf(etype) > -1){
-					console.log("update map")
-					maps[i].mapcontourCDrawing_bubble_overlap({}, drawProps, true)
-				}
-				else{
-					maps[i].mapcontourCDrawing_bubble({}, drawProps, true);
-				} 
-				
-				if(this.sels.otype === 'b'){
-					console.log("update boundary")
-				
-					let percent = this.sels.objs[i].slider.value[0],
-						min_len = this.sels.objs[i].slider4.value;
-						
-					maps[i].boundaryRemove();
-					maps[i].switchLegDisplay('bubblesld');
+			if(self.sels.objs[i].maptype !== 'DIV' && ['tg', 'ag', 'po', 'hp'].indexOf(etype)  -1){
+				if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
+					// 获取 slider 情况下的配置值域以及用户其余选项
+					// v.push(self.components.hrSlider.value);
+					//console.log("rsp: " + JSON.stringify(resp.features[resp.features.length * 0.8]['prop']['v']))
 					
-					getThreetypeDatasets(obj, min_len, percent).then(function (res) {
-						let prop = {
-							'city': city,
-							'boundary': true
-						};
-						changeLoadState(`dimmer${i}`, false);
-						if(res.features.length != 0){maps[i].BubbleboundaryDrawing(res, prop);}
-					}).catch(function (err) {
-							console.error("Failed!", err);
-					});
+					let drawProps = getDrawProps(resp, v, self.sels.ctrsets, drawprop);
+					maps[i].mapcontourCDrawing({}, drawProps, true);
+				} 
+				else{
+					maps[i].clearLayers();
+					let drawProps = getDrawProps_bubble(resp, v, self.sels.ctrsets, drawprop);
+					if(['ppbo', 'pdbo', 'rpbo', 'rdbo'].indexOf(etype) > -1){
+						console.log("update map")
+						maps[i].mapcontourCDrawing_bubble_overlap({}, drawProps, true)
+					}
+					else{
+						maps[i].mapcontourCDrawing_bubble({}, drawProps, true);
+						if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
+							let percent = this.sels.objs[i].slider.value[0],
+								min_len = this.sels.objs[i].slider4.value;
+								
+							maps[i].boundaryRemove();
+							maps[i].switchLegDisplay('bubblesld');
+							
+							getThreetypeDatasets(obj, min_len, percent).then(function (res) {
+								let prop = {
+									'city': city,
+									'boundary': true
+								};
+								changeLoadState(`dimmer${i}`, false);
+								if(res.features.length != 0){maps[i].BubbleboundaryDrawing(res, prop);}
+							}).catch(function (err) {
+									console.error("Failed!", err);
+							});
+						}
+					} 
 				}
 			}
 			else {
+				if(etype.substr(0,2) === 'de'){
+					etype = 'dd';
+				}
+				else if(etype.substr(0,2) === 'pd'){
+					etype = 'cd';
+				}
+				else if(etype.substr(0,2) === 'pp'){
+					etype = 'vd';
+				}
+				
                 let prop = {
                     'city': city,
                     'etype': etype,
@@ -1093,6 +1318,7 @@ const userpanel = new Vue({
     },
     mounted() {
         let self = this;
+			self.sels.objs[0].maptype = 'Grid';
         this.$nextTick(function () {
             let firstcity = this.sels.objs[0].city;
             maps[0] = new mapview('map0', 'gridmaplegend0', 'contourmaplegend0', 'districtslider0', 'clusterslider0', 'bubbleslider0','baselyrtext0', firstcity);

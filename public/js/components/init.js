@@ -63,16 +63,8 @@ let home = {
                 'val': 'pp'
             },
             {
-                'name': 'vibrAncy Div',
-                'val': 'vd'
-            },
-            {
                 'name': 'Commutation',
                 'val': 'pd'
-            },
-            {
-                'name': 'Commutation Div',
-                'val': 'cd'
             },
             {
                 'name': 'divErsity',
@@ -82,10 +74,10 @@ let home = {
                 'name': 'densiTy',
                 'val': 'de'
             },
-            {
-                'name': 'densiTy Div',
-                'val': 'dd'
-            },
+			{
+				'name': 'Total GDP',
+				'val': 'tg'
+			},
             {
                 'name': 'Per Capita GDP',
                 'val': 'ag'
@@ -97,39 +89,7 @@ let home = {
             {
                 'name': 'House Price',
                 'val': 'hp'
-            },
-			{
-				'name': 'Fluidity Bubble_Set',
-				'val': 'rdb'
-			},
-			{
-				'name': 'Fluidity Overlap',
-				'val': 'rdbo'
-			},
-			{
-				'name': 'Vibrancy Bubble_Set',
-				'val': 'ppb'
-			},
-			{
-				'name': 'Vibrancy Overlap',
-				'val': 'ppbo'
-			},
-			{
-				'name': 'Commutation Bubble_Set',
-				'val': 'pdb'
-			},
-			{
-				'name': 'Commutation Overlap',
-				'val': 'pdbo'
-			},
-			{
-				'name': 'Diversity Bubble_Set',
-				'val': 'rpb'
-			},
-			{
-				'name': 'Diversity Overlap',
-				'val': 'rpbo'
-			}
+            }
         ],
         'otypes': [{
                 'name': 'Empty',
@@ -154,11 +114,7 @@ let home = {
             {
                 'name': 'FACET-Cluster',
                 'val': 'c'
-            },
-			{
-				'name': 'Boundary',
-				'val': 'b'
-			}
+            }
         ],
         /**
          * timeblock filters object
@@ -573,33 +529,36 @@ let home = {
         },
         'enps': {
             'pp': 'Vibrancy',
-            'vd': 'Vibrancy Div',
+            'vd': 'Vibrancy',
             'pd': 'Commutation',
-            'cd': 'Commutation Div',
+            'cd': 'Commutation',
             'rp': 'Diversity',
             'rd': 'Fluidity',
             'de': 'Density',
-            'dd': 'Density Div',
+            'dd': 'Density',
             'tg': 'Total GDP',
             'ag': 'Per Capita GDP',
             'po': 'Population',
             'hp': 'House Price',
-			'rdb': 'Fluidity Bubble_Set',
-			'rdbo': 'Fluidity Overlap',
-			'ppb': 'Vibrancy Bubble_Set',
-			'ppbo': 'Vibrancy Overlap',
-			'pdb': 'Commutation Bubble_Set',
-			'pdbo': 'Commutation Overlap',
-			'rpb': 'Diversity Bubble_Set',
-			'rpbo': 'Diversity Overlap'
+			'rdb': 'Fluidity',
+			'rdbo': 'Fluidity',
+			'rdbb': 'Fluidity',
+			'ppb': 'Vibrancy',
+			'ppbo': 'Vibrancy',
+			'ppbb': 'Vibrancy',
+			'pdb': 'Commutation',
+			'pdbo': 'Commutation',
+			'pdbb': 'Commutation',
+			'rpb': 'Diversity',
+			'rpbo': 'Diversity',
+			'rpbb': 'Diversity'
         },
         'ops': {
             'e': 'Empty',
             'p': 'POI',
             'd': 'District',
             'f': 'FACET-District',
-            'c': 'FACET-Cluster',
-			'b': 'Boundary'
+            'c': 'FACET-Cluster'
         },
         'pois': ['All', 'Food&Supply', 'Entertainment&Leisure', 'Education', 'Transportation', 'Healthcare&Emergency', 'Financial&Bank', 'Accommodation', 'Office&Commercial', 'Natural Landscape', 'Factory&Manufacturer'],
         'scales': ['City', 'Division', 'Region', 'Street'],

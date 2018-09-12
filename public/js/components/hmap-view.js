@@ -148,11 +148,11 @@ class mapview {
             }
         });
 
-        this.map.on('baselayerchange', function (e) {
-            let name = self.control.getActiveBaseLayer().name;
-            document.getElementById(self.ides.baselyr).innerText = name;
-            console.log(name);
-        });
+        //this.map.on('baselayerchange', function (e) {
+        //    let name = self.control.getActiveBaseLayer().name;
+        //    document.getElementById(self.ides.baselyr).innerText = name;
+        //    console.log(name);
+        //});
     }
 
     invalidateSize() {
