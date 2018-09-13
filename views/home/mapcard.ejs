@@ -10,8 +10,7 @@
 			<div class="ui grid">
 				<div class="sixteen wide column">
 					<p>Metric: {{ cals.enps[ model.etype ] }} </p>
-					<p>Mode:</p>
-					<p>S-class: 
+					<p>Mode:  S-class: 
 						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Grid" checked="checked" @click="map_type(index)">Grid
 						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="DIV" @click="map_type(index)">DIV
 					</p>

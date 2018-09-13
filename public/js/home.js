@@ -132,16 +132,22 @@ const userpanel = new Vue({
                 };
 				
                 svals = self.sels.objs[i].slider.value; //滑动条范围
-
+				
                 console.log("vals:" + svals)
-				if(self.sels.objs[i].maptype === 'Layer'){
-					objs[i].etype += 'b';
+				console.log("origin_etype: " + etype)
+				if(['tg', 'ag', 'po', 'hp'].indexOf(objs[i].etype) <= -1){
+					if(self.sels.objs[i].maptype === 'Layer'){
+						objs[i].etype += 'b';
+					}
+					else if(self.sels.objs[i].maptype === 'Blend'){
+						objs[i].etype += 'bo';
+					}
+					else if(self.sels.objs[i].maptype === 'Bubble'){
+						objs[i].etype += 'bb';
+					}
 				}
-				else if(self.sels.objs[i].maptype === 'Blend'){
-					objs[i].etype += 'bo';
-				}
-				else if(self.sels.objs[i].maptype === 'Bubble'){
-					objs[i].etype += 'bb';
+				else{
+					self.sels.objs[i].maptype = 'DIV';
 				}
 
                 let obj = objs[i],
@@ -158,9 +164,18 @@ const userpanel = new Vue({
                 changeLoadState(`dimmer${i}`, true);
                 maps[i].panTo(regionRecords[city]['center']);
 				maps[i].boundaryRemove();
+				
+				if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
+					maps[i].switchLegDisplay('bubblesld');
+				}
+				else{
+					maps[i].switchLegDisplay(null);
+				}
 
                 // 根据用户所选 metric 类型进行相应数据提取操作
-				if(self.sels.objs[i].maptype !== 'DIV' && ['tg', 'ag', 'po', 'hp'].indexOf(etype) <= -1){
+				if(self.sels.objs[i].maptype !== 'DIV'){
+					self.sels.objs[i].slider.processStyle.background = '-webkit-linear-gradient(left, #ffffff 0%, #ffff00 40%,#ff0000 100%)';
+					maps[i].boundaryRemove();
 					if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
 						// 获取 entropy 和 density 资源
 						maps[i].clearLayers();
@@ -235,6 +250,10 @@ const userpanel = new Vue({
 						svals = self.sels.objs[i].slider.value;
 						
 						maps[i].clearLayers();
+						
+						if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
+							obj.etype = obj.etype.substr(0,3);
+						}
 						 
 						getOverviewDatasets(obj).then(function (res) {
 						changeLoadState(`dimmer${i}`, false);
@@ -276,9 +295,6 @@ const userpanel = new Vue({
 					}
 				}
 				else {
-					if(['tg', 'ag', 'po', 'hp'].indexOf(etype) > -1){
-						self.sels.objs[i].maptype = 'DIV';
-					}
 					maps[i].clearLayers();
                     self.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
                     self.sels.objs[i].slider.formatter = "{value}%";
@@ -424,15 +440,20 @@ const userpanel = new Vue({
 
 			objs[i].etype = objs[i].etype.substr(0,2);
 			console.log("vals:" + svals)
-
-			if(self.sels.objs[i].maptype === 'Layer'){
-				objs[i].etype += 'b';
+			
+			if(['tg', 'ag', 'po', 'hp'].indexOf(objs[i].etype) <= -1){
+				if(self.sels.objs[i].maptype === 'Layer'){
+					objs[i].etype += 'b';
+				}
+				else if(self.sels.objs[i].maptype === 'Blend'){
+					objs[i].etype += 'bo';
+				}
+				else if(self.sels.objs[i].maptype === 'Bubble'){
+					objs[i].etype += 'bb';
+				}
 			}
-			else if(self.sels.objs[i].maptype === 'Blend'){
-				objs[i].etype += 'bo';
-			}
-			else if(self.sels.objs[i].maptype === 'Bubble'){
-				objs[i].etype += 'bb';
+			else{
+				self.sels.objs[i].maptype = 'DIV';
 			}
 
 			let obj = objs[i],
@@ -450,7 +471,16 @@ const userpanel = new Vue({
 			maps[i].panTo(regionRecords[city]['center']);
 			maps[i].boundaryRemove();
 			
+			if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
+				maps[i].switchLegDisplay('bubblesld');
+			}
+			else{
+				maps[i].switchLegDisplay(null);
+			}
+			
 			if(self.sels.objs[i].maptype !== 'DIV'){
+				self.sels.objs[i].slider.processStyle.background = '-webkit-linear-gradient(left, #ffffff 0%, #ffff00 40%,#ff0000 100%)';
+				maps[i].boundaryRemove();
 				// 根据用户所选 metric 类型进行相应数据提取操作
 				if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
 					// 获取 entropy 和 density 资源
@@ -527,6 +557,7 @@ const userpanel = new Vue({
 							let min_len = 15,
 								percent = objs[i].slider.value[0];
 							maps[i].switchLegDisplay('bubblesld');
+							
 							getThreetypeDatasets(objs[i], min_len, percent).then(function (res) {
 
 							let city = objs[i].city,
@@ -606,14 +637,19 @@ const userpanel = new Vue({
 	
 			objs[i].etype = objs[i].etype.substr(0,2);
 
-			if(self.sels.objs[i].maptype === 'Layer'){
-				objs[i].etype += 'b';
+			if(['tg', 'ag', 'po', 'hp'].indexOf(objs[i].etype) <= -1){
+				if(self.sels.objs[i].maptype === 'Layer'){
+					objs[i].etype += 'b';
+				}
+				else if(self.sels.objs[i].maptype === 'Blend'){
+					objs[i].etype += 'bo';
+				}
+				else if(self.sels.objs[i].maptype === 'Bubble'){
+					objs[i].etype += 'bb';
+				}
 			}
-			else if(self.sels.objs[i].maptype === 'Blend'){
-				objs[i].etype += 'bo';
-			}
-			else if(self.sels.objs[i].maptype === 'Bubble'){
-				objs[i].etype += 'bb';
+			else{
+				self.sels.objs[i].maptype = 'DIV';
 			}
 	
             let obj = objs[i],
@@ -624,7 +660,7 @@ const userpanel = new Vue({
                     'etype': etype,
                     'rev': rev
                 };
-			if(self.sels.objs[i].maptype !== 'DIV' && ['tg', 'ag', 'po', 'hp'].indexOf(etype)  -1){
+			if(self.sels.objs[i].maptype !== 'DIV'){
 				if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
 					// 获取 slider 情况下的配置值域以及用户其余选项
 					// v.push(self.components.hrSlider.value);

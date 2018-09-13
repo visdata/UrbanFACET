@@ -548,32 +548,32 @@ let objs = {
 		},
 		"bjRC0mat": {
 			"name": "bjRC0mat",
-			"wpnumber": 3515945,
+			"wpnumber": 2074798,
 			"ppsval": 3474850.75
 		},
 		"bjRC1mat": {
 			"name": "bjRC1mat",
-			"wpnumber": 1353130,
+			"wpnumber": 2335074,
 			"ppsval": 3474850.75
 		},
 		"bjRC2mat": {
 			"name": "bjRC2mat",
-			"wpnumber": 489563,
+			"wpnumber": 1370011,
 			"ppsval": 3474850.75
 		},
 		"bjRD0mat": {
 			"name": "bjRD0mat",
-			"wpnumber": 3515945,
+			"wpnumber": 12619387,
 			"ppsval": 3474850.75
 		},
 		"bjRD1mat": {
 			"name": "bjRD1mat",
-			"wpnumber": 1353130,
+			"wpnumber": 4913739,
 			"ppsval": 3474850.75
 		},
 		"bjRD2mat": {
 			"name": "bjRD2mat",
-			"wpnumber": 489563,
+			"wpnumber": 3818573,
 			"ppsval": 3474850.75
 		},
 		"bjRF0mat": {
@@ -583,12 +583,12 @@ let objs = {
 		},
 		"bjRF1mat": {
 			"name": "bjRF1mat",
-			"wpnumber": 1353130,
+			"wpnumber": 1498124,
 			"ppsval": 3474850.75
 		},
 		"bjRF2mat": {
 			"name": "bjRF2mat",
-			"wpnumber": 489563,
+			"wpnumber": 2075672,
 			"ppsval": 3474850.75
 		}
 	},
