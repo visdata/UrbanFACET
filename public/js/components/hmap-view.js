@@ -69,7 +69,7 @@ class mapview {
          * @type {Object}
          */
         this.baseLayers = {
-            'Road': L.tileLayer(`https://api.mapbox.com/styles/v1/{uid}/cjkdb07jhacm92rqrorll84uq/tiles/256/{z}/{x}/{y}?access_token=${accessToken}`, {
+            'Road': L.tileLayer(`https://api.mapbox.com/styles/v1/{uid}/cjm2ti28r9k482rl6c83jfe66/tiles/256/{z}/{x}/{y}?access_token=${accessToken}`, {
                 attribution: mapattr,
                 maxZoom: 18,
                 uid: mapuid

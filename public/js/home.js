@@ -621,11 +621,12 @@ const userpanel = new Vue({
 			
             console.log('v', v);
             // 改变背景色
-            if (this.sels.objs[i].reverse) {
-                this.sels.objs[i].slider.bgStyle.background = `-webkit-repeating-linear-gradient(left, red 0%, red ${v[1]-0.01}%, white ${v[1]}%, white 100%)`;
-            } else {
-                this.sels.objs[i].slider.bgStyle.background = `-webkit-repeating-linear-gradient(left, white 0%, white ${v[1]-0.01}%, red ${v[1]}%, red 100%)`;
-            }
+            //if (this.sels.objs[i].reverse) {
+            //    this.sels.objs[i].slider.bgStyle.background = `-webkit-repeating-linear-gradient(left, red 0%, red ${v[1]-0.01}%, white ${v[1]}%, white 100%)`;
+            //} else {
+			//	console.log("change color ################# ")
+            //    this.sels.objs[i].slider.bgStyle.background = `-webkit-repeating-linear-gradient(left, white 0%, white ${v[1]-0.01}%, red ${v[1]}%, red 100%)`;
+            //}
             
             // 如果初始化操作未曾进行,此方法直接返回结果不做更新操作
             if (store.state.init) {
@@ -662,6 +663,13 @@ const userpanel = new Vue({
                 };
 			if(self.sels.objs[i].maptype !== 'DIV'){
 				if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
+					 // 改变背景色
+					if (this.sels.objs[i].reverse) {
+						this.sels.objs[i].slider.bgStyle.background = `-webkit-repeating-linear-gradient(left, red 0%, red ${v[1]-0.01}%, white ${v[1]}%, white 100%)`;
+					} else {
+						console.log("change color ################# ")
+						this.sels.objs[i].slider.bgStyle.background = `-webkit-repeating-linear-gradient(left, white 0%, white ${v[1]-0.01}%, red ${v[1]}%, red 100%)`;
+					}
 					// 获取 slider 情况下的配置值域以及用户其余选项
 					// v.push(self.components.hrSlider.value);
 					//console.log("rsp: " + JSON.stringify(resp.features[resp.features.length * 0.8]['prop']['v']))
@@ -670,6 +678,12 @@ const userpanel = new Vue({
 					maps[i].mapcontourCDrawing({}, drawProps, true);
 				} 
 				else{
+					if (this.sels.objs[i].reverse) {
+						this.sels.objs[i].slider.bgStyle.background = `-webkit-repeating-linear-gradient(left, red 0.0, red ${v[1]-0.001}, white ${v[1]}, white 0.5)`;
+					} else {
+						console.log("change color ################# ")
+						this.sels.objs[i].slider.bgStyle.background = `-webkit-repeating-linear-gradient(left, white 0.000, white ${v[0]+ 0.001}, red ${v[1]}, red 0.5)`;
+					}
 					maps[i].clearLayers();
 					let drawProps = getDrawProps_bubble(resp, v, self.sels.ctrsets, drawprop);
 					if(['ppbo', 'pdbo', 'rpbo', 'rdbo'].indexOf(etype) > -1){

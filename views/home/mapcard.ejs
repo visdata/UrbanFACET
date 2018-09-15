@@ -9,8 +9,8 @@
 		<div class="description">
 			<div class="ui grid">
 				<div class="sixteen wide column">
-					<p>Metric: {{ cals.enps[ model.etype ] }} </p>
-					<p>Mode:  S-class: 
+					<p>Metric- {{ cals.enps[ model.etype ] }} </p>
+					<p>Mode-&nbsp;&nbsp;&nbsp;&nbsp; S-class: 
 						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Grid" checked="checked" @click="map_type(index)">Grid
 						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="DIV" @click="map_type(index)">DIV
 					</p>
@@ -36,7 +36,7 @@
 					</template>
 					</div>
 					
-					<p>Reference: {{ cals.ops[ sels.otype ] }}</p>
+					<p>Reference- {{ cals.ops[ sels.otype ] }}</p>
 				</div>
 				<div class="sixteen wide column" style="margin-bottom: .4rem; padding-top: 0;">
 					<button style="float: left;" class="ui tiny button" :class="areaselState" v-on:click="optAreaSelect(index)">Area Select</button>
