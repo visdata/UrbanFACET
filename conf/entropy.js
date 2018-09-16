@@ -961,7 +961,7 @@ function getThreetypeview(conn, prop) {
 					
 					hdata.push(coordsarr);
 				}
-				drawmap(min_len, hdata, RESULT, svg_num);
+				drawmap(4, hdata, RESULT, svg_num);
 				console.info("end")
 			}
 			
