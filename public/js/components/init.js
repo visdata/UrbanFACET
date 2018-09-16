@@ -437,13 +437,23 @@ let home = {
             },
              'slider4': {
                 tooltip: 'hover',
-				value: 15,
+                value: '15',
                 dotSize: 13,
-                min: 5,
-                max: 200,       
-                interval: 5,
-                dotSize: 13,
+                piecewise: true,
+                piecewiseLabel: true,
                 clickable: false,
+                style: {
+                    "marginLeft": "0%"
+                },
+                data: [
+					"15",
+					"30",
+                    "50",
+                    "75",
+                    "100",
+                    "150",
+                    "200"
+                ],
                 formatter: function (value) {
                     return value
                 },

@@ -136,10 +136,10 @@ let getDrawProps = function(scales, sels, ctrsets, props) {
 */
 
 let getDrawProps_bubble = function(res, sels, ctrsets, props) {
-	let	scales = res.features[0]['prop']['e'];
+	let	scales = res.prop['scales']['e'];
 	
 	let	min = 0, min_show = sels[0] * res.features[0]['prop']['e'],
-		max = res.features[0]['prop']['e'],
+		max =res.prop['scales']['e'],
 		drawtype = 'e';
 	
 	if (props['etype'] === 'de') {
@@ -327,7 +327,7 @@ let getThreetypeDatasets = function(sels, min_len, percent) {
 	let p = new Promise(function(resolve, reject) {
 		$.get(`/comp/ThreetypeQuery?city=${city}&etype=${etype}&min_len=${min_len}&percent=${percent}`, function(res, err) {
 			if (res['scode']) {
-				resolve(res['data']);
+				resolve(res['fdata']);
 			} else {
 				reject(err);
 			}

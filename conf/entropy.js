@@ -896,17 +896,101 @@ function getThreetypeview(conn, prop) {
 			etable_1= `${city}R${typs['rtype']}1mat`,
 			etable_2 = `${city}R${typs['rtype']}2mat`;
 				
-		console.log(etable_0, etable_1)
 		let max_density = 0, density_set = [sqldoc[etable_0][densityattr], sqldoc[etable_1][densityattr], sqldoc[etable_2][densityattr]];
-		console.log(density_set)
+		
 		for(var i=0; i <3; i++){
 			if(density_set[i] > max_density){
 				max_density = density_set[i];
 			}
 		}
-		console.log("max_density: " + max_density)
-		max_density = percent * max_density;
-		console.log("percent: " + percent)
+		
+		console.log("max_density:  " + max_density)
+		
+		let p = new Promise(function(resolve, reject) {
+			let result = require(`./data/bj_cluster_dbscan.json`)
+			
+			let RESULT = [],
+				SPLIT = 0.003,
+				centerincrement = 0.0015, //.toFixed(4),
+				locs = data.getRegionBound(city);
+			
+			let DATA = [];
+			
+			let max_density_i = 0;
+			for(var svg_num = 0; svg_num < 3; svg_num ++){
+				let list = result[svg_num],
+					reslen = list.length,
+					hdata= [];
+				
+				//console.log("dlist:" + JSON.stringify(dlist))
+				console.log('Result length', reslen)
+				for (let i = list.length - 1; i >= 0; i--) {
+					if(list[i][2] > max_density_i){
+						max_density_i = list[i][2]
+					}
+					
+					let lat = (list[i][0] - centerincrement),
+						lng = (list[i][1] - centerincrement),
+						lnginc = (lng + SPLIT),
+						latinc = (lat + SPLIT),
+						lngcen = list[i][1],
+						latcen = list[i][0],
+						coordsarr = [
+							[lng, lat],
+							[lnginc, lat],
+							[lnginc, latinc],
+							[lng, latinc],
+							[lng, lat]
+						]
+					
+					DATA.push({
+								"geometry": {
+									"type": "Polygon",
+									"coordinates": [coordsarr]
+								},
+								"type": "Feature",
+								"prop": {
+									'v': parseFloat(list[i][2]),
+									'e': parseFloat(list[i][2]),
+									'd': parseFloat(list[i][2]),
+									'c': [lngcen, latcen],
+									'num': Number.parseInt(svg_num)// center point
+								}
+					})
+					
+					hdata.push(coordsarr);
+				}
+				drawmap(min_len, hdata, RESULT, svg_num);
+				console.info("end")
+			}
+			
+			console.log("max_density:  " + max_density_i)
+			
+			//console.log("result: "+ JSON.stringify(RESULT))
+			
+			resolve({
+			'scode': 1,
+			'fdata': {
+				'data':{
+					  "type": "FeatureCollection",
+					  "features": DATA,
+					  "prop": {
+						  'scales': {
+							  'e': parseFloat(max_density_i),
+							  'd': parseFloat(max_density_i)
+						  }
+					  }
+				},
+				'bound_data':{
+					"type": "FeatureCollection",
+					"features": RESULT
+				}
+			}
+			})
+		})
+		return p;
+		
+		/* max_density = percent * max_density;
 				
 		let p = new Promise(function(resolve, reject) {
 	
@@ -974,7 +1058,7 @@ function getThreetypeview(conn, prop) {
 			})
 			
 		})
-		return p;
+		return p; */
 }
 
 function getMecStat(city) {

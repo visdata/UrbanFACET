@@ -15,8 +15,8 @@
 						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="DIV" @click="map_type(index)">DIV
 					</p>
 					<p>M-class: 
-						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Layer" @click="map_type(index)">Layer
 						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Blend" @click="map_type(index)">Blend
+						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Layer" @click="map_type(index)">Layer
 						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Bubble" @click="map_type(index)">Bubble
 					</p>
 					<template v-if="model.dtype !== 'd'" >
