@@ -907,7 +907,8 @@ function getThreetypeview(conn, prop) {
 		console.log("max_density:  " + max_density)
 		
 		let p = new Promise(function(resolve, reject) {
-			let result = require(`./data/bj_cluster_dbscan.json`)
+			//(`./data/${city}` + `_cluster_` + `${s}` + `_` + `${c}`+ `.json`)
+			let result = require(`./data/bj_cluster_${typs['rtype']}` + `_${percent}` + `_${min_len}` + `.json`)
 			
 			let RESULT = [],
 				SPLIT = 0.003,
