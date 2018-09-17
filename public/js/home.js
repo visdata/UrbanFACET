@@ -240,18 +240,17 @@ const userpanel = new Vue({
 							console.error("Failed!", err);
 						});
 					}
-					else{
-						self.sels.objs[i].slider.min = 0;
-						self.sels.objs[i].slider.max = 0.5;
-						self.sels.objs[i].slider.interval = 0.001;
-						self.sels.objs[i].slider.value = [0.1,0.5];
-						self.sels.objs[i].slider.formatter = "{value}";
-						
-						svals = self.sels.objs[i].slider.value;
-						
+					else{						
 						maps[i].clearLayers();
 						
 						if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
+							self.sels.objs[i].slider.min = 0.02;
+							self.sels.objs[i].slider.max = 0.3;
+							self.sels.objs[i].slider.interval = 0.04;
+							self.sels.objs[i].slider.value = [0.1, 0.3];
+							self.sels.objs[i].slider.formatter = "{value}";
+							
+							svals = self.sels.objs[i].slider.value;
 							let percent = this.sels.objs[i].slider.value[0],
 								min_len = this.sels.objs[i].slider4.value;
 							maps[i].boundaryRemove();
@@ -291,6 +290,13 @@ const userpanel = new Vue({
 							});
 						}
 						else{
+							self.sels.objs[i].slider.min = 0;
+							self.sels.objs[i].slider.max = 0.5;
+							self.sels.objs[i].slider.interval = 0.001;
+							self.sels.objs[i].slider.value = [0.1,0.5];
+							self.sels.objs[i].slider.formatter = "{value}";
+							
+							svals = self.sels.objs[i].slider.value;
 							getOverviewDatasets(obj).then(function (res) {
 								changeLoadState(`dimmer${i}`, false);
 
@@ -542,21 +548,20 @@ const userpanel = new Vue({
 					});
 				}
 				else{
-					self.sels.objs[i].slider.min = 0;
-					self.sels.objs[i].slider.max = 0.5;
-					self.sels.objs[i].slider.interval = 0.001;
-					self.sels.objs[i].slider.value = [0.1,0.5];
-					self.sels.objs[i].slider.formatter = "{value}";
-					
-					svals = self.sels.objs[i].slider.value;
-					
 					maps[i].clearLayers();
 					
 					//if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
 					//	obj.etype = obj.etype.substr(0,3);
 					//}
-					
 					if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
+						self.sels.objs[i].slider.min = 0.02;
+						self.sels.objs[i].slider.max = 0.3;
+						self.sels.objs[i].slider.interval = 0.04;
+						self.sels.objs[i].slider.value = [0.1, 0.3];
+						self.sels.objs[i].slider.formatter = "{value}";
+						
+						svals = self.sels.objs[i].slider.value;
+												
 						let min_len = 15,
 							percent = objs[i].slider.value[0];
 						maps[i].boundaryRemove();
@@ -597,6 +602,13 @@ const userpanel = new Vue({
 						});
 					}
 					else{
+						self.sels.objs[i].slider.min = 0;
+						self.sels.objs[i].slider.max = 0.5;
+						self.sels.objs[i].slider.interval = 0.001;
+						self.sels.objs[i].slider.value = [0.1,0.5];
+						self.sels.objs[i].slider.formatter = "{value}";
+						
+						svals = self.sels.objs[i].slider.value;
 						getOverviewDatasets(obj).then(function (res) {
 							changeLoadState(`dimmer${i}`, false);
 
@@ -800,7 +812,7 @@ const userpanel = new Vue({
                 this.sels.objs[i].slider.formatter = "{value}%";
                 maps[i].boundaryDrawing({}, prop, true);
 				
-				getThreetypeDatasets(obj, min_len, percent).then(function (res) {
+				/* getThreetypeDatasets(obj, min_len, percent).then(function (res) {
 
 				let city = obj.city,
 					etype = obj.etype;
@@ -813,7 +825,7 @@ const userpanel = new Vue({
 				if(res.features.length != 0){maps[i].BubbleboundaryDrawing(res, prop);}
 				}).catch(function (err) {
 						console.error("Failed!", err);
-				});
+				}); */
             }
         },
         'updateSlider1': function (index) {
