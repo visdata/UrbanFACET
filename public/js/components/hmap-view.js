@@ -955,7 +955,7 @@ class mapview {
         }
     }
 
-    BubbleboundaryDrawing(data, prop, update = false) {
+    BubbleboundaryDrawing(data, prop, color_num, update = false) {
         let self = this,
             city = prop['city'],
             onlyBound = prop['boundary'],
@@ -988,7 +988,7 @@ class mapview {
             path = d3.geoPath().projection(transform);
 
         let feature = g.selectAll("path")
-            .data(data.features)
+            .data(data.features.filter(function(d,i){return d.properties.color == color_num;}))
             .enter().append("path")
             .attr('fill', 'rgb(255,255,255,0)')
             .attr('stroke', function (d) {
@@ -1671,6 +1671,14 @@ class mapview {
                     _this.map.removeLayer(_this.heatmapLayer_2);
                     _this.map.addLayer(_this.heatmapLayer_2);
                 }
+				
+				_this.boundaryRemove();
+				let prop = {
+					'city': 'bj',
+					'boundary': true
+				};
+				_this.switchLegDisplay('bubblesld');
+				_this.BubbleboundaryDrawing({}, prop, maxLayerIdx, true)
             });
     }
 

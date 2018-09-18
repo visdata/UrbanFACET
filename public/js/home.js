@@ -251,7 +251,7 @@ const userpanel = new Vue({
 							self.sels.objs[i].slider.formatter = "{value}";
 							
 							svals = self.sels.objs[i].slider.value;
-							let percent = this.sels.objs[i].slider.value[0],
+								let percent = this.sels.objs[i].slider.value[0],
 								min_len = this.sels.objs[i].slider4.value;
 							maps[i].boundaryRemove();
 							
@@ -283,7 +283,7 @@ const userpanel = new Vue({
 								};
 								changeLoadState(`dimmer${index}`, false);
 								maps[i].mapcontourCDrawing_bubble_overlap(res.data, drawProps);
-								maps[i].BubbleboundaryDrawing(res.bound_data, prop);
+								maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
 								maps[i].switchLegDisplay('bubblesld');
 							}).catch(function (err) {
 								console.error("Failed!", err);
@@ -595,7 +595,7 @@ const userpanel = new Vue({
 							};
 							changeLoadState(`dimmer${index}`, false);
 							maps[i].mapcontourCDrawing_bubble_overlap(res.data, drawProps);
-							maps[i].BubbleboundaryDrawing(res.bound_data, prop);
+							maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
 							maps[i].switchLegDisplay('bubblesld');
 						}).catch(function (err) {
 							console.error("Failed!", err);
@@ -773,7 +773,7 @@ const userpanel = new Vue({
 							};
 							changeLoadState(`dimmer${index}`, false);
 							maps[i].mapcontourCDrawing_bubble_overlap(res.data, drawProps);
-							maps[i].BubbleboundaryDrawing(res.bound_data, prop);
+							maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
 							maps[i].switchLegDisplay('bubblesld');
 						}).catch(function (err) {
 							console.error("Failed!", err);
@@ -1004,7 +1004,7 @@ const userpanel = new Vue({
 				};
 				changeLoadState(`dimmer${index}`, false);
 				maps[i].mapcontourCDrawing_bubble_overlap(res.data, drawProps);
-				maps[i].BubbleboundaryDrawing(res.bound_data, prop);
+				maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
 				maps[i].switchLegDisplay('bubblesld');
 			}).catch(function (err) {
 					console.error("Failed!", err);
