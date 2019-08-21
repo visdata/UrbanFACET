@@ -30,7 +30,7 @@ class POICollection(object):
 		self.baseurl = baseurl
 		self.defaultarea = math.pi * 100
 		self.db = {
-			'url': '192.168.1.42',
+			'url': '127.0.0.1',
 			'port': 27017,
 			'dbname': 'tdnormal'
 		}

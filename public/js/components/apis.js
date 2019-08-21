@@ -308,7 +308,8 @@ let getDistrictClusterDatasets = function(city, k){
 	return p;
 }
 
-let getThreetypeDatasets = function(sels, min_len, percent) {
+let getThreetypeDatasets = function(sels, bound_value, contour_percent) {
+
 	let city = sels.city,
 		etype = sels.etype,
 		ftpval1 = sels.ftpval,
@@ -325,7 +326,7 @@ let getThreetypeDatasets = function(sels, min_len, percent) {
 	}
 
 	let p = new Promise(function(resolve, reject) {
-		$.get(`/comp/ThreetypeQuery?city=${city}&etype=${etype}&min_len=${min_len}&percent=${percent}`, function(res, err) {
+		$.get(`/comp/ThreetypeQuery?city=${city}&etype=${etype}&bound_value=${bound_value}&contour_percent=${contour_percent}`, function(res, err) {
 			if (res['scode']) {
 				resolve(res['fdata']);
 			} else {
@@ -336,6 +337,35 @@ let getThreetypeDatasets = function(sels, min_len, percent) {
 
 	return p;
 };
+
+let getBubbleContourDatasets = function(sels,min_len,percent) {
+	let city = sels.city,
+		etype = sels.etype,
+		ftpval1 = sels.ftpval,
+		ftpval2 = sels.ftpval2,
+		ftpval = ftpval1;
+	
+	// 以时间段最为主要依据, 只有时间段在allday的时候才考虑日期类型信息,两者都在all的时候后台传送给服务器数据为空
+	if (ftpval1 === '9') {
+		if (ftpval2 === '10') {
+			ftpval = '';
+		} else {
+			ftpval = ftpval2;
+		}
+	}
+
+	let p = new Promise(function(resolve, reject) {
+		$.get(`/comp/BubbleContourQuery?city=${city}&etype=${etype}&min_len=${min_len}&percent=${percent}`, function(res, err) {
+			if (res['scode']) {
+				resolve(res['fdata']);
+			} else {
+				reject(err);
+			}
+		});
+	});
+
+	return p;
+}
 
 let getAOIDatasets = function(city, type) {
 	let p = new Promise(function(resolve, reject) {
@@ -465,6 +495,7 @@ export {
 	getClusterboundaryDatasetsUpdate,
 	getDistrictClusterDatasets,
 	getThreetypeDatasets,
+	getBubbleContourDatasets,
 	getAOIDatasets,
 	getSMecDatasets,
 	getAoiDisDatasets,

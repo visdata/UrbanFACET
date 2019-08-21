@@ -177,6 +177,17 @@ class mapview {
         return this;
     }
 
+    setBubbleContourData(data){
+        this.bubbleContourData = data;
+        return this;
+    }
+
+    getBubbleContourData(data){
+        return this.bubbleContourData;
+    }
+
+    
+
     getGridData() {
         return this.gridData;
     }
@@ -955,6 +966,8 @@ class mapview {
         }
     }
 
+    
+
     BubbleboundaryDrawing(data, prop, color_num, update = false) {
         let self = this,
             city = prop['city'],
@@ -1158,6 +1171,8 @@ class mapview {
     }
 
     boundaryRemove() {
+        console.log("fry hmap.js boundaryRemove")
+
         this.switchLegDisplay(null)
 
         // 删除行政边界图层
@@ -1535,6 +1550,30 @@ class mapview {
         this.map.addLayer(this.bubbleSetOverlay);
     }
 
+    BubbleContourDraw(data,prop,update=false) { 
+        console.log("fry BubbleContourDraw")
+        if (!update) {
+            console.log("first")
+            this.setBubbleContourData(data);
+        } else {
+            console.log("second")
+            data = this.getBubbleContourData();
+        }
+
+
+        // 加入一层数据
+        this.bbcontourLayer_1 = L.geoJson(data.features[0],{style:data.features[0].properties})
+        this.map.addLayer(this.bbcontourLayer_1)
+    
+
+        this.bbcontourLayer_2 = L.geoJson(data.features[1],{style:data.features[1].properties})
+        this.map.addLayer(this.bbcontourLayer_2)
+
+        this.bbcontourLayer_3 = L.geoJson(data.features[2],{style:data.features[2].properties})
+        this.map.addLayer(this.bbcontourLayer_3)
+
+    }
+
     mapcontourCDrawing_bubble_overlap(data, prop, update = false) {
         var _this = this;
         this._bubbleOverlapDrawing(data, prop, update);
@@ -1686,6 +1725,10 @@ class mapview {
         // update为false表示当前执行重绘操作, update为true则从实例中调用历史数据进行绘制
         //console.log("data:" +  JSON.stringify(data.features[0]))
 
+        // data是后台传送回来的grid数据，分别有两个部分：
+        // features: 存储了一个若干长的数组，数组中的每个元素代表一个数据点
+        // prop: 存储了一些参数信息
+
         if (!update) {
             this.switchLegDisplay('ctrleg');
             this.setGridData(data);
@@ -1693,7 +1736,6 @@ class mapview {
             data = this.getGridData();
         }
         this.setGridDataType(prop['prop']['drawtype']);
-
         console.log('Drawtype: ', prop['prop']['drawtype'], 'Update: ', update);
 
         const drawtype = prop['prop']['drawtype'],
@@ -1712,6 +1754,7 @@ class mapview {
 
         console.log("judRate      : " + JSON.stringify(judRate))
 
+        //这里把所有的grid分为 3 类，也就是 高/中/低 三类
         let len = data.features.length,
             data_0 = {
                 max: maxVal,
@@ -1730,22 +1773,30 @@ class mapview {
             };
 
 
-        let countVal = 0, bubble_countVal_0 = 0, bubble_countVal_1 = 0, bubble_countVal_2 = 0;
+        let countVal = 0, 
+            bubble_countVal_0 = 0, 
+            bubble_countVal_1 = 0, 
+            bubble_countVal_2 = 0;
 
-
+        
+        // 遍历所有的 grid
         for (let i = len - 1; i >= 0; i--) {
+
             let feature = data.features[i],
                 evalue = feature['prop']['e'], //网格具体的值
                 dvalue = feature['prop']['d'],
-                center = data.features[i]['prop']['c'];
+                center = data.features[i]['prop']['c']; // grid的中间点坐标
 
             // 根据 filter 值及选中类型进行过滤
             // if (outOfRange(drawtype, evalue, dvalue, prop['e']['min'], prop['d']['min'])) {
             //     continue;
             // }
             countVal += 1;
+
+            // 过滤掉 没达到最小显示标准的数据grid，默认值是0，即全部显示
             if (feature['prop'][drawtype] > prop['prop']['min_show']) {
                 // 为 hdata 注入数据
+                // 根据feature.prop.num来判断种类，看来num值在后台是一个经过处理的值
                 if (feature['prop']['num'] == 0) {
                     bubble_countVal_0 += 1;
                     data_0.data.push({
@@ -1779,20 +1830,24 @@ class mapview {
 
 
         for (var svg_num = 0; svg_num < 3; svg_num++) {
-            let clr_trans = 'rgba(254,224,210,0.5)';
-            let clr_red = 'rgba(103,0,13,0.5)';
-            let clr_yl = 'rgba(239,59,44,0.5)';
+            let clr_trans = '';
+            let clr_red = '';
+            let clr_yl = '';
 
-            if (svg_num == 1) {
-                clr_trans = 'rgba(229,245,224,0.5)';
-                clr_red = 'rgba(0,68,27,0.8)';
-                clr_yl = 'rgba(65,171,93,0.8)';
-            }
-            else if (svg_num == 0) {
+            if (svg_num == 0){
                 clr_trans = 'rgba(222,235,247,0.5)';
                 clr_red = 'rgba(8,48,107,0.5)';
                 clr_yl = 'rgba(66,146,198,0.5)';
+            }else if (svg_num == 1){
+                clr_trans = 'rgba(229,245,224,0.5)';
+                clr_red = 'rgba(0,68,27,0.8)';
+                clr_yl = 'rgba(65,171,93,0.8)';
+            }else if (svg_num == 2){
+                clr_trans = 'rgba(254,224,210,0.5)';
+                clr_red = 'rgba(103,0,13,0.5)';
+                clr_yl = 'rgba(239,59,44,0.5)';
             }
+
             let cfg = {
                 // radius should be small ONLY if scaleRadius is true (or small radius is intended)
                 // if scaleRadius is false it will be the constant radius used in pixels
@@ -1827,6 +1882,8 @@ class mapview {
             }
 
             console.log("gradients   : " + JSON.stringify(cfg.gradient))
+
+            
             if (svg_num == 0) {
                 this.heatmapLayer = new HeatmapOverlay(cfg);
                 this.map.addLayer(this.heatmapLayer);
@@ -1974,6 +2031,18 @@ class mapview {
             this.map.removeLayer(this.areaSelector);
             this.areaSelector = null;
         }
+        if (this.bbcontourLayer_1) {
+            this.map.removeLayer(this.bbcontourLayer_1);
+            this.bbcontourLayer_1 = null;
+        }
+        if (this.bbcontourLayer_2) {
+            this.map.removeLayer(this.bbcontourLayer_2);
+            this.bbcontourLayer_2 = null;
+        }
+        if (this.bbcontourLayer_3) {
+            this.map.removeLayer(this.bbcontourLayer_3);
+            this.bbcontourLayer_3 = null;
+        }
         //  d3.selectAll('.leaflet-zoom-hide').remove();
     }
 
@@ -1983,6 +2052,8 @@ class mapview {
      * @return {[type]}     [description]
      */
     switchLegDisplay(cfg) {
+        console.log("fry hmap.js switchLegDisplay cfg=",cfg)
+
         for (let key in this.ides) {
             console.log("this.ides: " + key)
             if (key === 'mapid' || key === 'baselyr') {

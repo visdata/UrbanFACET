@@ -172,7 +172,7 @@ def main(argv):
 		usage()
 		sys.exit(2)
 
-	city, r, split, IP = 'beijing', 10, 0.003, 'localhost' # another IP in ISCAS should be '192.168.1.42'
+	city, r, split, IP = 'beijing', 10, 0.003, 'localhost' # another IP in ISCAS should be '127.0.0.1'
 	for opt, arg in opts:
 		if opt == '-h':
 			usage()

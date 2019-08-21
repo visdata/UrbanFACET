@@ -36,6 +36,9 @@ router.get('/DistrictClusterQuery', function(req, res, next) {
 router.get('/ThreetypeQuery', function(req, res, next) {
 	apis.ThreetypeQuery(req, res, next);
 });
+router.get('/BubbleContourQuery', function(req, res, next) {
+	apis.BubbleContourQuery(req, res, next);
+});
 router.get('/aoiQuery', function(req, res, next) {
 	apis.aoiQuery(req, res, next);
 });

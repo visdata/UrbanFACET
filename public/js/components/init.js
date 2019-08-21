@@ -257,7 +257,8 @@ let home = {
      * 
      */
     'sels': {
-        'objs': [{
+        'objs': [
+            {
             'city': 'bj',
             'etype': 'de',
             'ftpval': '9',
@@ -437,25 +438,28 @@ let home = {
             },
              'slider4': {
                 tooltip: 'hover',
-                value: '15',
+                value: '10',
                 dotSize: 13,
-                piecewise: true,
+                piecewise: false,
                 piecewiseLabel: true,
                 clickable: false,
                 style: {
                     "marginLeft": "0%"
                 },
                 data: [
-					"15",
-					"30",
+					"10",
+					"20",
+                    "30",
+                    "40",
                     "50",
-                    "75",
+                    "60",
+                    "70",
+                    "80",
+                    "90",
                     "100",
-                    "150",
-                    "200"
                 ],
                 formatter: function (value) {
-                    return value
+                    return value+"%";
                 },
 				bgStyle:{
 					'backgroundColor': "orange"
@@ -486,7 +490,8 @@ let home = {
                     "disnum": 16
                 }
             }
-        }],
+            }
+        ],
         'otype': 'e', //overlay type
         'ptype': 0, //pois type
         'stype': 0, //scales type

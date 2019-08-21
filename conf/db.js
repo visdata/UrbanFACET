@@ -16,9 +16,9 @@ var localhost = mysql.createPool({
 });
 
 var server = mysql.createPool({
-	host    : '192.168.1.42', 
+	host    : '127.0.0.1', 
 	user    : 'root',
-	password: 'vis_2014',
+	password: 'Vis_2014',
 	database: 'tdnormal',
 	port    : 3306,
 	timezone: 'GMT',

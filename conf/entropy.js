@@ -810,6 +810,9 @@ function DFS_rectangle(link, num, tree, visit, data){
 }
 
 function drawmap(c, data ,result, svg_num){
+	// 用来绘制边界
+	// c = 
+	// data 所有点的
 	let bound = {},
 		link = {};
 	//console.log("data len"  + data.length)
@@ -880,186 +883,258 @@ function drawmap(c, data ,result, svg_num){
 	}
 }
 
-function getThreetypeview(conn, prop) {
-		let city = prop['city'],
-        ftpval = prop['ftpval'],
-        typs = getTypeVals(prop['etype'] + '0_0'),
-        entropyattr = `${typs['etype']+typs['ctype']}sval`,
-        densityattr = 'wpnumber',
-        etable,
-		mtype = 'sum',
-		sqldoc = iMax[mtype],
+function getBubbleContourData(conn,prop){
+	console.log("entropy getBubbleContourData start");
+
+	let typs = getTypeVals(prop['etype'] + '0_0'),
 		min_len = prop['min_len'],
 		percent = prop['percent'];
+
+	let p = new Promise(function(resolve, reject) {
+		let result = require(`./data/bj_cluster_contour_${typs['rtype']}` + `_${percent}` + `_${min_len}` + `.json`)
+		console.log("entropy.js getdata")
+		console.log(result)
 		
-		let etable_0 = `${city}R${typs['rtype']}0mat`,
-			etable_1= `${city}R${typs['rtype']}1mat`,
-			etable_2 = `${city}R${typs['rtype']}2mat`;
-				
-		let max_density = 0, density_set = [sqldoc[etable_0][densityattr], sqldoc[etable_1][densityattr], sqldoc[etable_2][densityattr]];
-		
-		for(var i=0; i <3; i++){
-			if(density_set[i] > max_density){
-				max_density = density_set[i];
-			}
+		resolve({
+		'scode': 1,
+		'fdata': {
+			'data':result
+		}
+		}) 
+	})
+	return p;
+}
+
+function getThreetypeview(conn, prop) {
+	console.log("entropy getThreetypeview start");
+	console.log(prop)
+
+	let typs = getTypeVals(prop['etype'] + '0_0'),
+		bound_value_str = prop['bound_value'],
+		contour_percent = prop['contour_percent'];
+	
+	let bound_value = bound_value_str.split(",");
+
+	let p = new Promise(function(resolve, reject) {
+		let result = null;
+		try{
+			result = require(`./data/bubble_contour/new_bj_cluster_${typs['rtype']}` + `${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`);
+		}catch(err){
+			result = require(`./data/bubble_contour/new_bj_cluster_V` + `1.5-3` + `_10` + `.json`);
+
+			// reject(err)
 		}
 		
-		console.log("max_density:  " + max_density)
+		resolve({
+		'scode': 1,
+		'fdata': {
+			'data':result
+		}
+		}) 
+
+
+	})
+	return p;
+
+	// city: 城市简称, tj, zjk, ts, bj
+    // ftpval: 时间段或者日期类型编号, 0-8
+    // entropyattr: 查找的 entropy value 字段
+    // densityattr: 查找的 density value 字段
+    // etable: 查找的数据表名称
+    // mtype: 查询结果的显示类型,统计或者平均值
+    // sqldoc: 各个表中字段的最大值
+    // eMax: 获得的 entropy 最大值
+    // dMax: 获得的 density 最大值
+		// let city = prop['city'],
+        // ftpval = prop['ftpval'],
+        // typs = getTypeVals(prop['etype'] + '0_0'),
+        // entropyattr = `${typs['etype']+typs['ctype']}sval`,
+        // densityattr = 'wpnumber',
+        // etable,
+		// mtype = 'sum',
+		// sqldoc = iMax[mtype],
+		// min_len = prop['min_len'],
+		// percent = prop['percent'];
 		
-		let p = new Promise(function(resolve, reject) {
-			//(`./data/${city}` + `_cluster_` + `${s}` + `_` + `${c}`+ `.json`)
-			let result = require(`./data/bj_cluster_${typs['rtype']}` + `_${percent}` + `_${min_len}` + `.json`)
-			
-			let RESULT = [],
-				SPLIT = 0.003,
-				centerincrement = 0.0015, //.toFixed(4),
-				locs = data.getRegionBound(city);
-			
-			let DATA = [];
-			
-			let max_density_i = 0;
-			for(var svg_num = 0; svg_num < 3; svg_num ++){
-				let list = result[svg_num],
-					reslen = list.length,
-					hdata= [];
+		// let etable_0 = `${city}R${typs['rtype']}0mat`,
+		// 	etable_1= `${city}R${typs['rtype']}1mat`,
+		// 	etable_2 = `${city}R${typs['rtype']}2mat`;
 				
-				//console.log("dlist:" + JSON.stringify(dlist))
-				console.log('Result length', reslen)
-				for (let i = list.length - 1; i >= 0; i--) {
-					if(list[i][2] > max_density_i){
-						max_density_i = list[i][2]
-					}
-					
-					let lat = (list[i][0] - centerincrement),
-						lng = (list[i][1] - centerincrement),
-						lnginc = (lng + SPLIT),
-						latinc = (lat + SPLIT),
-						lngcen = list[i][1],
-						latcen = list[i][0],
-						coordsarr = [
-							[lng, lat],
-							[lnginc, lat],
-							[lnginc, latinc],
-							[lng, latinc],
-							[lng, lat]
-						]
-					
-					DATA.push({
-								"geometry": {
-									"type": "Polygon",
-									"coordinates": [coordsarr]
-								},
-								"type": "Feature",
-								"prop": {
-									'v': parseFloat(list[i][2]),
-									'e': parseFloat(list[i][2]),
-									'd': parseFloat(list[i][2]),
-									'c': [lngcen, latcen],
-									'num': Number.parseInt(svg_num)// center point
-								}
-					})
-					
-					hdata.push(coordsarr);
-				}
-				drawmap(4, hdata, RESULT, svg_num);
-				console.info("end")
-			}
-			
-			console.log("max_density:  " + max_density_i)
-			
-			//console.log("result: "+ JSON.stringify(RESULT))
-			
-			resolve({
-			'scode': 1,
-			'fdata': {
-				'data':{
-					  "type": "FeatureCollection",
-					  "features": DATA,
-					  "prop": {
-						  'scales': {
-							  'e': parseFloat(max_density_i),
-							  'd': parseFloat(max_density_i)
-						  }
-					  }
-				},
-				'bound_data':{
-					"type": "FeatureCollection",
-					"features": RESULT
-				}
-			}
-			})
-		})
-		return p;
+		// let max_density = 0, density_set = [sqldoc[etable_0][densityattr], sqldoc[etable_1][densityattr], sqldoc[etable_2][densityattr]];
 		
-		/* max_density = percent * max_density;
+		// for(var i=0; i <3; i++){
+		// 	if(density_set[i] > max_density){
+		// 		max_density = density_set[i];
+		// 	}
+		// }
+		
+		// console.log("max_density:  " + max_density)
+		
+		// let p = new Promise(function(resolve, reject) {
+		// 	//(`./data/${city}` + `_cluster_` + `${s}` + `_` + `${c}`+ `.json`)
+		// 	let result = require(`./data/bj_cluster_${typs['rtype']}` + `_${percent}` + `_${min_len}` + `.json`)
+			
+		// 	let RESULT = [],
+		// 		SPLIT = 0.003,
+		// 		centerincrement = 0.0015, //.toFixed(4),
+		// 		locs = data.getRegionBound(city);
+			
+		// 	let DATA = [];
+			
+		// 	let max_density_i = 0;
+		// 	for(var svg_num = 0; svg_num < 3; svg_num ++){
+		// 		let list = result[svg_num],
+		// 			reslen = list.length,
+		// 			hdata= [];
 				
-		let p = new Promise(function(resolve, reject) {
+		// 		//console.log("dlist:" + JSON.stringify(dlist))
+		// 		console.log('Result length', reslen)
+		// 		for (let i = list.length - 1; i >= 0; i--) {
+
+		// 			// list是一群点的集聚
+		// 			if(list[i][2] > max_density_i){
+		// 				max_density_i = list[i][2]
+		// 			}
+					
+		// 			let lat = (list[i][0] - centerincrement),
+		// 				lng = (list[i][1] - centerincrement),
+		// 				lnginc = (lng + SPLIT),
+		// 				latinc = (lat + SPLIT),
+		// 				lngcen = list[i][1],
+		// 				latcen = list[i][0],
+		// 				coordsarr = [
+		// 					[lng, lat],
+		// 					[lnginc, lat],
+		// 					[lnginc, latinc],
+		// 					[lng, latinc],
+		// 					[lng, lat]
+		// 				]
+					
+		// 			DATA.push({
+		// 						"geometry": {
+		// 							"type": "Polygon",
+		// 							"coordinates": [coordsarr]
+		// 						},
+		// 						"type": "Feature",
+		// 						"prop": {
+		// 							'v': parseFloat(list[i][2]),
+		// 							'e': parseFloat(list[i][2]),
+		// 							'd': parseFloat(list[i][2]),
+		// 							'c': [lngcen, latcen],
+		// 							'num': Number.parseInt(svg_num)// center point
+		// 						}
+		// 			})
+					
+		// 			hdata.push(coordsarr);
+		// 		}
+		// 		// 这里是用来画边界的
+		// 		drawmap(4, hdata, RESULT, svg_num);
+		// 		console.info("end")
+		// 	}
+			
+		// 	console.log("max_density:  " + max_density_i)
+			
+		// 	//console.log("result: "+ JSON.stringify(RESULT))
+			
+		// 	resolve({
+		// 	'scode': 1,
+		// 	'fdata': {
+		// 		'data':{
+		// 			  "type": "FeatureCollection",
+		// 			  "features": DATA,
+		// 			  "prop": {
+		// 				  'scales': {
+		// 					  'e': parseFloat(max_density_i),
+		// 					  'd': parseFloat(max_density_i)
+		// 				  }
+		// 			  }
+		// 		},
+		// 		'bound_data':{
+		// 			"type": "FeatureCollection",
+		// 			"features": RESULT
+		// 		}
+		// 	}
+		// 	})
+		// })
+		// return p;
+
+		// 上面是从数据文件中直接读取处理好的数据
+		// 下面是从数据库中读取源数据的操作，就是正确操作，但是速度比较慢
+		
+		// // 这里的 max_density 是提前确定好的数值，percent是传进来的数值，也就是那个滑动条的第一个按钮值，default值是0.1 
+		// max_density = percent * max_density;
+
+				
+		// let p = new Promise(function(resolve, reject) {
 	
-			let sql = $sql.getOverviewValD[mtype] + $sql.getOverviewValD[mtype] + $sql.getOverviewValD[mtype],
-			param = [
-				densityattr, etable_0, densityattr, densityattr,
-				densityattr, etable_1, densityattr, densityattr,
-				densityattr, etable_2, densityattr, densityattr
-			];
+		// 	let sql = $sql.getOverviewValD[mtype] + $sql.getOverviewValD[mtype] + $sql.getOverviewValD[mtype],
+		// 	param = [
+		// 		densityattr, etable_0, densityattr, densityattr,
+		// 		densityattr, etable_1, densityattr, densityattr,
+		// 		densityattr, etable_2, densityattr, densityattr
+		// 	];
 		
-			conn.query(sql, param, function(err, result) {
-				conn.release();
+		// 	conn.query(sql, param, function(err, result) {
+		// 		conn.release();
 
-				if (err) {
-					reject(err);
-				} else {
-					let RESULT = [],
-						SPLIT = 0.003,
-						centerincrement = 0.0015, //.toFixed(4),
-						locs = data.getRegionBound(city);
+		// 		if (err) {
+		// 			reject(err);
+		// 		} else {
+		// 			let RESULT = [],
+		// 				SPLIT = 0.003, // 经度划分一个格子的长度
+		// 				centerincrement = 0.0015, //.toFixed(4),
+		// 				locs = data.getRegionBound(city);
 					
-					for(var svg_num = 0; svg_num < 3; svg_num ++){
-						let list = result[svg_num],
-							reslen = list.length,
-							hdata= [];
+		// 			// 分成3类，也就对应着3个不同的表中得到的结果，即etable_0,1,2	
+		// 			for(var svg_num = 0; svg_num < 3; svg_num ++){
+		// 				let list = result[svg_num],
+		// 					reslen = list.length,
+		// 					hdata= [];
 						
-						//console.log("dlist:" + JSON.stringify(dlist))
-						console.log('Result length', reslen)
-						for (let i = list.length - 1; i >= 0; i--) {
-							if(list[i]['val'] > max_density){
-								let id = Number.parseInt(list[i]['id']),
-									LNGNUM = parseInt((locs['east'] - locs['west']) / SPLIT + 1),
-									latind = parseInt(id / LNGNUM),
-									lngind = id - latind * LNGNUM,
-									lat = (locs['south'] + latind * SPLIT),
-									lng = (locs['west'] + lngind * SPLIT),
-									lnginc = (lng + SPLIT),
-									latinc = (lat + SPLIT),
-									lngcen = (lng + centerincrement),
-									latcen = (lat + centerincrement),
-									coordsarr = [
-										[lng, lat],
-										[lnginc, lat],
-										[lnginc, latinc],
-										[lng, latinc],
-										[lng, lat]
-									]
+		// 				//console.log("dlist:" + JSON.stringify(dlist))
+		// 				console.log('Result length', reslen)
 
-								hdata.push(coordsarr);
-							}
-						}
-						drawmap(min_len, hdata, RESULT, svg_num);
-						console.info("end")
-					}
+		// 				// 遍历取出来wpnumber大于 0 的所有值对
+		// 				for (let i = list.length - 1; i >= 0; i--) {
+		// 					if(list[i]['val'] > max_density){
+								// let id = Number.parseInt(list[i]['id']), // grid 的id
+								// 	LNGNUM = parseInt((locs['east'] - locs['west']) / SPLIT + 1), // 经度划分的格子数
+								// 	latind = parseInt(id / LNGNUM), 
+								// 	lngind = id - latind * LNGNUM,
+								// 	lat = (locs['south'] + latind * SPLIT),
+								// 	lng = (locs['west'] + lngind * SPLIT),
+								// 	lnginc = (lng + SPLIT),
+								// 	latinc = (lat + SPLIT),
+								// 	lngcen = (lng + centerincrement),
+								// 	latcen = (lat + centerincrement),
+		// 							coordsarr = [
+		// 								[lng, lat],
+		// 								[lnginc, lat],
+		// 								[lnginc, latinc],
+		// 								[lng, latinc],
+		// 								[lng, lat]
+		// 							]
+
+		// 						hdata.push(coordsarr);
+		// 					}
+		// 				}
+		// 				drawmap(min_len, hdata, RESULT, svg_num);
+		// 				console.info("end")
+		// 			}
 					
-					//console.log("result: "+ JSON.stringify(RESULT))
-					resolve({
-                    'scode': 1,
-                    'data': {
-                        "type": "FeatureCollection",
-                        "features": RESULT
-                    }
-					})
-				}
-			})
+		// 			//console.log("result: "+ JSON.stringify(RESULT))
+		// 			resolve({
+        //             'scode': 1,
+        //             'data': {
+        //                 "type": "FeatureCollection",
+        //                 "features": RESULT
+        //             }
+		// 			})
+		// 		}
+		// 	})
 			
-		})
-		return p; */
+		// })
+		// return p; 
 }
 
 function getMecStat(city) {
@@ -1226,6 +1301,7 @@ module.exports = {
     getClusterBoundaryUpdate: getClusterBoundaryUpdate,
     getDistrictClusterDatasets: getDistrictClusterDatasets,
 	getThreetypeview: getThreetypeview,
+	getBubbleContourData:getBubbleContourData,
     getAoiNum: getAoiNum,
     getAoiDetails: getAoiDetails,
     getMecStat: getMecStat,

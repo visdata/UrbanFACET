@@ -23,7 +23,8 @@ import {
     getClusterboundaryDatasets,
     getClusterboundaryDatasetsUpdate,
     getDistrictClusterDatasets,
-	getThreetypeDatasets,
+    getThreetypeDatasets,
+    getBubbleContourDatasets,
     getAOIDatasets,
     getDensity,
     getSMecDatasets,
@@ -104,6 +105,7 @@ const userpanel = new Vue({
          * @return {[type]}       [description]
          */
         'getOverview': function (index) {
+            console.log("home.js getOverview, index =",index)
             let self = this,
                 svals = null;
 
@@ -244,57 +246,68 @@ const userpanel = new Vue({
 						maps[i].clearLayers();
 						
 						if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
-							self.sels.objs[i].slider.min = 0.02;
-							self.sels.objs[i].slider.max = 0.3;
-							self.sels.objs[i].slider.interval = 0.04;
-							self.sels.objs[i].slider.value = [0.1, 0.3];
-							self.sels.objs[i].slider.formatter = "{value}";
-							
-							svals = self.sels.objs[i].slider.value;
-								let percent = this.sels.objs[i].slider.value[0],
-								min_len = this.sels.objs[i].slider4.value;
-							maps[i].boundaryRemove();
-							
-							getThreetypeDatasets(obj, min_len, percent).then(function (res) {
+                            /*bubble set 的数据提取部分*/
 
-								let city = objs[i].city,
-									etype = objs[i].etype;
-
-								let prop = {
-									'city': city,
-									'boundary': true
-								};
-								
-								let drawProps = {
-									'e': { // density
-										'min': 0,
-										'max': res.data['prop']['scales']['e'],
-										//'number': sels[1]
-										'scales': res.data['prop']['scales']['e']
-									},
-									'prop': { // prop
-										'rev': drawprop['rev'],
-										'drawtype': 'e',
-										'radius': self.sels.ctrsets.radius * 0.0025,
-										'opacity': self.sels.ctrsets.opacity,
-										'useLocalExtrema': self.sels.ctrsets.useLocalExtrema,
-										'min_show': 0
-									}
-								};
-								changeLoadState(`dimmer${index}`, false);
-								maps[i].mapcontourCDrawing_bubble_overlap(res.data, drawProps);
-								maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
-								maps[i].switchLegDisplay('bubblesld');
-							}).catch(function (err) {
-								console.error("Failed!", err);
-							});
+                            // 设置三种种类的值的分界线
+                            // 这里直接设置成vibrancy的最小值和最大值，实际上应该提前计算之后存储在这里
+                            self.sels.objs[i].slider.min = 0;
+                            self.sels.objs[i].slider.max = 4;
+                            self.sels.objs[i].slider.interval = 0.5;
+                            self.sels.objs[i].slider.value = [1.5,3];
+                            self.sels.objs[i].slider.formatter = "{value}";
+                            self.sels.objs[i].slider.processStyle = "green"
+							
+							let bound_value = self.sels.objs[i].slider.value,
+                            contour_percent = this.sels.objs[i].slider4.value;
+                            maps[i].boundaryRemove();
+							
+							getThreetypeDatasets(objs[i], bound_value, contour_percent).then(function (res) {
+                                console.log(res)
+                                console.log(JSON.stringify(res))
+    
+                                let city = objs[i].city,
+                                    etype = objs[i].etype;
+    
+                                let prop = {
+                                    'city': city,
+                                    'boundary': true
+                                };
+                                
+                                // let drawProps = {
+                                // 	'e': { // density
+                                // 		'min': 0,
+                                // 		'max': res.data['prop']['scales']['e'],
+                                // 		//'number': sels[1]
+                                // 		'scales': res.data['prop']['scales']['e']
+                                // 	},
+                                // 	'prop': { // prop
+                                // 		'rev': drawprop['rev'],
+                                // 		'drawtype': 'e',
+                                // 		'radius': self.sels.ctrsets.radius * 0.0025,
+                                // 		'opacity': self.sels.ctrsets.opacity,
+                                // 		'useLocalExtrema': self.sels.ctrsets.useLocalExtrema,
+                                // 		'min_show': 0
+                                // 	}
+                                // };
+                                changeLoadState(`dimmer${index}`, false);
+                                //重点是这两步,是绘制bubble set的数据范围和数据边界的重要步骤
+                                //maps[i].mapcontourCDrawing_bubble_overlap(res.data, drawProps);
+                                //maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
+    
+                                // 直接拿到了表示等高线的geojson数据，在地图上直接绘制了
+                                maps[i].BubbleContourDraw(res.data,prop);
+                                maps[i].switchLegDisplay('bubblesld');
+                            }).catch(function (err) {
+                                console.error("Failed!", err);
+                            });
 						}
 						else{
 							self.sels.objs[i].slider.min = 0;
 							self.sels.objs[i].slider.max = 0.5;
 							self.sels.objs[i].slider.interval = 0.001;
 							self.sels.objs[i].slider.value = [0.1,0.5];
-							self.sels.objs[i].slider.formatter = "{value}";
+                            self.sels.objs[i].slider.formatter = "{value}";
+        
 							
 							svals = self.sels.objs[i].slider.value;
 							getOverviewDatasets(obj).then(function (res) {
@@ -321,7 +334,7 @@ const userpanel = new Vue({
 				else {
 					maps[i].clearLayers();
                     self.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
-                    self.sels.objs[i].slider.formatter = "{value}%";
+                    self.sels.objs[i].slider.formatter = "{value}";
                     getBoundaryDatasets(city).then(function (res) {
                         changeLoadState(`dimmer${i}`, false);
 						
@@ -429,6 +442,7 @@ const userpanel = new Vue({
             daview.destroy();
             daview = null;
         },
+
         /**
          * 更新指定 map 面板中的时间过滤条件
          * @param  {[type]} val   [description]
@@ -459,13 +473,23 @@ const userpanel = new Vue({
             }
         },
 		'map_type': function(index){
-			let i = Number.parseInt(index), self = this, objs = self.sels.objs,
+            console.log("fry home.js map_type index=",index)
+
+            let i = Number.parseInt(index), 
+                self = this, 
+                objs = self.sels.objs,
 				svals = self.sels.objs[i].slider.value; //滑动条范围
 
-			objs[i].etype = objs[i].etype.substr(0,2);
+            objs[i].etype = objs[i].etype.substr(0,2);
+            // 打印 滑动条的范围值
 			console.log("vals:" + svals)
-			
+            
+            
+            // 判断当前的entropy是不是房价这种固定值
 			if(['tg', 'ag', 'po', 'hp'].indexOf(objs[i].etype) <= -1){
+                // 当前选中的值是vibrancy这4类计算的entropy
+
+                // 判断可视化的方式是 blend、layer还是bubble
 				if(self.sels.objs[i].maptype === 'Blend'){
 					objs[i].etype += 'b';
 				}
@@ -475,37 +499,42 @@ const userpanel = new Vue({
 				else if(self.sels.objs[i].maptype === 'Bubble'){
 					objs[i].etype += 'bb';
 				}
-			}
-			else{
+			} else{
+                // 当前选中的值不是是房价类似的固定值
 				self.sels.objs[i].maptype = 'DIV';
 			}
 
-			let obj = objs[i],
-				city = obj.city,
-				etype = obj.etype,
-				rev = obj.reverse,
+			let obj = objs[i], // obj代表这个绘图对象
+				city = obj.city, // 代表城市，采用缩写，如bj=北京
+				etype = obj.etype, // 代表地图种类，分前后两部分，前两个字母代表entropy种类，后两个代表可视化方法
+				rev = obj.reverse, // reverse的按钮被勾选则为真
 				drawprop = {
 					'etype': etype,
 					'rev': rev
 				};
 			console.log("etype:" +  JSON.stringify(drawprop))
 
-			// 添加 loading 效果 & 移动地图
+            // 添加 loading 效果 & 移动地图
+            // 添加蒙版，展示正在loading
 			changeLoadState(`dimmer${i}`, true);
 			maps[i].panTo(regionRecords[city]['center']);
-			
+            
+            // 如果是bubble的可视化方法，就更换map里的slider，bubblesld = bubble slider
 			if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
 				maps[i].switchLegDisplay('bubblesld');
 			}
 			else{
 				maps[i].switchLegDisplay(null);
 			}
-			
+            
+            // 进行需计算的四种entropy的地图渲染
 			if(self.sels.objs[i].maptype !== 'DIV'){
 				self.sels.objs[i].slider.processStyle.background = '-webkit-linear-gradient(left, #ffffff 0%, #ffff00 40%,#ff0000 100%)';
-				maps[i].boundaryRemove();
-				// 根据用户所选 metric 类型进行相应数据提取操作
+                maps[i].boundaryRemove();
+                
+				// 没有添加可视化方法的四种metric
 				if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
+
 					// 获取 entropy 和 density 资源
 					maps[i].clearLayers();
 					getOverviewDatasets(obj).then(function (res) {
@@ -546,28 +575,44 @@ const userpanel = new Vue({
 					}).catch(function (err) {
 						console.error("Failed!", err);
 					});
-				}
-				else{
+				} else{
+                    // 添加了可视化方法的四种metric
+
+                    // 移除地图上的所有图层
 					maps[i].clearLayers();
 					
-					//if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
-					//	obj.etype = obj.etype.substr(0,3);
-					//}
+					// 地图是bubble的可视化方法
 					if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
-						self.sels.objs[i].slider.min = 0.02;
-						self.sels.objs[i].slider.max = 0.3;
-						self.sels.objs[i].slider.interval = 0.04;
-						self.sels.objs[i].slider.value = [0.1, 0.3];
-						self.sels.objs[i].slider.formatter = "{value}";
+                        
+                        // 设置三种种类的值的分界线
+                        // 这里直接设置成vibrancy的最小值和最大值，实际上应该提前计算之后存储在这里
+						self.sels.objs[i].slider.min = 0;
+                        self.sels.objs[i].slider.max = 4;
+                        self.sels.objs[i].slider.interval = 0.5;
+                        self.sels.objs[i].slider.value = [1.5,3];
+                        self.sels.objs[i].slider.formatter = "{value}";
+                        self.sels.objs[i].slider.processStyle = "green"
 						
-						svals = self.sels.objs[i].slider.value;
-												
-						let min_len = 15,
-							percent = objs[i].slider.value[0];
-						maps[i].boundaryRemove();
-						maps[i].switchLegDisplay('bubblesld');
-						
-						getThreetypeDatasets(objs[i], min_len, percent).then(function (res) {
+                            
+                        // 读取两个slider的值，这里读取的都是设定好的初始值
+                        let bound_value = self.sels.objs[i].slider.value;
+                        let contour_percent = 10;
+                            
+                        // 移除绘制的边界
+                        maps[i].boundaryRemove();
+                        // 切换成bubble对应的slider
+                        maps[i].switchLegDisplay('bubblesld');
+
+                        console.log(bound_value)
+                        console.log(contour_percent)
+
+
+                        // 向后台请求三种分类对应的等高线数据，并在接受到数据后进行绘制 
+                        // 需要传递的参数有：城市、entropy类型、3种类型分类的界限、等高线的边框值
+                        // obj[i]:包含了城市、entropy类型
+                        // bound_value: 3种类型分类的界限
+                        // contour_percent: 等高线的边框，表示最大值的%
+						getThreetypeDatasets(objs[i], bound_value, contour_percent).then(function (res) {
 
 							let city = objs[i].city,
 								etype = objs[i].etype;
@@ -576,27 +621,12 @@ const userpanel = new Vue({
 								'city': city,
 								'boundary': true
 							};
-							
-							let drawProps = {
-								'e': { // density
-									'min': 0,
-									'max': res.data['prop']['scales']['e'],
-									//'number': sels[1]
-									'scales': res.data['prop']['scales']['e']
-								},
-								'prop': { // prop
-									'rev': drawprop['rev'],
-									'drawtype': 'e',
-									'radius': self.sels.ctrsets.radius * 0.0025,
-									'opacity': self.sels.ctrsets.opacity,
-									'useLocalExtrema': self.sels.ctrsets.useLocalExtrema,
-									'min_show': 0
-								}
-							};
-							changeLoadState(`dimmer${index}`, false);
-							maps[i].mapcontourCDrawing_bubble_overlap(res.data, drawProps);
-							maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
-							maps[i].switchLegDisplay('bubblesld');
+                            
+                            // 把加载的loading效果去除
+                            changeLoadState(`dimmer${index}`, false);
+
+                            // 直接拿到表示等高线的geojson数据，在地图上直接绘制了
+                            maps[i].BubbleContourDraw(res.data,prop);
 						}).catch(function (err) {
 							console.error("Failed!", err);
 						});
@@ -634,7 +664,7 @@ const userpanel = new Vue({
 				maps[i].clearLayers();
 				maps[i].boundaryRemove();
 				self.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
-				self.sels.objs[i].slider.formatter = "{value}%";
+				self.sels.objs[i].slider.formatter = "{value}";
 				getBoundaryDatasets(city).then(function (res) {
 					changeLoadState(`dimmer${i}`, false);
 
@@ -661,7 +691,10 @@ const userpanel = new Vue({
 				});
 			}
 			
-		},
+        },
+
+        
+        
         /**
          * 计算与更新 slider 样式, 更新 map
          * @return {[index]}      [description]
@@ -741,11 +774,12 @@ const userpanel = new Vue({
 					
 					if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
 						changeLoadState(`dimmer${index}`, true);
-						let percent = this.sels.objs[i].slider.value[0],
-							min_len = this.sels.objs[i].slider4.value;
+						let bound_value = this.sels.objs[i].slider.value,
+                        contour_percent = this.sels.objs[i].slider4.value;
+
 						maps[i].switchLegDisplay('bubblesld');
-						
-						getThreetypeDatasets(objs[i], min_len, percent).then(function (res) {
+
+						getThreetypeDatasets(objs[i], bound_value, contour_percent).then(function (res) {
 
 							let city = objs[i].city,
 								etype = objs[i].etype;
@@ -755,25 +789,29 @@ const userpanel = new Vue({
 								'boundary': true
 							};
 							
-							let drawProps = {
-								'e': { // density
-									'min': 0,
-									'max': res.data['prop']['scales']['e'],
-									//'number': sels[1]
-									'scales': res.data['prop']['scales']['e']
-								},
-								'prop': { // prop
-									'rev': drawprop['rev'],
-									'drawtype': 'e',
-									'radius': self.sels.ctrsets.radius * 0.0025,
-									'opacity': self.sels.ctrsets.opacity,
-									'useLocalExtrema': self.sels.ctrsets.useLocalExtrema,
-									'min_show': 0
-								}
-							};
-							changeLoadState(`dimmer${index}`, false);
-							maps[i].mapcontourCDrawing_bubble_overlap(res.data, drawProps);
-							maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
+							// let drawProps = {
+							// 	'e': { // density
+							// 		'min': 0,
+							// 		'max': res.data['prop']['scales']['e'],
+							// 		//'number': sels[1]
+							// 		'scales': res.data['prop']['scales']['e']
+							// 	},
+							// 	'prop': { // prop
+							// 		'rev': drawprop['rev'],
+							// 		'drawtype': 'e',
+							// 		'radius': self.sels.ctrsets.radius * 0.0025,
+							// 		'opacity': self.sels.ctrsets.opacity,
+							// 		'useLocalExtrema': self.sels.ctrsets.useLocalExtrema,
+							// 		'min_show': 0
+							// 	}
+							// };
+                            changeLoadState(`dimmer${index}`, false);
+                            //重点是这两步,是绘制bubble set的数据范围和数据边界的重要步骤
+							//maps[i].mapcontourCDrawing_bubble_overlap(res.data, drawProps);
+                            //maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
+
+                            // 直接拿到了表示等高线的geojson数据，在地图上直接绘制了
+                            maps[i].BubbleContourDraw(res.data,prop);
 							maps[i].switchLegDisplay('bubblesld');
 						}).catch(function (err) {
 							console.error("Failed!", err);
@@ -809,7 +847,7 @@ const userpanel = new Vue({
                     'slider': v
                 };
                 this.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
-                this.sels.objs[i].slider.formatter = "{value}%";
+                this.sels.objs[i].slider.formatter = "{value}";
                 maps[i].boundaryDrawing({}, prop, true);
 				
 				/* getThreetypeDatasets(obj, min_len, percent).then(function (res) {
@@ -956,8 +994,8 @@ const userpanel = new Vue({
 		'updateSlider4': function (index) {
             // 定位 slider
             let i = Number.parseInt(index),
-                percent = this.sels.objs[i].slider.value[0],
-                min_len = this.sels.objs[i].slider4.value;
+                bound_value = this.sels.objs[i].slider.value,
+                contour_percent = this.sels.objs[i].slider4.value;
 
             maps[i].boundaryRemove();
 			maps[i].clearLayers();
@@ -977,38 +1015,45 @@ const userpanel = new Vue({
                 city = obj.city,
                 rev = obj.reverse;
 
-            getThreetypeDatasets(obj, min_len, percent).then(function (res) {
+            getThreetypeDatasets(objs[i], bound_value, contour_percent).then(function (res) {
+                console.log(res)
+                console.log(JSON.stringify(res))
 
-				let city = obj.city,
-					etype = obj.etype;
+                let city = objs[i].city,
+                    etype = objs[i].etype;
 
-				let prop = {
-					'city': city,
-					'boundary': true
-				};
-				let drawProps = {
-					'e': { // density
-						'min': 0,
-						'max': res.data['prop']['scales']['e'],
-						//'number': sels[1]
-						'scales': res.data['prop']['scales']['e']
-					},
-					'prop': { // prop
-						'rev': rev,
-						'drawtype': 'e',
-						'radius': self.sels.ctrsets.radius * 0.0025,
-						'opacity': self.sels.ctrsets.opacity,
-						'useLocalExtrema': self.sels.ctrsets.useLocalExtrema,
-						'min_show': 0
-					}
-				};
-				changeLoadState(`dimmer${index}`, false);
-				maps[i].mapcontourCDrawing_bubble_overlap(res.data, drawProps);
-				maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
-				maps[i].switchLegDisplay('bubblesld');
-			}).catch(function (err) {
-					console.error("Failed!", err);
-			});
+                let prop = {
+                    'city': city,
+                    'boundary': true
+                };
+                
+                // let drawProps = {
+                // 	'e': { // density
+                // 		'min': 0,
+                // 		'max': res.data['prop']['scales']['e'],
+                // 		//'number': sels[1]
+                // 		'scales': res.data['prop']['scales']['e']
+                // 	},
+                // 	'prop': { // prop
+                // 		'rev': drawprop['rev'],
+                // 		'drawtype': 'e',
+                // 		'radius': self.sels.ctrsets.radius * 0.0025,
+                // 		'opacity': self.sels.ctrsets.opacity,
+                // 		'useLocalExtrema': self.sels.ctrsets.useLocalExtrema,
+                // 		'min_show': 0
+                // 	}
+                // };
+                changeLoadState(`dimmer${index}`, false);
+                //重点是这两步,是绘制bubble set的数据范围和数据边界的重要步骤
+                //maps[i].mapcontourCDrawing_bubble_overlap(res.data, drawProps);
+                //maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
+
+                // 直接拿到了表示等高线的geojson数据，在地图上直接绘制了
+                maps[i].BubbleContourDraw(res.data,prop);
+                maps[i].switchLegDisplay('bubblesld');
+            }).catch(function (err) {
+                console.error("Failed!", err);
+            });
         },
         /**
          * 添加分析对象
@@ -1158,7 +1203,7 @@ const userpanel = new Vue({
                         'slider': v
                     };
                     this.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
-                    this.sels.objs[i].slider.formatter = "{value}%";
+                    this.sels.objs[i].slider.formatter = "{value}";
                     maps[i].boundaryDrawing({}, prop, true);
                 }
             }
@@ -1206,7 +1251,7 @@ const userpanel = new Vue({
                     'slider': v
                 };
                 this.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
-                this.sels.objs[i].slider.formatter = "{value}%";
+                this.sels.objs[i].slider.formatter = "{value}";
                 maps[i].boundaryDrawing({}, prop, true);
             }
         }
@@ -1397,23 +1442,48 @@ const userpanel = new Vue({
                 }
 				//Bubble Boundary
 				if(val == 'b'){
-					let min_len = 15,
-						percent = objs[index].slider.value[0];
-					maps[index].switchLegDisplay('bubblesld');
-					getThreetypeDatasets(objs[index], min_len, percent).then(function (res) {
+					let bound_value = [1.5,3],
+                        contour_percent = objs[index].slider4.value; 
+                        
+                    maps[index].switchLegDisplay('bubblesld');
+                    
+					getThreetypeDatasets(objs[i], bound_value, contour_percent).then(function (res) {
 
-					let city = objs[index].city,
-						etype = objs[index].etype;
+                        let city = objs[i].city,
+                            etype = objs[i].etype;
 
-					let prop = {
-						'city': city,
-						'boundary': true
-					};
-					changeLoadState(`dimmer${index}`, false);
-					maps[index].BubbleboundaryDrawing(res, prop);
-					}).catch(function (err) {
-						console.error("Failed!", err);
-					});
+                        let prop = {
+                            'city': city,
+                            'boundary': true
+                        };
+                        
+                        // let drawProps = {
+                        // 	'e': { // density
+                        // 		'min': 0,
+                        // 		'max': res.data['prop']['scales']['e'],
+                        // 		//'number': sels[1]
+                        // 		'scales': res.data['prop']['scales']['e']
+                        // 	},
+                        // 	'prop': { // prop
+                        // 		'rev': drawprop['rev'],
+                        // 		'drawtype': 'e',
+                        // 		'radius': self.sels.ctrsets.radius * 0.0025,
+                        // 		'opacity': self.sels.ctrsets.opacity,
+                        // 		'useLocalExtrema': self.sels.ctrsets.useLocalExtrema,
+                        // 		'min_show': 0
+                        // 	}
+                        // };
+                        changeLoadState(`dimmer${index}`, false);
+                        //重点是这两步,是绘制bubble set的数据范围和数据边界的重要步骤
+                        //maps[i].mapcontourCDrawing_bubble_overlap(res.data, drawProps);
+                        //maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
+
+                        // 直接拿到了表示等高线的geojson数据，在地图上直接绘制了
+                        maps[i].BubbleContourDraw(res.data,prop);
+                        maps[i].switchLegDisplay('bubblesld');
+                    }).catch(function (err) {
+                        console.error("Failed!", err);
+                    });
 				}
             }
         },
@@ -1455,7 +1525,7 @@ const userpanel = new Vue({
                             'slider': v
                         };
                         this.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
-                        this.sels.objs[i].slider.formatter = "{value}%";
+                        this.sels.objs[i].slider.formatter = "{value}";
                         maps[i].boundaryDrawing({}, prop, true);
                     }
                 }

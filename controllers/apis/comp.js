@@ -82,9 +82,28 @@ let apis = {
 	},	
 	'ThreetypeQuery': function(req, res, next) {
 		let params = req.query;
+		// try{
+		// 	return EP.getThreetypeview(null,params);
+		// }catch(err){
+		// 	console.log(err)
+		// }
+
 		lib.connectMySQL().then(function(db) {
 			console.info('Got data from MySQL.');
 			return EP.getThreetypeview(db, params);
+		}, function(err) {
+			console.error('error: ', err);
+		}).catch(function(err) {
+			console.error('error: ', err);
+		}).then(function(result) {
+			res.json(result);
+		})
+	},
+	'BubbleContourQuery': function(req, res, next) {
+		let params = req.query;
+		lib.connectMySQL().then(function(db) {
+			console.info('Got data from MySQL.');
+			return EP.getBubbleContourData(db, params);
 		}, function(err) {
 			console.error('error: ', err);
 		}).catch(function(error) {

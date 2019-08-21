@@ -17,7 +17,7 @@ class UserFeature(object):
 		self.split = split
 		self.citylocs = citylocs
 		self.db = {
-			'url': '192.168.1.42',
+			'url': '127.0.0.1',
 			'port': 27017,
 			'dbname': 'tdVC',
 			'gridcolname': 'grids_%s' % city,
