@@ -255,7 +255,6 @@ const userpanel = new Vue({
                             self.sels.objs[i].slider.interval = 0.5;
                             self.sels.objs[i].slider.value = [1.5,3];
                             self.sels.objs[i].slider.formatter = "{value}";
-                            self.sels.objs[i].slider.processStyle = "green"
 							
 							let bound_value = self.sels.objs[i].slider.value,
                             contour_percent = this.sels.objs[i].slider4.value;
@@ -591,7 +590,6 @@ const userpanel = new Vue({
                         self.sels.objs[i].slider.interval = 0.5;
                         self.sels.objs[i].slider.value = [1.5,3];
                         self.sels.objs[i].slider.formatter = "{value}";
-                        self.sels.objs[i].slider.processStyle = "green"
 						
                             
                         // 读取两个slider的值，这里读取的都是设定好的初始值
