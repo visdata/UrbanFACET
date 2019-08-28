@@ -918,9 +918,9 @@ function getThreetypeview(conn, prop) {
 	let p = new Promise(function(resolve, reject) {
 		let result = null;
 		try{
-			result = require(`./data/bubble_contour/new_bj_cluster_${typs['rtype']}` + `${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`);
+			result = require(`./data/bubble_contour/new_bj_cluster_${typs['rtype']}` + `_${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`);
 		}catch(err){
-			result = require(`./data/bubble_contour/new_bj_cluster_V` + `1.5-3` + `_10` + `.json`);
+			result = require(`./data/bubble_contour/new_bj_cluster_V` + `_1.5-3` + `_10` + `.json`);
 
 			// reject(err)
 		}
