@@ -32,7 +32,7 @@ The `semantic` version used in this project is `^2.2.6`, complied file is stored
 
 ## Contact
 
-* Github - [hijiangtao](https://github.com/hijiangtao)
+* Github - [ISCAS_VIS](https://github.com/visdata)
 
 ## LICENSE
 
