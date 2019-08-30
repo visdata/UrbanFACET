@@ -260,6 +260,3 @@
 
 该部分文件为自定义的脚本代码、可不作考虑，以上内容已经包含实现。
 
-## 联系
-
-[hijiangtao](https://github.com/hijiangtao)
