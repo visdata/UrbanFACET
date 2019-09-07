@@ -809,6 +809,8 @@ const userpanel = new Vue({
                             //maps[i].BubbleboundaryDrawing(res.bound_data, prop, 2);
 
                             // 直接拿到了表示等高线的geojson数据，在地图上直接绘制了
+                            console.log("fry threetype data")
+                            console.log(res.data)
                             maps[i].BubbleContourDraw(res.data,prop);
 							maps[i].switchLegDisplay('bubblesld');
 						}).catch(function (err) {

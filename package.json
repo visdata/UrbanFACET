@@ -26,6 +26,7 @@
     "jquery": "^3.1.1",
     "jquery-ui": "^1.12.1",
     "leaflet": "0.7.7",
+    "leaflet-maskcanvas": "^1.0.0",
     "leaflet.sync": "0.0.6",
     "morgan": "~1.7.0",
     "node-sass-middleware": "0.8.0",

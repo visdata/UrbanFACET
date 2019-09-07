@@ -1552,6 +1552,7 @@ class mapview {
 
     BubbleContourDraw(data,prop,update=false) { 
         console.log("fry BubbleContourDraw")
+        console.log(data)
         if (!update) {
             console.log("first")
             this.setBubbleContourData(data);
