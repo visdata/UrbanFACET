@@ -1575,6 +1575,34 @@ class mapview {
 
     }
 
+    splatterDraw(data,prop,update=false){
+        console.log("fry splatterDraw")
+        console.log(data)
+        if (!update) {
+            console.log("first")
+            this.setBubbleContourData(data);
+        } else {
+            console.log("second")
+            data = this.getBubbleContourData();
+        }
+
+        // 加入单独的数据层
+        layer_0 = L.tileLayer.maskCanvas({
+            radius: 5,  // radius in pixels or in meters (see useAbsoluteRadius)
+            useAbsoluteRadius: true,  // true: r in meters, false: r in pixels
+            color: '#f44',  // the color of the layer
+            opacity: 0.5,  // opacity of the not covered area
+            noMask: true,  // true results in normal (filled) circled, instead masked circles
+            lineColor: '#A00'   // color of the circle outline if noMask is true
+        })
+        layer_0.setData(data[0])
+        this.map.addLayer(layer_0)
+
+
+
+
+    }
+
     mapcontourCDrawing_bubble_overlap(data, prop, update = false) {
         var _this = this;
         this._bubbleOverlapDrawing(data, prop, update);
@@ -1837,15 +1865,15 @@ class mapview {
 
             if (svg_num == 0){
                 clr_trans = 'rgba(222,235,247,0.5)';
-                clr_red = 'rgba(8,48,107,0.5)';
+                clr_red = 'rgba(8,48,107,0.5)';//蓝色
                 clr_yl = 'rgba(66,146,198,0.5)';
             }else if (svg_num == 1){
                 clr_trans = 'rgba(229,245,224,0.5)';
-                clr_red = 'rgba(0,68,27,0.8)';
+                clr_red = 'rgba(0,68,27,0.8)';//绿色
                 clr_yl = 'rgba(65,171,93,0.8)';
             }else if (svg_num == 2){
                 clr_trans = 'rgba(254,224,210,0.5)';
-                clr_red = 'rgba(103,0,13,0.5)';
+                clr_red = 'rgba(103,0,13,0.5)';//红色
                 clr_yl = 'rgba(239,59,44,0.5)';
             }
 
