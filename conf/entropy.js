@@ -915,6 +915,42 @@ function getThreetypeview(conn, prop) {
 	
 	let bound_value = bound_value_str.split(",");
 
+
+	/**
+	 * 这里是新的splatterplot的数据
+	 */
+
+	let p = new Promise(function(resolve, reject) {
+		let result = null;
+		try{
+			//result = require(`./data/bubble_contour/new_bj_cluster_${typs['rtype']}` + `_${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`);
+			console.log(`./splatter_contour_data/bj_V_1.5-3_1.json`)
+			result=require(`./splatter_contour_data/splatter_bj_V_1.5-3_1.json`)
+			// result = require(`./data/new_bb_contour/bj_splatter_${typs['rtype']}` + `_${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`);
+			
+
+		}catch(err){
+			result = require(`./splatter_contour_data/splatter_bj_V_1.5-3_1.json`);
+
+			// reject(err)
+		}
+		
+		resolve({
+		'scode': 1,
+		'fdata': {
+			'data':result
+		}
+		}) 
+
+
+	})
+	return p;
+
+
+	/**
+	 * 以下是原有的bubbleset数据
+	 */
+
 	let p = new Promise(function(resolve, reject) {
 		let result = null;
 		try{
@@ -940,6 +976,8 @@ function getThreetypeview(conn, prop) {
 	})
 	return p;
 
+	/** 以下是未改版前的bubble set */
+
 	// city: 城市简称, tj, zjk, ts, bj
     // ftpval: 时间段或者日期类型编号, 0-8
     // entropyattr: 查找的 entropy value 字段
@@ -949,118 +987,118 @@ function getThreetypeview(conn, prop) {
     // sqldoc: 各个表中字段的最大值
     // eMax: 获得的 entropy 最大值
     // dMax: 获得的 density 最大值
-		// let city = prop['city'],
-        // ftpval = prop['ftpval'],
-        // typs = getTypeVals(prop['etype'] + '0_0'),
-        // entropyattr = `${typs['etype']+typs['ctype']}sval`,
-        // densityattr = 'wpnumber',
-        // etable,
-		// mtype = 'sum',
-		// sqldoc = iMax[mtype],
-		// min_len = prop['min_len'],
-		// percent = prop['percent'];
+		let city = prop['city'],
+        ftpval = prop['ftpval'],
+        typs = getTypeVals(prop['etype'] + '0_0'),
+        entropyattr = `${typs['etype']+typs['ctype']}sval`,
+        densityattr = 'wpnumber',
+        etable,
+		mtype = 'sum',
+		sqldoc = iMax[mtype],
+		min_len = prop['min_len'],
+		percent = prop['percent'];
 		
-		// let etable_0 = `${city}R${typs['rtype']}0mat`,
-		// 	etable_1= `${city}R${typs['rtype']}1mat`,
-		// 	etable_2 = `${city}R${typs['rtype']}2mat`;
+		let etable_0 = `${city}R${typs['rtype']}0mat`,
+			etable_1= `${city}R${typs['rtype']}1mat`,
+			etable_2 = `${city}R${typs['rtype']}2mat`;
 				
-		// let max_density = 0, density_set = [sqldoc[etable_0][densityattr], sqldoc[etable_1][densityattr], sqldoc[etable_2][densityattr]];
+		let max_density = 0, density_set = [sqldoc[etable_0][densityattr], sqldoc[etable_1][densityattr], sqldoc[etable_2][densityattr]];
 		
-		// for(var i=0; i <3; i++){
-		// 	if(density_set[i] > max_density){
-		// 		max_density = density_set[i];
-		// 	}
-		// }
+		for(var i=0; i <3; i++){
+			if(density_set[i] > max_density){
+				max_density = density_set[i];
+			}
+		}
 		
-		// console.log("max_density:  " + max_density)
+		console.log("max_density:  " + max_density)
 		
-		// let p = new Promise(function(resolve, reject) {
-		// 	//(`./data/${city}` + `_cluster_` + `${s}` + `_` + `${c}`+ `.json`)
-		// 	let result = require(`./data/bj_cluster_${typs['rtype']}` + `_${percent}` + `_${min_len}` + `.json`)
+		let p = new Promise(function(resolve, reject) {
+			//(`./data/${city}` + `_cluster_` + `${s}` + `_` + `${c}`+ `.json`)
+			let result = require(`./data/bj_cluster_${typs['rtype']}` + `_${percent}` + `_${min_len}` + `.json`)
 			
-		// 	let RESULT = [],
-		// 		SPLIT = 0.003,
-		// 		centerincrement = 0.0015, //.toFixed(4),
-		// 		locs = data.getRegionBound(city);
+			let RESULT = [],
+				SPLIT = 0.003,
+				centerincrement = 0.0015, //.toFixed(4),
+				locs = data.getRegionBound(city);
 			
-		// 	let DATA = [];
+			let DATA = [];
 			
-		// 	let max_density_i = 0;
-		// 	for(var svg_num = 0; svg_num < 3; svg_num ++){
-		// 		let list = result[svg_num],
-		// 			reslen = list.length,
-		// 			hdata= [];
+			let max_density_i = 0;
+			for(var svg_num = 0; svg_num < 3; svg_num ++){
+				let list = result[svg_num],
+					reslen = list.length,
+					hdata= [];
 				
-		// 		//console.log("dlist:" + JSON.stringify(dlist))
-		// 		console.log('Result length', reslen)
-		// 		for (let i = list.length - 1; i >= 0; i--) {
+				//console.log("dlist:" + JSON.stringify(dlist))
+				console.log('Result length', reslen)
+				for (let i = list.length - 1; i >= 0; i--) {
 
-		// 			// list是一群点的集聚
-		// 			if(list[i][2] > max_density_i){
-		// 				max_density_i = list[i][2]
-		// 			}
+					// list是一群点的集聚
+					if(list[i][2] > max_density_i){
+						max_density_i = list[i][2]
+					}
 					
-		// 			let lat = (list[i][0] - centerincrement),
-		// 				lng = (list[i][1] - centerincrement),
-		// 				lnginc = (lng + SPLIT),
-		// 				latinc = (lat + SPLIT),
-		// 				lngcen = list[i][1],
-		// 				latcen = list[i][0],
-		// 				coordsarr = [
-		// 					[lng, lat],
-		// 					[lnginc, lat],
-		// 					[lnginc, latinc],
-		// 					[lng, latinc],
-		// 					[lng, lat]
-		// 				]
+					let lat = (list[i][0] - centerincrement),
+						lng = (list[i][1] - centerincrement),
+						lnginc = (lng + SPLIT),
+						latinc = (lat + SPLIT),
+						lngcen = list[i][1],
+						latcen = list[i][0],
+						coordsarr = [
+							[lng, lat],
+							[lnginc, lat],
+							[lnginc, latinc],
+							[lng, latinc],
+							[lng, lat]
+						]
 					
-		// 			DATA.push({
-		// 						"geometry": {
-		// 							"type": "Polygon",
-		// 							"coordinates": [coordsarr]
-		// 						},
-		// 						"type": "Feature",
-		// 						"prop": {
-		// 							'v': parseFloat(list[i][2]),
-		// 							'e': parseFloat(list[i][2]),
-		// 							'd': parseFloat(list[i][2]),
-		// 							'c': [lngcen, latcen],
-		// 							'num': Number.parseInt(svg_num)// center point
-		// 						}
-		// 			})
+					DATA.push({
+								"geometry": {
+									"type": "Polygon",
+									"coordinates": [coordsarr]
+								},
+								"type": "Feature",
+								"prop": {
+									'v': parseFloat(list[i][2]),
+									'e': parseFloat(list[i][2]),
+									'd': parseFloat(list[i][2]),
+									'c': [lngcen, latcen],
+									'num': Number.parseInt(svg_num)// center point
+								}
+					})
 					
-		// 			hdata.push(coordsarr);
-		// 		}
-		// 		// 这里是用来画边界的
-		// 		drawmap(4, hdata, RESULT, svg_num);
-		// 		console.info("end")
-		// 	}
+					hdata.push(coordsarr);
+				}
+				// 这里是用来画边界的
+				drawmap(4, hdata, RESULT, svg_num);
+				console.info("end")
+			}
 			
-		// 	console.log("max_density:  " + max_density_i)
+			console.log("max_density:  " + max_density_i)
 			
-		// 	//console.log("result: "+ JSON.stringify(RESULT))
+			//console.log("result: "+ JSON.stringify(RESULT))
 			
-		// 	resolve({
-		// 	'scode': 1,
-		// 	'fdata': {
-		// 		'data':{
-		// 			  "type": "FeatureCollection",
-		// 			  "features": DATA,
-		// 			  "prop": {
-		// 				  'scales': {
-		// 					  'e': parseFloat(max_density_i),
-		// 					  'd': parseFloat(max_density_i)
-		// 				  }
-		// 			  }
-		// 		},
-		// 		'bound_data':{
-		// 			"type": "FeatureCollection",
-		// 			"features": RESULT
-		// 		}
-		// 	}
-		// 	})
-		// })
-		// return p;
+			resolve({
+			'scode': 1,
+			'fdata': {
+				'data':{
+					  "type": "FeatureCollection",
+					  "features": DATA,
+					  "prop": {
+						  'scales': {
+							  'e': parseFloat(max_density_i),
+							  'd': parseFloat(max_density_i)
+						  }
+					  }
+				},
+				'bound_data':{
+					"type": "FeatureCollection",
+					"features": RESULT
+				}
+			}
+			})
+		})
+		return p;
 
 		// 上面是从数据文件中直接读取处理好的数据
 		// 下面是从数据库中读取源数据的操作，就是正确操作，但是速度比较慢
