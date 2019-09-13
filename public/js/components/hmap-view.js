@@ -1573,6 +1573,19 @@ class mapview {
         this.bbcontourLayer_3 = L.geoJson(data.features[2],{style:data.features[2].properties})
         this.map.addLayer(this.bbcontourLayer_3)
 
+        this.bbcontourLayer_4 = L.geoJson(data.features[3],{style:data.features[3].properties})
+        this.map.addLayer(this.bbcontourLayer_4)
+    
+
+        this.bbcontourLayer_5 = L.geoJson(data.features[4],{style:data.features[4].properties})
+        this.map.addLayer(this.bbcontourLayer_5)
+
+        this.bbcontourLayer_6 = L.geoJson(data.features[5],{style:data.features[5].properties})
+        this.map.addLayer(this.bbcontourLayer_6)
+
+        this.bbcontourLayer_7 = L.geoJson(data.features[6],{style:data.features[6].properties})
+        this.map.addLayer(this.bbcontourLayer_7)
+
     }
 
     splatterDraw(data,prop,update=false){
@@ -2071,6 +2084,22 @@ class mapview {
         if (this.bbcontourLayer_3) {
             this.map.removeLayer(this.bbcontourLayer_3);
             this.bbcontourLayer_3 = null;
+        }
+        if (this.bbcontourLayer_4) {
+            this.map.removeLayer(this.bbcontourLayer_4);
+            this.bbcontourLayer_4 = null;
+        }
+        if (this.bbcontourLayer_5) {
+            this.map.removeLayer(this.bbcontourLayer_5);
+            this.bbcontourLayer_5 = null;
+        }
+        if (this.bbcontourLayer_6) {
+            this.map.removeLayer(this.bbcontourLayer_6);
+            this.bbcontourLayer_6 = null;
+        }
+        if (this.bbcontourLayer_7) {
+            this.map.removeLayer(this.bbcontourLayer_7);
+            this.bbcontourLayer_7 = null;
         }
         //  d3.selectAll('.leaflet-zoom-hide').remove();
     }

@@ -81,7 +81,12 @@ let apis = {
 		});
 	},	
 	'ThreetypeQuery': function(req, res, next) {
-		let params = req.query;
+		let params = req.query
+		// data = EP.getThreetypeview(null,params);
+		console.info("threetypequery")
+		// console.info(data)
+
+		// res.json(data);
 		// try{
 		// 	return EP.getThreetypeview(null,params);
 		// }catch(err){
