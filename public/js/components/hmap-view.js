@@ -138,10 +138,7 @@ class mapview {
                     console.log("redrawflower")
                     //console.log(JSON.stringify(self.savef_data.data))
                     self.flowerDrawing(self.savef_data.data, self.savef_data.city);
-                } else if (d3.selectAll('.leaflet-metrics')._group[0].length != 0){
-                    console.log("metrics_drawing")
-                    self.metricsDrawing(self.save_data.data, self.save_data.city);
-                }
+                } 
                 
                 // 待完善
                 // 
@@ -466,14 +463,28 @@ class mapview {
 
     }
 
-    metricsDrawing(data, city){
+    metricsDrawing(){
         d3.selectAll('.leaflet-metrics').remove();
-        this.save_data.data = data;
-        this.save_data.city = city;
-
+        
         let self = this,
             overlay = d3.select(self.map.getPanes().overlayPane);
+        let svg = overlay.append("svg").attr('id', 'metrics_card')
+                .attr("width", 500)
+                .attr("height", 500)
+                .style("z-index", 999)
+                .style("left", "300px")
+                .style("top", "70px");
 
+        // var g = d3.select("#metrics_card")
+        //     .append("g")
+        //     .attr("transform", "translate(40,40)");
+
+            svg.append("svg:rect")
+            .attr("width", 200)
+            .attr("height", 200)
+            .attr("x", 20)
+            .attr("y", 20)
+            .attr("fill", "black");
     }
 
     smecDrawing(data, city) { //绘制star plot
@@ -1421,6 +1432,8 @@ class mapview {
         this.heatmapLayer = new HeatmapOverlay(cfg);
         this.map.addLayer(this.heatmapLayer);
         this.heatmapLayer.setData(hdata)
+
+        this.metricsDrawing()
     }
 
     mapcontourCDrawing_bubble(data, prop, update = false) {
