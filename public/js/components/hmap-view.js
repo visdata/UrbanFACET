@@ -34,6 +34,10 @@ import {
     RadarChart
 } from './RadarChart';
 
+import {
+    Metrics_card
+} from './Metrics_card';
+
 const SPLIT = 0.003
 const mapattr = 'UrbanFACET &copy; 2016-2017'
 const mapuid = 'zhichun'
@@ -134,7 +138,11 @@ class mapview {
                     console.log("redrawflower")
                     //console.log(JSON.stringify(self.savef_data.data))
                     self.flowerDrawing(self.savef_data.data, self.savef_data.city);
+                } else if (d3.selectAll('.leaflet-metrics')._group[0].length != 0){
+                    console.log("metrics_drawing")
+                    self.metricsDrawing(self.save_data.data, self.save_data.city);
                 }
+                
                 // 待完善
                 // 
                 // 如果存在contour map 则根据zoom level重绘
@@ -455,6 +463,16 @@ class mapview {
             }
 
         }
+
+    }
+
+    metricsDrawing(data, city){
+        d3.selectAll('.leaflet-metrics').remove();
+        this.save_data.data = data;
+        this.save_data.city = city;
+
+        let self = this,
+            overlay = d3.select(self.map.getPanes().overlayPane);
 
     }
 
