@@ -906,12 +906,16 @@ function getBubbleContourData(conn,prop){
 }
 
 function getThreetypeview(conn, prop) {
+	conn.release();
+
 	console.log("entropy getThreetypeview start");
 	console.log(prop)
 
 	let typs = getTypeVals(prop['etype'] + '0_0'),
 		bound_value_str = prop['bound_value'],
 		contour_percent = prop['contour_percent'];
+	
+	contour_percent = parseFloat(contour_percent).toFixed(3)
 	
 	let bound_value = bound_value_str.split(",");
 
@@ -923,14 +927,12 @@ function getThreetypeview(conn, prop) {
 	let new_p = new Promise(function(resolve, reject) {
 		let result = null;
 		try{
-			//result = require(`./data/bubble_contour/new_bj_cluster_${typs['rtype']}` + `_${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`);
-			console.log(`./splatter_contour_data/bj_V_1.5-3_1.json`)
-			result=require(`./splatter_contour/bj_V_1.5-3_0.074.json`)
+			result = require(`./splatter_contour/bj_${typs['rtype']}` + `_${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`);
+			console.log(`./splatter_contour/bj_${typs['rtype']}` + `_${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`)
 			// result = require(`./data/new_bb_contour/bj_splatter_${typs['rtype']}` + `_${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`);
-			
 
 		}catch(err){
-			result = require(`./splatter_contour/splatter_bj_V_1.5-3_3.json`);
+			result = require(`./splatter_contour/bj_V_1.5-3_0.035.json`);
 
 			// reject(err)
 		}

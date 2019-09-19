@@ -12,7 +12,8 @@ const settings = {
     // 与实际设置不同,因为有遮挡所以微调过
     //'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%,#0000ff 25%,#00ff00 45%,#ffff00 70%,#ff0000 100%)' //白、蓝、绿、黄、红滑动条
     //'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%,#00ff00 30%,#ffff00 55%,#ff0000 100%)'//白、绿、黄、红滑动条
-    'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%, #ffff00 40%,#ff0000 100%)' //白黄红滑动条
+    'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%, #ffff00 40%,#ff0000 100%)' ,//白黄红滑动条
+    'threeType':'-webkit-linear-gradient(left, #4292c6 0%,#4292c6 37.5%, #41ab5d 37.5%,#41ab5d 75%,#ef3b2c 75%,#ef3b2c 100%)'
 }
 
 /**
@@ -292,7 +293,7 @@ let home = {
                     "Opacity": 0.6
                 },
                 bgStyle: {
-                    'background': settings['whiteToRed']
+                    'background': settings['threeType']
                 },
                 processStyle: {
                     'background': settings['whiteToRed']
@@ -436,9 +437,9 @@ let home = {
                     'background': "orange"
                 }
             },
-             'slider4': {
+            'slider4': {
                 tooltip: 'hover',
-                value: '10',
+                value: 0.060,
                 dotSize: 13,
                 piecewise: false,
                 piecewiseLabel: true,
@@ -446,23 +447,14 @@ let home = {
                 style: {
                     "marginLeft": "0%"
                 },
-                data: [
-					"10",
-					"20",
-                    "30",
-                    "40",
-                    "50",
-                    "60",
-                    "70",
-                    "80",
-                    "90",
-                    "100",
-                ],
+                min:0,
+                max:0.2,
+                interval:0.001,
                 formatter: function (value) {
-                    return value+"%";
+                    return value;
                 },
 				bgStyle:{
-					'backgroundColor': "orange"
+					'background': "orange"
 				},
                 tooltipStyle: {
                     "backgroundColor": "#000",

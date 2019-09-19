@@ -133,7 +133,7 @@ body {
     /*width: 30%;*/
 }
 
-#prlabel, {
+#prlabel {
     margin-right: 0;
 }
 .ui.form .inline.fields > label {
@@ -476,3 +476,22 @@ h4.ui.header {
     margin-bottom: .2em;
 }
 /*REWRITE SEMANTIC-UI*/
+
+
+.mode_frame {
+    width: 100%
+}
+
+.mode_label_frame{
+    float: left;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 50px;
+}
+
+.mode_content_frame{
+    margin-left: 50px;
+    
+
+}

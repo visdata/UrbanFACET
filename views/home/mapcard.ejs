@@ -10,15 +10,23 @@
 			<div class="ui grid">
 				<div class="sixteen wide column">
 					<p>Metric- {{ cals.enps[ model.etype ] }} </p>
-					<p>Mode-&nbsp;&nbsp;&nbsp;&nbsp; S-class: 
-						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Grid" checked="checked" @click="map_type(index)">Grid
-						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="DIV" @click="map_type(index)">DIV
-					</p>
-					<p>M-class: 
-						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Blend" @click="map_type(index)">Blend
-						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Layer" @click="map_type(index)">Layer
-						<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Bubble" @click="map_type(index)">Bubble
-					</p>
+					<div class="mode_frame">
+						<div class="mode_label_frame">
+							<p>Mode:</p>
+						</div>
+						<div class="mode_content_frame">
+							<p>S-Class: 
+								<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Grid" checked="checked" @click="map_type(index)">Grid
+								<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="DIV" @click="map_type(index)">DIV
+							</p>
+							<p>M-class: 
+								<!-- <input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Blend" @click="map_type(index)">Blend
+								<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Layer" @click="map_type(index)">Layer -->
+								<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Bubble" @click="map_type(index)">Splatterplots
+							</p>
+						</div>
+					</div>
+					
 					<template v-if="model.dtype !== 'd'" >
 						<div>
 							<p>Value:

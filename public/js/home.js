@@ -45,6 +45,15 @@ let maps = [],
     daview = null,
     resp = null;
 
+const settings = {
+    // 'whiteToRed': '-webkit-gradient(linear, 0 0, 100% 0, from(white), to(red))'
+    // 与实际设置不同,因为有遮挡所以微调过
+    //'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%,#0000ff 25%,#00ff00 45%,#ffff00 70%,#ff0000 100%)' //白、蓝、绿、黄、红滑动条
+    //'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%,#00ff00 30%,#ffff00 55%,#ff0000 100%)'//白、绿、黄、红滑动条
+    'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%, #ffff00 40%,#ff0000 100%)' ,//白黄红滑动条
+    'threeType':'-webkit-linear-gradient(left, #4292c6 0%,#4292c6 37.5%, #41ab5d 37.5%,#41ab5d 75%,#ef3b2c 75%,#ef3b2c 100%)'
+}
+
 // 界面实例入口
 const userpanel = new Vue({
     el: '#main',
@@ -176,7 +185,7 @@ const userpanel = new Vue({
 
                 // 根据用户所选 metric 类型进行相应数据提取操作
 				if(self.sels.objs[i].maptype !== 'DIV'){
-					self.sels.objs[i].slider.processStyle.background = '-webkit-linear-gradient(left, #ffffff 0%, #ffff00 40%,#ff0000 100%)';
+					self.sels.objs[i].slider.processStyle={'backgroud':`-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`} ;
 					maps[i].boundaryRemove();
 					if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
 						// 获取 entropy 和 density 资源
@@ -255,6 +264,9 @@ const userpanel = new Vue({
                             self.sels.objs[i].slider.interval = 0.5;
                             self.sels.objs[i].slider.value = [1.5,3];
                             self.sels.objs[i].slider.formatter = "{value}";
+
+                            self.sels.objs[i].slider.bgStyle={'background': settings['threeType']}
+                            self.sels.objs[i].slider.processStyle = {}
 							
 							let bound_value = self.sels.objs[i].slider.value,
                             contour_percent = this.sels.objs[i].slider4.value;
@@ -332,7 +344,7 @@ const userpanel = new Vue({
 				}
 				else {
 					maps[i].clearLayers();
-                    self.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
+                    self.sels.objs[i].slider.processStyle={'backgroud':`-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`} ;
                     self.sels.objs[i].slider.formatter = "{value}";
                     getBoundaryDatasets(city).then(function (res) {
                         changeLoadState(`dimmer${i}`, false);
@@ -528,7 +540,7 @@ const userpanel = new Vue({
             
             // 进行需计算的四种entropy的地图渲染
 			if(self.sels.objs[i].maptype !== 'DIV'){
-				self.sels.objs[i].slider.processStyle.background = '-webkit-linear-gradient(left, #ffffff 0%, #ffff00 40%,#ff0000 100%)';
+				self.sels.objs[i].slider.processStyle={'backgroud':`-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`} ;
                 maps[i].boundaryRemove();
                 
 				// 没有添加可视化方法的四种metric
@@ -590,11 +602,14 @@ const userpanel = new Vue({
                         self.sels.objs[i].slider.interval = 0.5;
                         self.sels.objs[i].slider.value = [1.5,3];
                         self.sels.objs[i].slider.formatter = "{value}";
+
+                        self.sels.objs[i].slider.bgStyle={'background': settings['threeType']}
+                        self.sels.objs[i].slider.processStyle = {}
 						
                             
                         // 读取两个slider的值，这里读取的都是设定好的初始值
                         let bound_value = self.sels.objs[i].slider.value;
-                        let contour_percent = 10;
+                        let contour_percent = self.sels.objs[i].slider4.value;
                             
                         // 移除绘制的边界
                         maps[i].boundaryRemove();
@@ -661,7 +676,7 @@ const userpanel = new Vue({
 			else {
 				maps[i].clearLayers();
 				maps[i].boundaryRemove();
-				self.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
+				self.sels.objs[i].slider.processStyle={'backgroud':`-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`} ;
 				self.sels.objs[i].slider.formatter = "{value}";
 				getBoundaryDatasets(city).then(function (res) {
 					changeLoadState(`dimmer${i}`, false);
@@ -846,7 +861,7 @@ const userpanel = new Vue({
                     'boundary': false,
                     'slider': v
                 };
-                this.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
+                this.sels.objs[i].slider.processStyle={'backgroud':`-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`} ;
                 this.sels.objs[i].slider.formatter = "{value}";
                 maps[i].boundaryDrawing({}, prop, true);
 				
@@ -1202,7 +1217,7 @@ const userpanel = new Vue({
                         'boundary': false,
                         'slider': v
                     };
-                    this.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
+                    this.sels.objs[i].slider.processStyle={'backgroud':`-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`} ;
                     this.sels.objs[i].slider.formatter = "{value}";
                     maps[i].boundaryDrawing({}, prop, true);
                 }
@@ -1235,7 +1250,7 @@ const userpanel = new Vue({
             if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
                 // 获取 slider 情况下的配置值域以及用户其余选项
                 // v.push(self.components.hrSlider.value);
-                this.sels.objs[i].slider.processStyle.background = '-webkit-linear-gradient(left, #ffffff 0%, #ff0000 5%,#ffff00 87%)';
+                this.sels.objs[i].slider.processStyle={'backgroud':`-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`} ;
                 this.sels.objs[i].slider.bgStyle.background = `-webkit-repeating-linear-gradient(left, red 0%, red ${v[1]-0.01}%, white ${v[1]}%, white 100%)`;
                 //this.sels.objs[i].slider.bgStyle.background = '-webkit-repeating-linear-gradient(left, white 0%, white ${v[1]-0.01}%, yellow ${v[1]}%, yellow 100%)';
 
@@ -1250,7 +1265,7 @@ const userpanel = new Vue({
                     'boundary': false,
                     'slider': v
                 };
-                this.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
+                this.sels.objs[i].slider.processStyle={'backgroud':`-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`} ;
                 this.sels.objs[i].slider.formatter = "{value}";
                 maps[i].boundaryDrawing({}, prop, true);
             }
@@ -1524,7 +1539,7 @@ const userpanel = new Vue({
                             'boundary': false,
                             'slider': v
                         };
-                        this.sels.objs[i].slider.processStyle.background = `-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`;
+                        this.sels.objs[i].slider.processStyle={'backgroud':`-webkit-repeating-linear-gradient(left, #ffffff 0%, #ff0000 100%)`} ;
                         this.sels.objs[i].slider.formatter = "{value}";
                         maps[i].boundaryDrawing({}, prop, true);
                     }
