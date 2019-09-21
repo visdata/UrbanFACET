@@ -472,8 +472,8 @@ class mapview {
                 .attr("width", 500)
                 .attr("height", 500)
                 .style("z-index", 999)
-                .style("left", "0px")
-                .style("top", "450px");
+                .style("left", "13px")
+                .style("top", "425px");
 
         // var g = d3.select("#metrics_card")
         //     .append("g")
@@ -484,7 +484,9 @@ class mapview {
             .attr("height", 200)
             .attr("x", 0)
             .attr("y", 0)
-            .attr("fill", "black");
+            .attr("fill", "white");
+
+            
     }
 
     smecDrawing(data, city) { //绘制star plot

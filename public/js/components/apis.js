@@ -430,6 +430,10 @@ let getRandomCenter = function(point, base, scale) {
 	return [lng, lat]
 }
 
+let getMetricsLegengdData = function(){
+	
+}
+
 
  let outOfRange = function(t, evalue, dvalue, emin, dmin) {
 	if (t === 'e') {
