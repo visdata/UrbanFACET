@@ -45,14 +45,6 @@ let maps = [],
     daview = null,
     resp = null;
 
-const settings = {
-    // 'whiteToRed': '-webkit-gradient(linear, 0 0, 100% 0, from(white), to(red))'
-    // 与实际设置不同,因为有遮挡所以微调过
-    //'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%,#0000ff 25%,#00ff00 45%,#ffff00 70%,#ff0000 100%)' //白、蓝、绿、黄、红滑动条
-    //'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%,#00ff00 30%,#ffff00 55%,#ff0000 100%)'//白、绿、黄、红滑动条
-    'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%, #ffff00 40%,#ff0000 100%)' ,//白黄红滑动条
-    'threeType':'-webkit-linear-gradient(left, #4292c6 0%,#4292c6 37.5%, #41ab5d 37.5%,#41ab5d 75%,#ef3b2c 75%,#ef3b2c 100%)'
-}
 
 // 界面实例入口
 const userpanel = new Vue({
@@ -265,8 +257,6 @@ const userpanel = new Vue({
                             self.sels.objs[i].slider.value = [1.5,3];
                             self.sels.objs[i].slider.formatter = "{value}";
 
-                            self.sels.objs[i].slider.bgStyle={'background': settings['threeType']}
-                            self.sels.objs[i].slider.processStyle = {}
 							
 							let bound_value = self.sels.objs[i].slider.value,
                             contour_percent = this.sels.objs[i].slider4.value;
@@ -602,9 +592,6 @@ const userpanel = new Vue({
                         self.sels.objs[i].slider.interval = 0.5;
                         self.sels.objs[i].slider.value = [1.5,3];
                         self.sels.objs[i].slider.formatter = "{value}";
-
-                        self.sels.objs[i].slider.bgStyle={'background': settings['threeType']}
-                        self.sels.objs[i].slider.processStyle = {}
 						
                             
                         // 读取两个slider的值，这里读取的都是设定好的初始值

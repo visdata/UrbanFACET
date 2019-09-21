@@ -13,7 +13,6 @@ const settings = {
     //'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%,#0000ff 25%,#00ff00 45%,#ffff00 70%,#ff0000 100%)' //白、蓝、绿、黄、红滑动条
     //'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%,#00ff00 30%,#ffff00 55%,#ff0000 100%)'//白、绿、黄、红滑动条
     'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%, #ffff00 40%,#ff0000 100%)' ,//白黄红滑动条
-    'threeType':'-webkit-linear-gradient(left, #4292c6 0%,#4292c6 37.5%, #41ab5d 37.5%,#41ab5d 75%,#ef3b2c 75%,#ef3b2c 100%)'
 }
 
 /**
@@ -293,7 +292,7 @@ let home = {
                     "Opacity": 0.6
                 },
                 bgStyle: {
-                    'background': settings['threeType']
+                    'background': settings['whiteToRed']
                 },
                 processStyle: {
                     'background': settings['whiteToRed']
