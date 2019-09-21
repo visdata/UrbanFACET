@@ -472,18 +472,18 @@ class mapview {
                 .attr("width", 500)
                 .attr("height", 500)
                 .style("z-index", 999)
-                .style("left", "300px")
-                .style("top", "70px");
+                .style("left", "0px")
+                .style("top", "450px");
 
         // var g = d3.select("#metrics_card")
         //     .append("g")
         //     .attr("transform", "translate(40,40)");
 
             svg.append("svg:rect")
-            .attr("width", 200)
+            .attr("width", 230)
             .attr("height", 200)
-            .attr("x", 20)
-            .attr("y", 20)
+            .attr("x", 0)
+            .attr("y", 0)
             .attr("fill", "black");
     }
 
