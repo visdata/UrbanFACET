@@ -45,6 +45,13 @@ let maps = [],
     daview = null,
     resp = null;
 
+const settings = {
+    // 'whiteToRed': '-webkit-gradient(linear, 0 0, 100% 0, from(white), to(red))'
+    // 与实际设置不同,因为有遮挡所以微调过
+    //'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%,#0000ff 25%,#00ff00 45%,#ffff00 70%,#ff0000 100%)' //白、蓝、绿、黄、红滑动条
+    //'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%,#00ff00 30%,#ffff00 55%,#ff0000 100%)'//白、绿、黄、红滑动条
+    'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%, #ffff00 40%,#ff0000 100%)' ,//白黄红滑动条
+}
 
 // 界面实例入口
 const userpanel = new Vue({
@@ -97,6 +104,19 @@ const userpanel = new Vue({
                 }).catch(function (err) {
                     console.error("Failed!", err);
                 })
+            }
+        },
+
+        'change_slider':function(etype){
+            var self = this
+            for (let i = self.sels.objs.length - 1; i >= 0; i--) {
+                if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
+                    self.sels.objs[i].slider.bgStyle.background = "orange"
+                    self.sels.objs[i].slider.bgStyle.processStyle = "orange"
+                }else{
+                    self.sels.objs[i].slider.bgStyle.background = settings["whiteToRed"]
+                    self.sels.objs[i].slider.bgStyle.processStyle = settings["whiteToRed"]
+                }
             }
         },
 
@@ -162,6 +182,10 @@ const userpanel = new Vue({
                         'rev': rev
                     };
                 console.log("etype:" +  JSON.stringify(drawprop))
+
+                this.change_slider(etype)
+
+
 
                 // 添加 loading 效果 & 移动地图
                 changeLoadState(`dimmer${i}`, true);
@@ -513,7 +537,10 @@ const userpanel = new Vue({
 					'etype': etype,
 					'rev': rev
 				};
-			console.log("etype:" +  JSON.stringify(drawprop))
+            console.log("etype:" +  JSON.stringify(drawprop))
+            
+            self.change_slider(etype)
+
 
             // 添加 loading 效果 & 移动地图
             // 添加蒙版，展示正在loading
@@ -746,6 +773,10 @@ const userpanel = new Vue({
                     'etype': etype,
                     'rev': rev
                 };
+
+            self.change_slider(etype)
+
+                
 			if(self.sels.objs[i].maptype !== 'DIV'){
 				if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
 					 // 改变背景色
@@ -897,6 +928,7 @@ const userpanel = new Vue({
                 let city = objs[i].city,
                     etype = objs[i].etype;
 
+
                 let prop = {
                     'city': city,
                     'boundary': true
@@ -937,6 +969,8 @@ const userpanel = new Vue({
 
                 let city = objs[i].city,
                     etype = objs[i].etype;
+                
+
 
                 let prop = {
                     'city': city,
@@ -975,6 +1009,9 @@ const userpanel = new Vue({
 
                 let city = objs[i].city,
                     etype = objs[i].etype;
+                
+  
+
 
                 let prop = {
                     'city': city,
@@ -1023,6 +1060,7 @@ const userpanel = new Vue({
 
                 let city = objs[i].city,
                     etype = objs[i].etype;
+
 
                 let prop = {
                     'city': city,
@@ -1190,6 +1228,9 @@ const userpanel = new Vue({
                         'rev': rev
                     };
 
+                    self.change_slider(etype)
+
+
 
                 // 根据用户所选 metric 类型进行相应数据提取操作
                 if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
@@ -1233,6 +1274,9 @@ const userpanel = new Vue({
                     'etype': etype,
                     'rev': rev
                 };
+            
+                self.change_slider(etype)
+
             // 根据用户所选 metric 类型进行相应数据提取操作
             if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
                 // 获取 slider 情况下的配置值域以及用户其余选项
@@ -1359,6 +1403,8 @@ const userpanel = new Vue({
 
                             console.log("etype: " + etype)
                             console.log("svals: " + svals)
+                            self.change_slider(etype)
+
 
                             changeLoadState(`dimmer${i}`, false);
 
@@ -1389,6 +1435,8 @@ const userpanel = new Vue({
 
                             console.log("etype: " + etype)
                             console.log("svals: " + svals)
+                            self.change_slider(etype)
+
 
                             changeLoadState(`dimmer${i}`, false);
 
@@ -1453,6 +1501,9 @@ const userpanel = new Vue({
 
                         let city = objs[i].city,
                             etype = objs[i].etype;
+                        
+                            self.change_slider(etype)
+
 
                         let prop = {
                             'city': city,
@@ -1512,6 +1563,7 @@ const userpanel = new Vue({
                             'rev': rev
                         };
 
+
                     // 根据用户所选 metric 类型进行相应数据提取操作
                     if (['pp', 'pd', 'rp', 'rd', 'de'].indexOf(etype) > -1) {
                         // 获取 slider 情况下的配置值域以及用户其余选项
@@ -1556,6 +1608,9 @@ const userpanel = new Vue({
             drawprop = {
                 'rev': false
             }; // 批量化使用的 etype 熵类型;
+
+
+
 
         console.log('curnum', curnum, 'lstnum', lstnum);
 

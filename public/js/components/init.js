@@ -526,6 +526,32 @@ let home = {
             }
         }
     },
+    'slider_label':{
+            'pp': 'Value:',
+            'vd': 'Value:',
+            'pd': 'Value:',
+            'cd': 'Value:',
+            'rp': 'Value:',
+            'rd': 'Value:',
+            'de': 'Value:',
+            'dd': 'Value:',
+            'tg': 'Value:',
+            'ag': 'Value:',
+            'po': 'Value:',
+            'hp': 'Value:',
+			'rdb': 'Value:',
+			'rdbo': 'Value:',
+			'rdbb': 'Class Range:',
+			'ppb': 'Value:',
+			'ppbo': 'Value:',
+			'ppbb': 'Class Range:',
+			'pdb': 'Value:',
+			'pdbo': 'Value:',
+			'pdbb': 'Class Range:',
+			'rpb': 'Value:',
+			'rpbo': 'Value:',
+			'rpbb': 'Class Range:'
+    },    
     'cals': {
         'cities': {
             'bj': 'Beijing',
