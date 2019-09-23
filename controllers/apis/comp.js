@@ -71,6 +71,16 @@ let apis = {
 			'data': data
 		});
 	},
+	'MetricsLegendQuery': function(req, res, next){
+		let params = req.query,
+			k_num = params.k_num,
+			data = EP.getmetrics(k_num);
+
+		res.json({
+			'scode' : 1,
+			'data': data
+		});
+	},
 	'DistrictClusterQuery': function(req, res, next) {
 		let params = req.query,
 			data = EP.getDistrictClusterDatasets(params);
