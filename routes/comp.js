@@ -27,8 +27,8 @@ router.get('/ClusterboundaryQuery', function(req, res, next) {
 router.get('/ClusterboundaryQueryUpdate', function(req, res, next) {
 	apis.ClusterboundaryQueryUpdate(req, res, next);
 });
-router.get('/ClusterboundaryQueryUpdate', function(req, res, next) {
-	apis.ClusterboundaryQueryUpdate(req, res, next);
+router.get('/MetricsLegendQuery', function(req, res, next) {
+	apis.MetricsLegendQuery(req, res, next);
 });
 router.get('/DistrictClusterQuery', function(req, res, next) {
 	apis.DistrictClusterQuery(req, res, next);

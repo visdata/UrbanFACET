@@ -22,7 +22,8 @@ import {
     getClusterboundaryDatasets,
     outOfRange,
     getPropName,
-    extraInfoIndex
+    extraInfoIndex,
+    getMetricsLegendDatasets
 } from './apis'
 import {
     stats,
@@ -33,6 +34,10 @@ import * as coordtransform from 'coordtransform';
 import {
     RadarChart
 } from './RadarChart';
+
+import {
+    Metrics_card
+} from './Metrics_card';
 
 const SPLIT = 0.003
 const mapattr = 'UrbanFACET &copy; 2016-2017'
@@ -134,7 +139,8 @@ class mapview {
                     console.log("redrawflower")
                     //console.log(JSON.stringify(self.savef_data.data))
                     self.flowerDrawing(self.savef_data.data, self.savef_data.city);
-                }
+                } 
+                
                 // 待完善
                 // 
                 // 如果存在contour map 则根据zoom level重绘
@@ -345,7 +351,7 @@ class mapview {
                 max_pp = data[i]['properties']['pp'];
             }
         }
-
+        
         console.log("data: " + data.length)
         for (let i = 0; i < data.length; i++) {
             let rdata = [
@@ -456,6 +462,235 @@ class mapview {
 
         }
 
+    }
+
+    metricsDrawing(){
+        d3.selectAll('.leaflet-metrics').remove();
+        
+        let self = this,
+            k_num = 6,
+            overlay = d3.select(self.map.getPanes().overlayPane);
+        let svg = overlay.append("svg").attr('id', 'metrics_card')
+                .attr("width", 500)
+                .attr("height", 500)
+                .style("z-index", 999)
+                .style("left", "13px")
+                .style("top", "425px");
+
+        // var g = d3.select("#metrics_card")
+        //     .append("g")
+        //     .attr("transform", "translate(40,40)");
+
+            svg.append("svg:rect")
+            .attr("width", 230)
+            .attr("height", 200)
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("fill", "white");
+
+        getMetricsLegendDatasets(k_num).then(function (initial_data) {
+            let width = 70,
+            height = 70,
+            ExtraLen = 10,
+            max_d = 0,
+            max_ad = 0,
+            max_ar = 0,
+            max_pr = 0,
+            max_ap = 0,
+            max_pp = 0,
+            data = initial_data['features'];
+
+            for (let i = 0; i < data.length; i++) {
+                if (data[i]['properties']['d'] > max_d) {
+                    max_d = data[i]['properties']['d'];
+                }
+                if (data[i]['properties']['ad'] > max_ad) {
+                    max_ad = data[i]['properties']['ad'];
+                }
+                if (data[i]['properties']['ar'] > max_ar) {
+                    max_ar = data[i]['properties']['ar'];
+                }
+                if (data[i]['properties']['pr'] > max_pr) {
+                    max_pr = data[i]['properties']['pr'];
+                }
+                if (data[i]['properties']['ap'] > max_ap) {
+                    max_ap = data[i]['properties']['ap'];
+                }
+                if (data[i]['properties']['pp'] > max_pp) {
+                    max_pp = data[i]['properties']['pp'];
+                }
+            }
+
+            let color = ["rgba(255,0,0,0.5)", "rgba(255,69,0,0.5)", "rgba(160,32,240,0.5)", "rgba(255,215,0,0.5)", "rgba(255,255,0,0.5)",
+                "rgba(154,205,50,0.5)", "rgba(173,255,47,0.5)", "rgba(0,255,0,0.5)", "rgba(139,69,19,0.5)", "rgba(127,255,212,0.5)", "rgba(0,206,209,0.5)", "rgba(0,191,255,0.5)", "rgba(30,144,255,0.5)", "rgba(255,165,0,0.5)", "rgba(255,20,147,0.5)"],
+                initial_y = 10,
+                gap = 30;
+
+
+            console.log("data: " + data.length)
+            for (let i = 0; i < data.length; i++) {
+                svg.append("svg:rect")
+                    .attr("width", 40)
+                    .attr("height", 20)
+                    .attr("x", 10)
+                    .attr("y", function(){
+                        return initial_y + gap * i;
+                    })
+                    .attr("fill", function(){
+                        return color[i];
+                    });
+
+                let rdata = [
+                    [{
+                        'area': 'Fluidity',
+                        'value': data[i]['properties']['ar'],
+                        'd': data[i]['properties']['d'],
+                        //'name': "k: "+ data[i]['properties']['color'] + "  d: " + data[i]['properties']['db_num'],
+                        'name': 'FACET: ',
+                        'data': data[i]['properties']
+                    }, {
+                        'area': 'vibrAncy',
+                        'value': data[i]['properties']['pp'],
+                        'd': data[i]['properties']['d'],
+                        //'name': "k: "+ data[i]['properties']['color'] + "  d: " + data[i]['properties']['db_num'],
+                        'name': 'FACET: ',
+                        'data': data[i]['properties']
+                    }, {
+                        'area': 'Commutation',
+                        'value': data[i]['properties']['ap'],
+                        'd': data[i]['properties']['d'],
+                        //'name': "k: "+ data[i]['properties']['color'] + "  d: " + data[i]['properties']['db_num'],
+                        'name': 'FACET: ',
+                        'data': data[i]['properties']
+                    }, {
+                        'area': 'divErsity',
+                        'value': data[i]['properties']['pr'],
+                        'd': data[i]['properties']['d'],
+                        //'name': "k: "+ data[i]['properties']['color'] + "  d: " + data[i]['properties']['db_num'],
+                        'name': 'FACET: ',
+                        'data': data[i]['properties']
+                    }]
+                ];
+                    // prop = {
+                    //     'id': `${city}-radar${i}`,
+                    //     'city': city
+                    // };
+                let s = data[i]['properties']['d'] / Number.parseFloat(max_d), //"ad":  总统计点数，"d": 总统计数/面积
+                    linear = d3.scaleLinear().domain([0, 1]).range([50, 100]),
+
+                    speColor = d3.hcl(359, 90, 100),
+                    speColor1 = d3.hcl(0, 90, 100),
+                    speColor2 = d3.hcl(90, 90, 100),
+                    speColor3 = d3.hcl(150, 90, 100),
+                    speColor4 = d3.hcl(280, 90, 100);
+                let mag = 1.0;
+                // if (this.map.getZoom() > 11) {
+                //     mag = Math.pow(2.0, (this.map.getZoom() - 11));
+                //     //console.log("mag: " + mag)
+                // } else if (this.map.getZoom() < 11) {
+                //     mag = Math.pow(0.5, (11 - this.map.getZoom()));
+                //     //console.log("mag: " + mag)
+                // }
+
+                let r = data[i]['properties']['d'] / Number.parseFloat(max_d),
+                    linear0 = d3.scaleLinear().domain([0, 1]).range([45 * mag, 90 * mag]),
+                    r0 = linear0(r),
+                    R0 = Math.sqrt(Math.pow(r0, 1 / 0.7)),
+                    r_max = Math.sqrt(Math.pow(linear0(1.0), 1 / 0.7));
+
+                let r1 = Math.sqrt(data[i]['properties']['ar'] / Number.parseFloat(max_ar)),
+                    r2 = Math.sqrt(data[i]['properties']['pp'] / Number.parseFloat(max_pr)),
+                    r3 = Math.sqrt(data[i]['properties']['ap'] / Number.parseFloat(max_ap)),
+                    r4 = Math.sqrt(data[i]['properties']['pr'] / Number.parseFloat(max_pp));
+
+                let R5 = data[i]['properties']['d'] / Number.parseFloat(max_d),
+                    linear1 = d3.scaleLinear().domain([0, 1]).range([0, 2]),
+                    R = linear1(R5),
+                    r5 = Math.sqrt(Math.pow(R, 1 / 0.7));
+
+                svg.append("circle")
+                .attr("cx", function(){
+                    if(i % 2 == 0){
+                        return 120;
+                    }
+                    else{
+                        return 170;
+                    }
+                })
+                .attr("cy", function(){
+                    return initial_y + 13 + gap * i;
+                })
+                .attr('r', 3)
+                .style("stroke-width", "1.5px")
+                .style('stroke', d3.hcl(359, 60, 40))
+                .style("fill-opacity", 0);
+
+                svg.append("path")
+                .attr("transform", function(){
+                    if(i % 2 == 0){
+                        return "translate(" + 120 + "," + (initial_y + 13 + gap*i) + ")";
+                    }
+                    return "translate(" +  170 + "," + (initial_y + 13 + gap*i) + ")";
+                })
+                .attr("d", function(j,i){
+                    var cx = 0, cy = 0,
+                        r = 0, s = 0, e = 0, m = 0;
+                    if (i == 0){
+                            cy = r1 * R0,
+                            r = cy,
+                            s = {x: 0, y: -r/2}, 
+                            e = {x: -r/2, y: 0},
+                            m = {x: -Math.sqrt(2) * r / 2 , y: -Math.sqrt(2) * r / 2};
+                            //console.log("1s: " + JSON.stringify(m))
+                    } 
+                    else if(i == 1){
+                            cx = cfg.r2 * cfg.R0,
+                            r = cx,
+                            s = {x: -r/2, y: 0},
+                            e = {x: 0, y: r/2},
+                            m = {x: -Math.sqrt(2) * r / 2 , y: Math.sqrt(2) * r / 2};
+                            //console.log("2s: " + JSON.stringify(m))
+                    }
+                    else if(i == 2){
+                            cy = cfg.r3 * cfg.R0,
+                            r = cy,
+                            s = {x: 0, y: r/2},
+                            e = {x: r/2, y: 0},
+                            m = {x: Math.sqrt(2) * r / 2 , y: Math.sqrt(2) * r / 2};
+                            //console.log("3s: " + JSON.stringify(m))
+                    }
+                    else if(i == 3){
+                            cx = cfg.r4 * cfg.R0,
+                            r = cx,
+                            s = {x: r/2, y: 0},
+                            e = {x: 0, y: -r/2},
+                            m = {x: Math.sqrt(2) * r / 2 , y: -Math.sqrt(2) * r / 2};
+                            //console.log("4s: " + JSON.stringify(m))
+                    }
+                        return "M0,0Q" + s.x + "," + s.y + " " + m.x + "," + m.y + 
+                                "M0,0Q" + e.x + "," + e.y + " " + m.x + "," + m.y ;
+                })
+                .style("stroke", function(j){
+                        return d3.hcl(j/ 4 * 360, 60, 40);
+                })
+                .style("fill", function(j){
+                        if (i == 0)
+                            return cfg.speColor1;
+                        else if (i == 1)
+                            return cfg.speColor2;
+                        else if (i == 2)
+                            return cfg.speColor3;
+                        else if (i == 3)
+                            return cfg.speColor4;
+                })
+                .style("fill-opacity", cfg.opacityArea);
+
+            }
+        }).catch(function (err) {
+            console.error("Failed!", err);
+        });
+
+            
     }
 
     smecDrawing(data, city) { //绘制star plot
@@ -1403,6 +1638,8 @@ class mapview {
         this.heatmapLayer = new HeatmapOverlay(cfg);
         this.map.addLayer(this.heatmapLayer);
         this.heatmapLayer.setData(hdata)
+
+        this.metricsDrawing()
     }
 
     mapcontourCDrawing_bubble(data, prop, update = false) {

@@ -607,6 +607,12 @@ function getClusterBoundaryUpdate(prop) {
     return data;
 }
 
+function getmetrics(k_num){
+	let data = require(`./data/${k_num}` + `kmeans_info.json`);
+	//let data = require(`./data/${city}`);
+	return data;
+}
+
 function getDistrictClusterDatasets(prop) {
 	let city = prop['city'],
 		k = prop['k'];
@@ -1342,7 +1348,8 @@ module.exports = {
     getExtraInfo: getExtraInfo,
     getBoundary: getBoundary,
     getClusterBoundary: getClusterBoundary,
-    getClusterBoundaryUpdate: getClusterBoundaryUpdate,
+	getClusterBoundaryUpdate: getClusterBoundaryUpdate,
+	getmetrics: getmetrics,
     getDistrictClusterDatasets: getDistrictClusterDatasets,
 	getThreetypeview: getThreetypeview,
 	getBubbleContourData:getBubbleContourData,
