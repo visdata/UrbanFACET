@@ -481,8 +481,8 @@ class mapview {
         //     .attr("transform", "translate(40,40)");
 
             svg.append("svg:rect")
-            .attr("width", 230)
-            .attr("height", 300)
+            .attr("width", "230px")
+            .attr("height", "300px")
             .attr("x", 0)
             .attr("y", 0)
             .attr("fill", "white");
