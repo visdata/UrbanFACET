@@ -402,7 +402,7 @@ let home = {
             'slider2': {
                 // width: 140,
                 tooltip: 'hover',
-                value: '100',
+                value: '10',
                 dotSize: 13,
                 piecewise: true,
                 piecewiseLabel: true,

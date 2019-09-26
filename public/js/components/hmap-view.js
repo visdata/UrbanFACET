@@ -1048,6 +1048,13 @@ class mapview {
 
         this.metricsDrawing()
 
+        // 添加geojson的layer
+        this.bbcontourLayer_1 = L.geoJson(data.features[0],{style:data.features[0].properties})
+        this.map.addLayer(this.bbcontourLayer_1)
+
+
+
+
         // //console.log("data:" + JSON.stringify(data))
         // d3.select(`#${svgid}`).remove();
         // d3.select(`#${aoiid}`).remove();

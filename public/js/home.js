@@ -931,7 +931,7 @@ const userpanel = new Vue({
                 };
                 changeLoadState(`dimmer${i}`, false);
                 maps[i].ClusterboundaryDrawing(res, prop);
-                maps[i].flowerDrawing(res, city);
+                // maps[i].flowerDrawing(res, city);
             }).catch(function (err) {
                 console.error("Failed!", err);
             });
@@ -974,7 +974,7 @@ const userpanel = new Vue({
                 };
                 changeLoadState(`dimmer${i}`, false);
                 maps[i].ClusterboundaryDrawing(res, prop);
-                maps[i].flowerDrawing(res, city);
+                //maps[i].flowerDrawing(res, city);
             }).catch(function (err) {
                 console.error("Failed!", err);
             });
@@ -1383,7 +1383,7 @@ const userpanel = new Vue({
                             'boundary': true
                         };
                         map.ClusterboundaryDrawing(res, prop);
-                        map.flowerDrawing(res, city)
+                        // map.flowerDrawing(res, city)
                     }).catch(function (err) {
                         console.error("Failed!", err);
                     });
