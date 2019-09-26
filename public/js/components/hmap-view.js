@@ -627,12 +627,12 @@ class mapview {
                 .data([0,1,2,3])
                 .enter()
                 .append("path")
-                // .attr("transform", function(){
-                //     if(i % 2 == 0){
-                //         return "translate(" + 120 + "," + (initial_y + 13 + gap*i) + ")";
-                //     }
-                //     return "translate(" +  170 + "," + (initial_y + 13 + gap*i) + ")";
-                // })
+                .attr("transform", function(){
+                    if(i % 2 == 0){
+                        return "translate(" + 120 + "," + (initial_y + 13 + gap*i) + ")";
+                    }
+                    return "translate(" +  170 + "," + (initial_y + 13 + gap*i) + ")";
+                })
                 .attr("d", function(j,k){
                     var cx = 0, cy = 0,
                         r = 0, s = 0, e = 0, m = 0;
