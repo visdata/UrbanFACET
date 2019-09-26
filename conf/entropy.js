@@ -608,7 +608,7 @@ function getClusterBoundaryUpdate(prop) {
 }
 
 function getmetrics(k_num){
-	let data = require(`./data/${k_num}` + `kmeans_info.json`);
+	let data = require(`./data/${k_num}` + `kmeans_feature.json`);
 	//let data = require(`./data/${city}`);
 	return data;
 }

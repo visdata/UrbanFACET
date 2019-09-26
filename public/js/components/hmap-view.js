@@ -521,8 +521,7 @@ class mapview {
                 }
             }
 
-            let color = ["rgba(255,0,0,0.5)", "rgba(255,69,0,0.5)", "rgba(160,32,240,0.5)", "rgba(255,215,0,0.5)", "rgba(255,255,0,0.5)",
-                "rgba(154,205,50,0.5)", "rgba(173,255,47,0.5)", "rgba(0,255,0,0.5)", "rgba(139,69,19,0.5)", "rgba(127,255,212,0.5)", "rgba(0,206,209,0.5)", "rgba(0,191,255,0.5)", "rgba(30,144,255,0.5)", "rgba(255,165,0,0.5)", "rgba(255,20,147,0.5)"],
+            let color = ["rgba(228,26,28,0.6)","rgba(55,126,184,0.6)","rgba(77,175,74,0.6)","rgba(152,78,163,0.6)","rgba(255,127,0,0.5)"],
                 initial_y = 10,
                 gap = 30;
 
@@ -1026,6 +1025,7 @@ class mapview {
     }
 
     ClusterboundaryDrawing(data, prop, update = false) {
+        
         let self = this,
             city = prop['city'],
             onlyBound = prop['boundary'],
@@ -1044,62 +1044,64 @@ class mapview {
             data = this.getClusterBoundData();
         }
 
-        //console.log("data:" + JSON.stringify(data))
-        d3.select(`#${svgid}`).remove();
-        d3.select(`#${aoiid}`).remove();
+        this.metricsDrawing()
 
-        let //color = d3.scaleLinear().domain([0, 14])
-            //.range([ "rgba(255,255,255,0.9)", "rgba(255, 165, 0, 0.9)"]),
-            color = ["rgba(255,0,0,0.5)", "rgba(255,69,0,0.5)", "rgba(160,32,240,0.5)", "rgba(255,215,0,0.5)", "rgba(255,255,0,0.5)",
-                "rgba(154,205,50,0.5)", "rgba(173,255,47,0.5)", "rgba(0,255,0,0.5)", "rgba(139,69,19,0.5)", "rgba(127,255,212,0.5)", "rgba(0,206,209,0.5)", "rgba(0,191,255,0.5)", "rgba(30,144,255,0.5)", "rgba(255,165,0,0.5)", "rgba(255,20,147,0.5)"
-            ],
-            svg = d3.select(self.map.getPanes().overlayPane).append("svg").attr('id', svgid).style("z-index", 998),
-            g = svg.append("g").attr("class", "leaflet-zoom-hide");
+        // //console.log("data:" + JSON.stringify(data))
+        // d3.select(`#${svgid}`).remove();
+        // d3.select(`#${aoiid}`).remove();
 
-        let transform = d3.geoTransform({
-            point: projectPoint
-        }),
-            path = d3.geoPath().projection(transform);
+        // let //color = d3.scaleLinear().domain([0, 14])
+        //     //.range([ "rgba(255,255,255,0.9)", "rgba(255, 165, 0, 0.9)"]),
+        //     color = ["rgba(255,0,0,0.5)", "rgba(255,69,0,0.5)", "rgba(160,32,240,0.5)", "rgba(255,215,0,0.5)", "rgba(255,255,0,0.5)",
+        //         "rgba(154,205,50,0.5)", "rgba(173,255,47,0.5)", "rgba(0,255,0,0.5)", "rgba(139,69,19,0.5)", "rgba(127,255,212,0.5)", "rgba(0,206,209,0.5)", "rgba(0,191,255,0.5)", "rgba(30,144,255,0.5)", "rgba(255,165,0,0.5)", "rgba(255,20,147,0.5)"
+        //     ],
+        //     svg = d3.select(self.map.getPanes().overlayPane).append("svg").attr('id', svgid).style("z-index", 998),
+        //     g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
-        let feature = g.selectAll("path")
-            .data(data.features)
-            .enter().append("path")
-            .attr('fill', function (d) {
-                //console.log("d: " + JSON.stringify(d.properties))
-                let num = d.properties.color;
-                //console.log("num : " + num)
-                return color[num];
-            })
-            .attr('stroke', 'gray')
-            //.style("stroke-dasharray", "4 5")
-            //.attr('fill', 'red')
-            .attr("stroke-width", 0.9);
+        // let transform = d3.geoTransform({
+        //     point: projectPoint
+        // }),
+        //     path = d3.geoPath().projection(transform);
 
-        self.map.on("viewreset", reset);
-        reset();
+        // let feature = g.selectAll("path")
+        //     .data(data.features)
+        //     .enter().append("path")
+        //     .attr('fill', function (d) {
+        //         //console.log("d: " + JSON.stringify(d.properties))
+        //         let num = d.properties.color;
+        //         //console.log("num : " + num)
+        //         return color[num];
+        //     })
+        //     .attr('stroke', 'gray')
+        //     //.style("stroke-dasharray", "4 5")
+        //     //.attr('fill', 'red')
+        //     .attr("stroke-width", 0.9);
 
-        // Reposition the SVG to cover the features.
-        function reset() {
-            let bounds = path.bounds(data),
-                topLeft = bounds[0],
-                bottomRight = bounds[1];
+        // self.map.on("viewreset", reset);
+        // reset();
 
-            svg.attr("width", bottomRight[0] - topLeft[0])
-                .attr("height", bottomRight[1] - topLeft[1])
-                .style("left", topLeft[0] + "px")
-                .style("top", topLeft[1] + "px");
+        // // Reposition the SVG to cover the features.
+        // function reset() {
+        //     let bounds = path.bounds(data),
+        //         topLeft = bounds[0],
+        //         bottomRight = bounds[1];
 
-            g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+        //     svg.attr("width", bottomRight[0] - topLeft[0])
+        //         .attr("height", bottomRight[1] - topLeft[1])
+        //         .style("left", topLeft[0] + "px")
+        //         .style("top", topLeft[1] + "px");
 
-            feature.attr("d", path);
-        }
+        //     g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
-        // Use Leaflet to implement a D3 geometric transformation.
-        function projectPoint(x, y) {
-            let point = self.map.latLngToLayerPoint(new L.LatLng(y, x));
-            //console.log("x: " + x)
-            this.stream.point(point.x, point.y);
-        }
+        //     feature.attr("d", path);
+        // }
+
+        // // Use Leaflet to implement a D3 geometric transformation.
+        // function projectPoint(x, y) {
+        //     let point = self.map.latLngToLayerPoint(new L.LatLng(y, x));
+        //     //console.log("x: " + x)
+        //     this.stream.point(point.x, point.y);
+        // }
     }
 
     DistrictClusterDrawing(data, prop, update = false) {
