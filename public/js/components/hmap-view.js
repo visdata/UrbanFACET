@@ -473,7 +473,7 @@ class mapview {
         let svg = overlay.append("svg").attr('id', 'metrics_card')
                 .attr("width", 500)
                 .style("z-index", 10000)
-                .style("left", "13px")
+                .style("left", "-200px")
                 .style("top", "570px");
 
         // var g = d3.select("#metrics_card")
@@ -482,10 +482,11 @@ class mapview {
 
             svg.append("svg:rect")
             .attr("style", "width:230px;height:300px")
-            .attr("height", "300px")
+            .attr("width",230)
+            .attr("height", 500)
             .attr("x", 0)
             .attr("y", 0)
-            .attr("fill", "white");
+            .attr("fill", "blue");
 
         getMetricsLegendDatasets(k_num).then(function (initial_data) {
             let width = 70,
