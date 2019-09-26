@@ -474,7 +474,7 @@ class mapview {
                 .attr("width", 500)
                 .attr("height",500)
                 .style("z-index", 10000)
-                .style("left", "-8px")
+                .style("left", "13px")
                 .style("top", "570px");
 
         // var g = d3.select("#metrics_card")
@@ -484,7 +484,7 @@ class mapview {
             svg.append("svg:rect")
             .attr("style", "width:230px;height:300px")
             .attr("width",230)
-            .attr("height", 500)
+            .attr("height", 470)
             .attr("x", 0)
             .attr("y", 0)
             .attr("fill", "white");
@@ -531,8 +531,8 @@ class mapview {
             for (let i = 0; i < data.length; i++) {
                 svg.append("svg:rect")
                     .attr("width", 40)
-                    .attr("height", 20)
-                    .attr("x", 10)
+                    .attr("height", 26)
+                    .attr("x", 20)
                     .attr("y", function(){
                         return initial_y + gap * i;
                     })
