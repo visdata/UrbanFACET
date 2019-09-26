@@ -646,7 +646,7 @@ class mapview {
                             //console.log("1s: " + JSON.stringify(m))
                     } 
                     else if(k == 1){
-                            cx = cfg.r2 * cfg.R0,
+                            cx = r2 * R0,
                             r = cx,
                             s = {x: -r/2, y: 0},
                             e = {x: 0, y: r/2},
@@ -654,7 +654,7 @@ class mapview {
                             //console.log("2s: " + JSON.stringify(m))
                     }
                     else if(k == 2){
-                            cy = cfg.r3 * cfg.R0,
+                            cy = r3 * R0,
                             r = cy,
                             s = {x: 0, y: r/2},
                             e = {x: r/2, y: 0},
@@ -662,7 +662,7 @@ class mapview {
                             //console.log("3s: " + JSON.stringify(m))
                     }
                     else if(k == 3){
-                            cx = cfg.r4 * cfg.R0,
+                            cx = r4 * R0,
                             r = cx,
                             s = {x: r/2, y: 0},
                             e = {x: 0, y: -r/2},
@@ -677,13 +677,13 @@ class mapview {
                 })
                 .style("fill", function(j,k){
                         if (k == 0)
-                            return cfg.speColor1;
+                            return speColor1;
                         else if (k == 1)
-                            return cfg.speColor2;
+                            return speColor2;
                         else if (k == 2)
-                            return cfg.speColor3;
+                            return speColor3;
                         else if (k == 3)
-                            return cfg.speColor4;
+                            return speColor4;
                 })
                 .style("fill-opacity", 0.5);
 
