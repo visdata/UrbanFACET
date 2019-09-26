@@ -404,32 +404,19 @@ let home = {
                 tooltip: 'hover',
                 value: '10',
                 dotSize: 13,
+                min:1,
+                max:99,
+                interval:1,
                 piecewise: true,
                 piecewiseLabel: true,
                 clickable: false,
                 style: {
                     "marginLeft": "0%"
                 },
-                data: [
-                    "50",
-                    "75",
-                    "100",
-                    "150",
-                    "200"
-                ],
-                piecewiseStyle: {
-                    "backgroundColor": "orange",
-                    "visibility": "visible",
-                    "width": "6px",
-                    "height": "6px"
-                },
                 tooltipStyle: {
                     "backgroundColor": "#000",
                     "borderColor": "#000",
                     "opacity": 0.6
-                },
-                piecewiseActiveStyle: {
-                    "backgroundColor": "orange"
                 },
                 labelActiveStyle: {
                     "color": "orange"
