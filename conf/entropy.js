@@ -925,6 +925,8 @@ function getThreetypeview(conn, prop) {
 	
 	let bound_value = bound_value_str.split(",");
 
+	let percent = Math.round(100*contour_percent/0.2)
+
 
 	/**
 	 * 这里是新的splatterplot的数据
@@ -933,7 +935,8 @@ function getThreetypeview(conn, prop) {
 	let new_p = new Promise(function(resolve, reject) {
 		let result = null;
 		try{
-			result = require(`./splatter_contour/bj_${typs['rtype']}` + `_${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`);
+			result = require(`./reg_contour_data/6kmeans_${percent}.json`)
+			//result = require(`./splatter_contour/bj_${typs['rtype']}` + `_${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`);
 			console.log(`./splatter_contour/bj_${typs['rtype']}` + `_${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`)
 			// result = require(`./data/new_bb_contour/bj_splatter_${typs['rtype']}` + `_${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`);
 
