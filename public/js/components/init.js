@@ -407,8 +407,8 @@ let home = {
                 min:1,
                 max:99,
                 interval:1,
-                piecewise: true,
-                piecewiseLabel: true,
+                piecewise: false,
+                piecewiseLabel: false,
                 clickable: false,
                 style: {
                     "marginLeft": "0%"

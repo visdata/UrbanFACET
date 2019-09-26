@@ -1037,6 +1037,7 @@ class mapview {
             aoiid = `aoiCanvas${self.ides.mapid}`;
 
         this.switchLegDisplay('cltsld');
+        this.clearLayers()
 
         if (!update) {
             console.log("first")
