@@ -625,17 +625,20 @@ class mapview {
                 .style('stroke', d3.hcl(359, 60, 40))
                 .style("fill-opacity", 0);
 
-                svg.append("path")
+                svg.selectAll(".nodes")
+                .data([0,1,2,3])
+                .enter()
+                .append("path")
                 .attr("transform", function(){
                     if(i % 2 == 0){
                         return "translate(" + 120 + "," + (initial_y + 13 + gap*i) + ")";
                     }
                     return "translate(" +  170 + "," + (initial_y + 13 + gap*i) + ")";
                 })
-                .attr("d", function(j,i){
+                .attr("d", function(j,k){
                     var cx = 0, cy = 0,
                         r = 0, s = 0, e = 0, m = 0;
-                    if (i == 0){
+                    if (k == 0){
                             cy = r1 * R0,
                             r = cy,
                             s = {x: 0, y: -r/2}, 
@@ -643,7 +646,7 @@ class mapview {
                             m = {x: -Math.sqrt(2) * r / 2 , y: -Math.sqrt(2) * r / 2};
                             //console.log("1s: " + JSON.stringify(m))
                     } 
-                    else if(i == 1){
+                    else if(k == 1){
                             cx = cfg.r2 * cfg.R0,
                             r = cx,
                             s = {x: -r/2, y: 0},
@@ -651,7 +654,7 @@ class mapview {
                             m = {x: -Math.sqrt(2) * r / 2 , y: Math.sqrt(2) * r / 2};
                             //console.log("2s: " + JSON.stringify(m))
                     }
-                    else if(i == 2){
+                    else if(k == 2){
                             cy = cfg.r3 * cfg.R0,
                             r = cy,
                             s = {x: 0, y: r/2},
@@ -659,7 +662,7 @@ class mapview {
                             m = {x: Math.sqrt(2) * r / 2 , y: Math.sqrt(2) * r / 2};
                             //console.log("3s: " + JSON.stringify(m))
                     }
-                    else if(i == 3){
+                    else if(k == 3){
                             cx = cfg.r4 * cfg.R0,
                             r = cx,
                             s = {x: r/2, y: 0},
@@ -673,17 +676,17 @@ class mapview {
                 .style("stroke", function(j){
                         return d3.hcl(j/ 4 * 360, 60, 40);
                 })
-                .style("fill", function(j){
-                        if (i == 0)
+                .style("fill", function(j,k){
+                        if (k == 0)
                             return cfg.speColor1;
-                        else if (i == 1)
+                        else if (k == 1)
                             return cfg.speColor2;
-                        else if (i == 2)
+                        else if (k == 2)
                             return cfg.speColor3;
-                        else if (i == 3)
+                        else if (k == 3)
                             return cfg.speColor4;
                 })
-                .style("fill-opacity", cfg.opacityArea);
+                .style("fill-opacity", 0.5);
 
             }
         }).catch(function (err) {
@@ -1639,7 +1642,7 @@ class mapview {
         this.map.addLayer(this.heatmapLayer);
         this.heatmapLayer.setData(hdata)
 
-        this.metricsDrawing()
+        //this.metricsDrawing()
     }
 
     mapcontourCDrawing_bubble(data, prop, update = false) {

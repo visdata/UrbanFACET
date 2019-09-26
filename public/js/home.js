@@ -275,14 +275,10 @@ const userpanel = new Vue({
 
                             // 设置三种种类的值的分界线
                             // 这里直接设置成vibrancy的最小值和最大值，实际上应该提前计算之后存储在这里
-                            self.sels.objs[i].slider.min = 0;
-                            self.sels.objs[i].slider.max = 4;
-                            self.sels.objs[i].slider.interval = 0.5;
-                            self.sels.objs[i].slider.value = [1.5,3];
-                            self.sels.objs[i].slider.formatter = "{value}";
+                    
 
 							
-							let bound_value = self.sels.objs[i].slider.value,
+							let bound_value = self.sels.objs[i].slider5.value,
                             contour_percent = this.sels.objs[i].slider4.value;
                             maps[i].boundaryRemove();
 							
@@ -622,7 +618,7 @@ const userpanel = new Vue({
 						
                             
                         // 读取两个slider的值，这里读取的都是设定好的初始值
-                        let bound_value = self.sels.objs[i].slider.value;
+                        let bound_value = self.sels.objs[i].slider5.value;
                         let contour_percent = self.sels.objs[i].slider4.value;
                             
                         // 移除绘制的边界
@@ -805,7 +801,7 @@ const userpanel = new Vue({
 					
 					if(['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(etype) > -1){
 						changeLoadState(`dimmer${index}`, true);
-						let bound_value = this.sels.objs[i].slider.value,
+						let bound_value = this.sels.objs[i].slider5.value,
                         contour_percent = this.sels.objs[i].slider4.value;
 
 						maps[i].switchLegDisplay('bubblesld');
@@ -1033,7 +1029,7 @@ const userpanel = new Vue({
 		'updateSlider4': function (index) {
             // 定位 slider
             let i = Number.parseInt(index),
-                bound_value = this.sels.objs[i].slider.value,
+                bound_value = this.sels.objs[i].slider5.value,
                 contour_percent = this.sels.objs[i].slider4.value;
 
             maps[i].boundaryRemove();

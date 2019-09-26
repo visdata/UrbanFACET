@@ -19,19 +19,38 @@
 								<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Grid" checked="checked" @click="map_type(index)">Grid
 								<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="DIV" @click="map_type(index)">DIV
 							</p>
-							<p>M-class: 
+							<p><div style="width:60px;float: left;height: 100%;">M-class: </div>
+								<div style="margin-left: 60px;height: 100%;">
 								<!-- <input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Blend" @click="map_type(index)">Blend
 								<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Layer" @click="map_type(index)">Layer -->
 								<input type ="radio" name="'map_type'+index" v-model="sels.objs[index].maptype" value="Bubble" @click="map_type(index)">Splatterplots
+								<br>
+								<input type ="radio">Bubble Sets
+							</div>
 							</p>
 						</div>
 					</div>
+
+					<template v-if="['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(model.etype) > -1" >
+							<div>
+								<p>{{slider_label[model.etype]}}
+									<div v-if="['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(model.etype) > -1" style="width:100%">
+										<div style="display: inline-block;width:37.5%;text-align:center">Lower</div><div style="display: inline-block;width:37.5%;text-align:center">Middle</div><div style="display: inline-block;width:25%;text-align:center">Upper</div>
+									</div>
+									<vue-slider :id="'slider5'+index" :ref="'eSlider'+index" v-bind="sels.objs[index].slider5" @drag-end="updateSlider(index)" v-model="sels.objs[index].slider5.value"></vue-slider>
+									<div v-if="['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(model.etype) > -1" style="width:100%">
+											<div style="display: inline-block;width:18.75%;text-align:left">0</div><div style="display: inline-block;width:37.5%;text-align:center">1.5</div><div style="display: inline-block;width:31.25%;text-align:center">3</div><div style="display: inline-block;width:12.5%;text-align:right">+Inf</div>
+									</div>
+								</p>	
+							</div>
+						</template>
+
+
 					
-					<template v-if="model.dtype !== 'd'" >
+					<template v-if="model.dtype !== 'd' & ['ppbb', 'pdbb', 'rpbb', 'rdbb'].indexOf(model.etype) < 0" >
 						<div>
 							<p>{{slider_label[model.etype]}}
 								<vue-slider :id="'slider'+index" :ref="'eSlider'+index" v-bind="sels.objs[index].slider" @drag-end="updateSlider(index)" v-model="sels.objs[index].slider.value"></vue-slider>
-							</p>	
 						</div>
 					</template>
 					
@@ -48,8 +67,12 @@
 						<p>Value:</p>
 						<template v-if="model.dtype !== 'd'" >
 							<div>
-								<vue-slider :id="'slider4'+index" v-bind="sels.objs[index].slider4" @drag-end="updateSlider4(index)" v-model="sels.objs[index].slider4.value"></vue-slider>
+								<vue-slider style="margin-bottom: 0" :id="'slider4'+index" v-bind="sels.objs[index].slider4" @drag-end="updateSlider4(index)" v-model="sels.objs[index].slider4.value"></vue-slider>
+								<div style="width: 100%">
+										<div style="width: 15%;text-align: left;display:inline-block">0</div><div style="width: 50%;text-align:center;display:inline-block;">0.06</div><div style="width: 35%;text-align: right;display:inline-block">0.2</div>
+								</div>
 							</div>
+							
 						</template>
 						</div>
 					

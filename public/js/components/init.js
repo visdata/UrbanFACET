@@ -13,6 +13,8 @@ const settings = {
     //'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%,#0000ff 25%,#00ff00 45%,#ffff00 70%,#ff0000 100%)' //白、蓝、绿、黄、红滑动条
     //'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%,#00ff00 30%,#ffff00 55%,#ff0000 100%)'//白、绿、黄、红滑动条
     'whiteToRed': '-webkit-linear-gradient(left, #ffffff 0%, #ffff00 40%,#ff0000 100%)' ,//白黄红滑动条
+    'BlueGreenRed':'-webkit-linear-gradient(left, #5f97d7 0%,#5f97d7 50%,#cf5c52 50%,#cf5c52 100%)'
+    
 }
 
 /**
@@ -295,7 +297,7 @@ let home = {
                     'background': settings['whiteToRed']
                 },
                 processStyle: {
-                    'background': settings['whiteToRed']
+                    'backgroundColor': 'rgba(129,182,123,1)'
                 }
             },
             /*
@@ -458,13 +460,38 @@ let home = {
                 tooltipStyle: {
                     "backgroundColor": "#000",
                     "borderColor": "#000",
-                    "opacity": 0.6
+                    "opacity": 0.6,
                 },
                 labelActiveStyle: {
                     "color": "lightgray"
                 },
                 processStyle: {
                     'background': "lightgray"
+                }
+            },
+            'slider5': {
+                // width: 140,
+                tooltip: 'hover',
+                value: [1.5,3],
+                dotSize: 13,
+                min: 0,
+                max: 4,
+                clickable: false,
+                formatter: function (value) {
+                    //console.log("value" + (value + 1))
+                    return value
+                },
+                interval: 0.5,
+                tooltipStyle: {
+                    "backgroundColor": "#000",
+                    "borderColor": "#000",
+                    "Opacity": 0.6
+                },
+                bgStyle: {
+                    'background': settings['BlueGreenRed']
+                },
+                processStyle: {
+                    'backgroundColor': '#81b67b'
                 }
             },
             'data': {

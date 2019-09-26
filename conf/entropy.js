@@ -938,7 +938,7 @@ function getThreetypeview(conn, prop) {
 			// result = require(`./data/new_bb_contour/bj_splatter_${typs['rtype']}` + `_${bound_value[0]}-${bound_value[1]}` + `_${contour_percent}` + `.json`);
 
 		}catch(err){
-			result = require(`./splatter_contour/bj_V_1.5-3_0.035.json`);
+			result = require(`./kmeans/bj_6kmeans_1.json`);
 
 			// reject(err)
 		}
