@@ -472,10 +472,9 @@ class mapview {
             overlay = d3.select(self.map.getPanes().overlayPane);
         let svg = overlay.append("svg").attr('id', 'metrics_card')
                 .attr("width", 500)
-                .attr("height", 500)
-                .style("z-index", 999)
+                .style("z-index", 10000)
                 .style("left", "13px")
-                .style("top", "425px");
+                .style("top", "570px");
 
         // var g = d3.select("#metrics_card")
         //     .append("g")
@@ -522,8 +521,8 @@ class mapview {
             }
 
             let color = ["rgba(228,26,28,0.6)","rgba(55,126,184,0.6)","rgba(77,175,74,0.6)","rgba(152,78,163,0.6)","rgba(255,127,0,0.5)"],
-                initial_y = 10,
-                gap = 30;
+                initial_y = 20,
+                gap = 40;
 
 
             console.log("data: " + data.length)
@@ -628,12 +627,12 @@ class mapview {
                 .data([0,1,2,3])
                 .enter()
                 .append("path")
-                .attr("transform", function(){
-                    if(i % 2 == 0){
-                        return "translate(" + 120 + "," + (initial_y + 13 + gap*i) + ")";
-                    }
-                    return "translate(" +  170 + "," + (initial_y + 13 + gap*i) + ")";
-                })
+                // .attr("transform", function(){
+                //     if(i % 2 == 0){
+                //         return "translate(" + 120 + "," + (initial_y + 13 + gap*i) + ")";
+                //     }
+                //     return "translate(" +  170 + "," + (initial_y + 13 + gap*i) + ")";
+                // })
                 .attr("d", function(j,k){
                     var cx = 0, cy = 0,
                         r = 0, s = 0, e = 0, m = 0;
