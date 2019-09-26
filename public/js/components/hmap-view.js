@@ -1047,11 +1047,10 @@ class mapview {
         }
 
         
-
+	this.clusterlayer = []
         // 添加geojson的layer
-        this.clusterlayer = []
         for (let i = 0; i < data.features.length; i++){
-            this.clusterlayer.push(L.geoJson(data.features[i],{style:data.features[0].properties}))
+            this.clusterlayer.push(L.geoJson(data.features[i],{style:data.features[i].properties}))
             this.map.addLayer(this.clusterlayer[i])
         }
 
