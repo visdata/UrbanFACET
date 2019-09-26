@@ -1046,11 +1046,16 @@ class mapview {
             data = this.getClusterBoundData();
         }
 
-        this.metricsDrawing()
+        
 
         // 添加geojson的layer
-        this.bbcontourLayer_1 = L.geoJson(data.features[0],{style:data.features[0].properties})
-        this.map.addLayer(this.bbcontourLayer_1)
+        for (let i = 0; i < data.features.length; i++){
+            this.clusterlayer = []
+            this.clusterlayer.push(L.geoJson(data.features[i],{style:data.features[0].properties}))
+            this.map.addLayer(this.clusterlayer[i])
+        }
+
+        this.metricsDrawing()
 
 
 
@@ -2351,6 +2356,12 @@ class mapview {
         if (this.bbcontourLayer_7) {
             this.map.removeLayer(this.bbcontourLayer_7);
             this.bbcontourLayer_7 = null;
+        }
+        if (this.clusterlayer){
+            for (let i=0;i<this.clusterlayer.length;i++){
+                this.map.removelayer(this.clusterlayer[i])
+            }
+            this.clusterlayer = null
         }
         //  d3.selectAll('.leaflet-zoom-hide').remove();
     }
