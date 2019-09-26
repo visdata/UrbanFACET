@@ -573,6 +573,7 @@ class mapview {
                     //     'id': `${city}-radar${i}`,
                     //     'city': city
                     // };
+
                 let s = data[i]['properties']['d'] / Number.parseFloat(max_d), //"ad":  总统计点数，"d": 总统计数/面积
                     linear = d3.scaleLinear().domain([0, 1]).range([50, 100]),
 
@@ -612,13 +613,13 @@ class mapview {
                         return 120;
                     }
                     else{
-                        return 170;
+                        return 120;
                     }
                 })
                 .attr("cy", function(){
                     return initial_y + 13 + gap * i;
                 })
-                .attr('r', 3)
+                .attr('r', R0)
                 .style("stroke-width", "1.5px")
                 .style('stroke', d3.hcl(359, 60, 40))
                 .style("fill-opacity", 0);
@@ -631,7 +632,7 @@ class mapview {
                     if(i % 2 == 0){
                         return "translate(" + 120 + "," + (initial_y + 13 + gap*i) + ")";
                     }
-                    return "translate(" +  170 + "," + (initial_y + 13 + gap*i) + ")";
+                    return "translate(" +  120 + "," + (initial_y + 13 + gap*i) + ")";
                 })
                 .attr("d", function(j,k){
                     var cx = 0, cy = 0,
