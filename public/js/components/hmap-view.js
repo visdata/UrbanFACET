@@ -2359,7 +2359,7 @@ class mapview {
         }
         if (this.clusterlayer){
             for (let i=0;i<this.clusterlayer.length;i++){
-                this.map.removelayer(this.clusterlayer[i])
+                this.map.removeLayer(this.clusterlayer[i])
             }
             this.clusterlayer = null
         }
