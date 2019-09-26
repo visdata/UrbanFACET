@@ -592,7 +592,7 @@ function getBoundary(city) {
 }
 
 function getClusterBoundary(city) {
-	c = 10
+	let c = 10
 	let data = require(`./reg_contour_data/6kmeans`+ `_` + `${c}`+ `.json`);
 	//let data = require(`./data/${city}`);
     return data;
