@@ -482,7 +482,7 @@ class mapview {
 
             svg.append("svg:rect")
             .attr("width", 230)
-            .attr("height", 200)
+            .attr("height", 300)
             .attr("x", 0)
             .attr("y", 0)
             .attr("fill", "white");
@@ -522,7 +522,7 @@ class mapview {
 
             let color = ["rgba(228,26,28,0.6)","rgba(55,126,184,0.6)","rgba(77,175,74,0.6)","rgba(152,78,163,0.6)","rgba(255,127,0,0.5)"],
                 initial_y = 20,
-                gap = 40;
+                gap = 50;
 
 
             console.log("data: " + data.length)
