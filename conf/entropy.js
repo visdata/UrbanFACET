@@ -593,7 +593,7 @@ function getBoundary(city) {
 
 function getClusterBoundary(city) {
 	let c = 10
-	let data = require(`./reg_contour_data/6kmeans`+ `_` + `${c}`+ `.json`);
+	let data = require(`./new_contour/6kmeans`+ `_` + `${c}`+ `.json`);
 	//let data = require(`./data/${city}`);
     return data;
 }
@@ -603,7 +603,7 @@ function getClusterBoundaryUpdate(prop) {
 		s = prop['s'],
 		c = prop['c'];
 	
-	let data = require(`./reg_contour_data/6kmeans`+ `_` + `${c}`+ `.json`);
+	let data = require(`./new_contour/6kmeans`+ `_` + `${s}`+ `.json`);
 	//let data = require(`./data/${city}`);
     return data;
 }
