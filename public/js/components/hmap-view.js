@@ -473,6 +473,7 @@ class mapview {
         let svg = overlay.append("svg").attr('id', 'metrics_card')
                 .attr("width", 500)
                 .attr("height",500)
+                .attr("margin-top","14px")
                 .style("postion","absolute")
                 .style("z-index", 11)
                 .style("left", "230px")
@@ -483,7 +484,8 @@ class mapview {
         //     .attr("transform", "translate(40,40)");
 
             svg.append("svg:rect")
-            .style("")
+            .style("padding-left","2em")
+            .style("border-radius","4px")
             .attr("width",230)
             .attr("height", 230)
             .attr("fill", "white");
