@@ -484,11 +484,11 @@ class mapview {
         //     .attr("transform", "translate(40,40)");
 
             svg.append("svg:rect")
-            .style("padding-left","2em")
-            .style("border-radius","4px")
             .attr("width",230)
             .attr("height", 230)
-            .attr("fill", "white");
+            .attr("fill", "white")
+            .style("padding-left","2em")
+            .style("border-radius","4px");
 
         getMetricsLegendDatasets(k_num).then(function (initial_data) {
             let width = 70,
