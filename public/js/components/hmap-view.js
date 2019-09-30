@@ -473,20 +473,19 @@ class mapview {
         let svg = overlay.append("svg").attr('id', 'metrics_card')
                 .attr("width", 500)
                 .attr("height",500)
-                .style("z-index", 10000)
-                .style("left", "13px")
-                .style("top", "570px");
+                .style("postion","absolute")
+                .style("z-index", 11)
+                .style("left", "230px")
+                .style("top", "0");
 
         // var g = d3.select("#metrics_card")
         //     .append("g")
         //     .attr("transform", "translate(40,40)");
 
             svg.append("svg:rect")
-            .attr("style", "width:230px;height:300px")
+            .style("")
             .attr("width",230)
-            .attr("height", 470)
-            .attr("x", 0)
-            .attr("y", 0)
+            .attr("height", 230)
             .attr("fill", "white");
 
         getMetricsLegendDatasets(k_num).then(function (initial_data) {
